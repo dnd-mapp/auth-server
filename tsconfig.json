@@ -1,4 +1,7 @@
 {
+    "references": [{ "path": "./tsconfig.build.json" }, { "path": "./tsconfig.spec.json" }],
+    "include": [],
+    "files": [],
     "compilerOptions": {
         "module": "nodenext",
         "moduleResolution": "nodenext",
