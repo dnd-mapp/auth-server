@@ -9,8 +9,8 @@
     "build": "pnpm exec nest build",
     "start": "pnpm exec nest start",
     "lint": "pnpm exec eslint \"src/**/*\"",
-    "format:check": "pnpm exec prettier -l \"**/*\"",
-    "format:write": "pnpm exec prettier -w \"**/*\""
+    "format:check": "pnpm exec prettier -l .",
+    "format:write": "pnpm exec prettier -w ."
   },
   "packageManager": "pnpm@10.31.0",
   "engines": {
@@ -36,6 +36,7 @@
     "eslint-config-prettier": "~10.1",
     "globals": "~17.4",
     "prettier": "~3.8",
+    "prettier-plugin-organize-imports": "~4.3",
     "source-map-support": "~0.5",
     "supertest": "~7.2",
     "ts-loader": "~9.5",
