@@ -8,7 +8,7 @@
   "scripts": {
     "build": "pnpm exec nest build",
     "start": "pnpm exec nest start",
-    "lint": "pnpm exec eslint \"src/**/*\"",
+    "lint": "pnpm exec eslint \"{src,test}/**/*\" --cache",
     "format:check": "pnpm exec prettier -l .",
     "format:write": "pnpm exec prettier -w ."
   },

@@ -1,4 +1,5 @@
 import eslint from '@eslint/js';
+import eslintConfigPrettierFlat from 'eslint-config-prettier/flat';
 import { defineConfig, globalIgnores } from 'eslint/config';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
@@ -12,6 +13,7 @@ export default defineConfig(
         languageOptions: {
             globals: {
                 ...globals.node,
+                ...globals.vitest,
             },
             sourceType: 'commonjs',
             parserOptions: {
@@ -21,6 +23,12 @@ export default defineConfig(
         },
     },
     {
+        files: ['*.ts', '*.mts', '*.cts'],
         rules: {},
-    }
+    },
+    {
+        files: ['*.js', '*.mjs', '*.cjs'],
+        rules: {},
+    },
+    eslintConfigPrettierFlat
 );
