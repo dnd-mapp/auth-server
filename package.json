@@ -10,7 +10,9 @@
     "start": "pnpm exec nest start",
     "test": "pnpm exec vitest run",
     "test:ci": "pnpm exec vitest --ui --watch",
-    "lint": "pnpm exec eslint \"{src,test}/**/*\" --cache",
+    "lint": "pnpm lint:eslint && pnpm lint:markdownlint",
+    "lint:eslint": "pnpm exec eslint \"{src,test}/**/*\" --cache",
+    "lint:markdownlint": "pnpm exec markdownlint \"**/*.md\"",
     "format:check": "pnpm exec prettier -l .",
     "format:write": "pnpm exec prettier -w ."
   },
