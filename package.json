@@ -12,6 +12,11 @@
     "format:check": "pnpm exec prettier -l \"**/*\"",
     "format:write": "pnpm exec prettier -w \"**/*\""
   },
+  "packageManager": "pnpm@10.31.0",
+  "engines": {
+    "node": ">=24.14.0",
+    "pnpm": ">=10.31.0"
+  },
   "dependencies": {
     "@nestjs/common": "~11.1",
     "@nestjs/core": "~11.1",
