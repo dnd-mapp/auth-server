@@ -6,13 +6,11 @@
   "private": true,
   "license": "MIT",
   "scripts": {
-    "build": "nest build",
-    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "start": "nest start",
-    "start:dev": "nest start --watch",
-    "start:debug": "nest start --debug --watch",
-    "start:prod": "node dist/main",
-    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
+    "build": "pnpm exec nest build",
+    "start": "pnpm exec nest start",
+    "lint": "pnpm exec eslint \"src/**/*\"",
+    "format:check": "pnpm exec prettier -l \"**/*\"",
+    "format:write": "pnpm exec prettier -w \"**/*\""
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
