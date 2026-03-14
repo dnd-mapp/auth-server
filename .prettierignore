@@ -25,5 +25,6 @@ pnpm-*.yaml
 
 node_modules/
 
-reports/
+coverage/
 dist/
+reports/

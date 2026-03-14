@@ -13,6 +13,7 @@ node_modules/
 .eslintcache
 
 # Compiled output
+coverage/
 dist/
 reports/
 
