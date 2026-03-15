@@ -7,7 +7,7 @@
         "tsConfigPath": "tsconfig.app.json"
     },
     "generateOptions": {
-        "baseDir": "src/app"
+        "baseDir": "app"
     },
     "sourceRoot": "src"
 }
