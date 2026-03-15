@@ -1,0 +1,8 @@
+name: dnd-mapp
+services:
+    dnd-mapp:
+        image: dndmapp/auth-server:latest
+        container_name: auth-server
+        restart: unless-stopped
+        ports:
+            - '4350:4350/tcp'
