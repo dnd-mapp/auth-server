@@ -7,8 +7,8 @@
   "license": "MIT",
   "scripts": {
     "gen:ssl-certs": "mkcert -cert-file ssl-cert.pem -key-file ssl-key.pem localhost.auth.dndmapp.dev localhost 127.0.0.1",
-    "build": "pnpm exec nest build",
     "start": "pnpm exec nest start",
+    "build": "pnpm exec nest build",
     "test:ci": "pnpm exec vitest run",
     "test:development": "pnpm exec vitest --ui --watch",
     "lint": "pnpm lint:eslint && pnpm lint:markdownlint",
@@ -25,7 +25,8 @@
   "dependencies": {
     "@nestjs/common": "~11.1",
     "@nestjs/core": "~11.1",
-    "@nestjs/platform-express": "~11.1",
+    "@nestjs/platform-fastify": "~11.1",
+    "fastify": "~5.8",
     "reflect-metadata": "~0.2",
     "rxjs": "~7.8"
   },
