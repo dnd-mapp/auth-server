@@ -1,7 +1,7 @@
-import { AppModule, DEFAULT_SERVER_HOST, DEFAULT_SERVER_PORT } from '@/app';
-import { parseInteger } from '@/shared-utils';
+import { AppModule, DEFAULT_CORS_ORIGINS, DEFAULT_SERVER_HOST, DEFAULT_SERVER_PORT } from '@/app';
+import { parseArrayFromString, parseInteger } from '@/shared-utils';
 import fastifyHelmet from '@fastify/helmet';
-import { Logger } from '@nestjs/common';
+import { HttpStatus, Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
 
@@ -12,8 +12,18 @@ async function bootstrap() {
 
     const port = parseInteger(DEFAULT_SERVER_PORT, process.env['AUTH_SERVER_PORT']);
     const host = process.env['AUTH_SERVER_HOST'] ?? DEFAULT_SERVER_HOST;
+    const corsOrigins = parseArrayFromString(DEFAULT_CORS_ORIGINS, process.env['AUTH_SERVER_CORS_ORIGINS']);
 
     await app.register(fastifyHelmet);
+
+    app.enableCors({
+        allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
+        credentials: true,
+        maxAge: 3600,
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+        optionsSuccessStatus: HttpStatus.NO_CONTENT,
+        origin: [...corsOrigins],
+    });
 
     app.enableShutdownHooks();
 
