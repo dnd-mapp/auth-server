@@ -1,4 +1,11 @@
-import { AppModule, configureCors, configureFastifyAdapter, configureHelmet, configureSwagger } from '@/app';
+import {
+    AppModule,
+    configureCors,
+    configureFastifyAdapter,
+    configureGlobalValidation,
+    configureHelmet,
+    configureSwagger,
+} from '@/app';
 import { Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
@@ -16,6 +23,7 @@ async function bootstrap() {
     await configureHelmet(app);
     await configureSwagger(app);
     configureCors(app);
+    configureGlobalValidation(app);
 
     app.enableShutdownHooks();
 

@@ -1,3 +1,4 @@
+export * from './class-transform';
 export * from './constants';
 export * from './cors';
 export * from './fastify-adapter';
