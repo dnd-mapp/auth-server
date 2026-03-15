@@ -19,17 +19,17 @@ The `auth-server` is a standalone NestJS REST API that acts as the Identity Prov
 
 - **OAuth2-Inspired Flow:** Custom implementation of Authorization Code Flow with Proof Key for Code Exchange (PKCE).
 - **Token Management:**
-    - Mints **JWT Access Tokens** (short-lived) for API authorization.
-    - Mints **JWT ID Tokens** for user profile information.
-    - Manages **Opaque Refresh Tokens** (stored server-side) for secure session persistence.
-    - Full support for **Token Invalidation/Revocation** on logout.
+  - Mints **JWT Access Tokens** (short-lived) for API authorization.
+  - Mints **JWT ID Tokens** for user profile information.
+  - Manages **Opaque Refresh Tokens** (stored server-side) for secure session persistence.
+  - Full support for **Token Invalidation/Revocation** on logout.
 - **Custom Security Layer:** Lightweight, built-in NestJS Guards for authentication and authorization (no Passport overhead).
 - **Hardened Security:**
-    - **Argon2** password hashing.
-    - **Multi-layered Throttling:** Rate limiting across short, medium, and long windows.
-    - **Helmet:** Secure headers and custom Content Security Policy (CSP).
-    - **CORS:** Strict origin validation with credential support for secure cookie handling.
-    - **CSRF Protection:** Integrated into the secure cookie and PKCE logic.
+  - **Argon2** password hashing.
+  - **Multi-layered Throttling:** Rate limiting across short, medium, and long windows.
+  - **Helmet:** Secure headers and custom Content Security Policy (CSP).
+  - **CORS:** Strict origin validation with credential support for secure cookie handling.
+  - **CSRF Protection:** Integrated into the secure cookie and PKCE logic.
 - **Authorization:** Granular **(A)RBAC** (Attribute/Role-Based Access Control) integrated into the JWT claims.
 - **Persistence:** Type-safe data modeling using Prisma ORM.
 - **Documentation:** Built-in **OpenAPI (Swagger)** explorer for API testing and integration.
@@ -74,8 +74,8 @@ To prevent brute-force attacks and API abuse, the server implements a triple-win
 
 Interactive documentation is automatically generated via Swagger.
 
-*   **Local Dev (SSL):** [https://localhost.auth.dndmapp.dev:4350/docs](https://localhost.auth.dndmapp.dev:4350/docs)
-*   **Docker/Localhost:** [http://localhost:4350/docs](http://localhost:4350/docs)
+- **Local Dev (SSL):** [https://localhost.auth.dndmapp.dev:4350/docs](https://localhost.auth.dndmapp.dev:4350/docs)
+- **Docker/Localhost:** [http://localhost:4350/docs](http://localhost:4350/docs)
 
 ---
 

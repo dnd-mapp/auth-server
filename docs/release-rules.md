@@ -25,19 +25,20 @@ The `prerelease-id` input is restricted to the following values:
 
 ### A. Initializing Prereleases
 
-1. If the current version **IS NOT** a prerelease and `version` is `prepatch`, `preminor`, or `premajor`, then `prerelease-id` **MUST NOT** be `none`.
-2. If the current version **IS NOT** a prerelease, then `version` **MUST NOT** be `prerelease`.
+- If the current version **IS NOT** a prerelease and `version` is `prepatch`, `preminor`, or `premajor`, then `prerelease-id` **MUST NOT** be `none`.
+- If the current version **IS NOT** a prerelease, then `version` **MUST NOT** be `prerelease`.
 
 ### B. Prerelease Maintenance
 
-3. If the current version **IS** a prerelease and `version` is `prerelease`, the `prerelease-id` may be excluded (defaults to current ID) or updated according to the Identifier Progression rules.
+- If the current version **IS** a prerelease and `version` is `prerelease`, the `prerelease-id` may be excluded (defaults to current ID) or updated according to the Identifier Progression rules.
 
 ### C. Release Track Lock-in
 
 To ensure a release track is completed before moving to the next:
-4. **Premajor Track:** If the current version is `premajor`, the next `version` **MUST** be `prerelease` OR `major`.
-5. **Preminor Track:** If the current version is `preminor`, the next `version` **MUST** be `prerelease`, `minor`, or escalated to `premajor`.
-6. **Prepatch Track:** If the current version is `prepatch`, the next `version` **MUST** be `prerelease`, `patch`, or escalated to `preminor`/`premajor`.
+
+- **Premajor Track:** If the current version is `premajor`, the next `version` **MUST** be `prerelease` OR `major`.
+- **Preminor Track:** If the current version is `preminor`, the next `version` **MUST** be `prerelease`, `minor`, or escalated to `premajor`.
+- **Prepatch Track:** If the current version is `prepatch`, the next `version` **MUST** be `prerelease`, `patch`, or escalated to `preminor`/`premajor`.
 
 *Note: Escalating a release track (e.g., `preminor` -> `premajor`) allows resetting the `prerelease-id` to a lower weight (e.g., back to `alpha`).*
 
@@ -46,9 +47,9 @@ To ensure a release track is completed before moving to the next:
 When the `version` input is `prerelease` within the same release track, the `prerelease-id` can only move forward in the following hierarchy:
 `alpha` -> `beta` -> `rc` -> `none` (Stable)
 
-7. **From Alpha:** If current ID is `alpha`, the next ID **MUST** be `none`, `alpha`, `beta`, or `rc`.
-8. **From Beta:** If current ID is `beta`, the next ID **MUST** be `none`, `beta`, or `rc`.
-9. **From RC:** If current ID is `rc`, the next ID **MUST** be `none` or `rc`.
+- **From Alpha:** If current ID is `alpha`, the next ID **MUST** be `none`, `alpha`, `beta`, or `rc`.
+- **From Beta:** If current ID is `beta`, the next ID **MUST** be `none`, `beta`, or `rc`.
+- **From RC:** If current ID is `rc`, the next ID **MUST** be `none` or `rc`.
 
 ## 5. Metadata and Formatting
 
