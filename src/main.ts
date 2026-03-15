@@ -1,5 +1,6 @@
 import { AppModule, DEFAULT_SERVER_HOST, DEFAULT_SERVER_PORT } from '@/app';
 import { parseInteger } from '@/shared-utils';
+import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { FastifyAdapter } from '@nestjs/platform-fastify';
 
@@ -13,7 +14,11 @@ async function bootstrap() {
 
     app.enableShutdownHooks();
 
-    await app.listen(port, host);
+    await app.listen(port, host, () => {
+        const url = `http://${host}:${port}`;
+
+        Logger.log(`Nest application available at: ${url}`, 'NestApplication');
+    });
 }
 
 bootstrap().catch((error) => console.error(error));
