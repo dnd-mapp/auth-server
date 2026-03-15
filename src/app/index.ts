@@ -1,2 +1,2 @@
 export * from './app.module';
-export * from './constants';
+export * from './config';
