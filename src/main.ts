@@ -1,4 +1,4 @@
-import { AppModule, DEFAULT_CORS_ORIGINS, DEFAULT_SERVER_HOST, DEFAULT_SERVER_PORT } from '@/app';
+import { AppModule, CORS_MAX_AGE, DEFAULT_CORS_ORIGINS, DEFAULT_SERVER_HOST, DEFAULT_SERVER_PORT } from '@/app';
 import { parseArrayFromString, parseInteger } from '@/shared-utils';
 import fastifyHelmet from '@fastify/helmet';
 import { HttpStatus, Logger } from '@nestjs/common';
@@ -19,7 +19,7 @@ async function bootstrap() {
     app.enableCors({
         allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
         credentials: true,
-        maxAge: 3600,
+        maxAge: CORS_MAX_AGE,
         methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
         optionsSuccessStatus: HttpStatus.NO_CONTENT,
         origin: [...corsOrigins],
