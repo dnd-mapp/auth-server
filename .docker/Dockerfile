@@ -37,7 +37,6 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
 FROM node:24.14.0-alpine3.23
 
 ENV NODE_ENV="production"
-ENV AUTH_SERVER_HOST="0.0.0.0"
 
 WORKDIR /app
 
