@@ -21,8 +21,8 @@ async function bootstrap() {
     const host = process.env['AUTH_SERVER_HOST'] ?? DEFAULT_SERVER_HOST;
 
     await configureHelmet(app);
+    await configureSwagger(app);
     configureCors(app);
-    configureSwagger(app);
 
     app.enableShutdownHooks();
 
