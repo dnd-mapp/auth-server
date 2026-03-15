@@ -1,0 +1,45 @@
+import { DEFAULT_CORS_ORIGINS, DEFAULT_SERVER_HOST, DEFAULT_SERVER_PORT, PORT_RANGE_MAX, PORT_RANGE_MIN } from '@/app';
+import { parseArrayFromString } from '@/shared-utils';
+import { Transform } from 'class-transformer';
+import { ArrayMinSize, IsArray, IsNotEmpty, IsNumber, IsOptional, IsString, Max, Min } from 'class-validator';
+import { IsHost } from './is-host.decorator';
+
+export const EnvironmentVariableNames = {
+    SERVER_HOST: 'AUTH_SERVER_HOST',
+    SERVER_PORT: 'AUTH_SERVER_PORT',
+    CORS_ORIGINS: 'AUTH_SERVER_CORS_ORIGINS',
+    SSL_CERT_PATH: 'AUTH_SERVER_SSL_CERT_PATH',
+    SSL_KEY_PATH: 'AUTH_SERVER_SSL_KEY_PATH',
+} as const;
+
+export type EnvironmentVariable = (typeof EnvironmentVariableNames)[keyof typeof EnvironmentVariableNames];
+
+export class EnvironmentVariablesSchema {
+    @IsHost()
+    @IsOptional()
+    public [EnvironmentVariableNames.SERVER_HOST]: string = DEFAULT_SERVER_HOST;
+
+    @Max(PORT_RANGE_MAX)
+    @Min(PORT_RANGE_MIN)
+    @IsNumber({ maxDecimalPlaces: 0, allowNaN: false, allowInfinity: false })
+    @IsOptional()
+    public [EnvironmentVariableNames.SERVER_PORT]: number = DEFAULT_SERVER_PORT;
+
+    @IsNotEmpty({ each: true })
+    @IsString({ each: true })
+    @ArrayMinSize(1)
+    @IsArray()
+    @Transform(({ value }) => parseArrayFromString(DEFAULT_CORS_ORIGINS, value as string))
+    @IsOptional()
+    public [EnvironmentVariableNames.CORS_ORIGINS]!: string[];
+
+    @IsNotEmpty()
+    @IsString()
+    @IsOptional()
+    public [EnvironmentVariableNames.SSL_CERT_PATH]?: string;
+
+    @IsNotEmpty()
+    @IsString()
+    @IsOptional()
+    public [EnvironmentVariableNames.SSL_KEY_PATH]?: string;
+}
