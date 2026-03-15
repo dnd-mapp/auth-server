@@ -1,9 +1,9 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="test" type="js.build_tools.npm" nameIsGenerated="true">
+  <configuration default="false" name="test:development" type="js.build_tools.npm" folderName="Testing">
     <package-json value="$PROJECT_DIR$/package.json" />
     <command value="run" />
     <scripts>
-      <script value="test" />
+      <script value="test:development" />
     </scripts>
     <node-interpreter value="project" />
     <envs />
