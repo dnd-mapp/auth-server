@@ -1,3 +1,5 @@
+packages:
+  - '!dist/**/*'
 blockExoticSubdeps: true
 engineStrict: true
 ignoreDepScripts: true
