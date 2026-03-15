@@ -13,7 +13,7 @@
     "docker:bake": "docker buildx bake -f .docker/bake.hcl app",
     "docker:compose:up": "docker compose -f .docker/compose.yaml up -d",
     "docker:compose:down": "docker compose -f .docker/compose.yaml down",
-    "test:ci": "pnpm exec vitest run",
+    "test": "pnpm exec vitest run",
     "test:development": "pnpm exec vitest --ui --watch",
     "lint": "pnpm lint:eslint && pnpm lint:markdownlint",
     "lint:eslint": "pnpm exec eslint \"{src,test}/**/*\" --cache",
