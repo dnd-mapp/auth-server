@@ -2,5 +2,9 @@
     "extends": "./tsconfig.json",
     "include": ["src/**/*.ts"],
     "exclude": ["node_modules", "reports", "dist", "src/**/*.spec.ts"],
-    "compilerOptions": {}
+    "compilerOptions": {
+        "declaration": false,
+        "incremental": false,
+        "sourceMap": false
+    }
 }
