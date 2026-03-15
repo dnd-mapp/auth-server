@@ -20,6 +20,11 @@ function webpackConfig(options) {
     delete parsedManifest.scripts;
     delete parsedManifest.packageManager;
 
+    parsedManifest.dependencies = {
+        // Will use the installed version as defined in the pnpm-lock file.
+        '@fastify/static': '',
+    };
+
     return {
         devtool: isProduction ? false : 'inline-source-map',
         entry: resolve(__dirname, 'src/main.ts'),
