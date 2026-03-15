@@ -4,5 +4,6 @@ export * from './cors';
 export * from './fastify-adapter';
 export * from './helmet';
 export * from './nestjs-config';
+export * from './serialization';
 export * from './swagger';
 export * from './throttler';
