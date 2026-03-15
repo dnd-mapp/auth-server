@@ -1,102 +1,250 @@
-# auth-server
+# 🛡️ D&D Mapp | Auth Server
 
-NestJS authentication server for the D&amp;D Mapp ecosystem. Implements a custom Authorization Code Flow with PKCE, (A)RBAC, and secure JWT/opaque token management. Features include session invalidation, RESTful identity APIs, and Prisma-backed user management. Fully containerized with Docker for high-performance, type-safe security.
+![Node Version](https://img.shields.io/badge/Node-v24+-339933?logo=node.js&logoColor=white)
+![Package Manager](https://img.shields.io/badge/pnpm-v10.31.0-F69220?logo=pnpm&logoColor=white)
+![Framework](https://img.shields.io/badge/NestJS-E0234E?logo=nestjs&logoColor=white)
+![Database](https://img.shields.io/badge/MariaDB-003545?logo=mariadb&logoColor=white)
+![License](https://img.shields.io/badge/License-MIT-yellow)
 
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+The core security engine for the **D&D Mapp** ecosystem. This repository contains a high-performance, custom-built authentication and authorization server designed to handle secure identity management for players and Dungeon Masters.
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+## 🗝️ Overview
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+The `auth-server` is a standalone NestJS REST API that acts as the Identity Provider (IdP) for the D&D Mapp platform. It implements a secure **Authorization Code Flow with PKCE** to support our Angular SPA, ensuring that user credentials and tokens are handled with modern security best practices without relying on third-party SaaS providers.
 
-## Description
+---
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## 🏗️ Architecture & Features
 
-## Project setup
+- **OAuth2-Inspired Flow:** Custom implementation of Authorization Code Flow with Proof Key for Code Exchange (PKCE).
+- **Token Management:**
+    - Mints **JWT Access Tokens** (short-lived) for API authorization.
+    - Mints **JWT ID Tokens** for user profile information.
+    - Manages **Opaque Refresh Tokens** (stored server-side) for secure session persistence.
+    - Full support for **Token Invalidation/Revocation** on logout.
+- **Custom Security Layer:** Lightweight, built-in NestJS Guards for authentication and authorization (no Passport overhead).
+- **Hardened Security:**
+    - **Argon2** password hashing.
+    - **Multi-layered Throttling:** Rate limiting across short, medium, and long windows.
+    - **Helmet:** Secure headers and custom Content Security Policy (CSP).
+    - **CORS:** Strict origin validation with credential support for secure cookie handling.
+    - **CSRF Protection:** Integrated into the secure cookie and PKCE logic.
+- **Authorization:** Granular **(A)RBAC** (Attribute/Role-Based Access Control) integrated into the JWT claims.
+- **Persistence:** Type-safe data modeling using Prisma ORM.
+- **Documentation:** Built-in **OpenAPI (Swagger)** explorer for API testing and integration.
 
-```bash
-$ pnpm install
+---
+
+## 🛡️ Security Configuration Details
+
+### Rate Limiting (Throttling)
+
+To prevent brute-force attacks and API abuse, the server implements a triple-window throttling strategy via `@nestjs/throttler`:
+
+| Window     | TTL        | Limit        | Purpose                   |
+|:-----------|:-----------|:-------------|:--------------------------|
+| **Short**  | 1 Second   | 3 requests   | Burst protection          |
+| **Medium** | 10 Seconds | 20 requests  | Sustained traffic control |
+| **Long**   | 1 Minute   | 100 requests | General API stability     |
+
+### Headers & CORS
+
+- **Helmet:** Configured via `@fastify/helmet` with a custom CSP to allow local Swagger UI assets.
+- **CORS:** Dynamically configured to support specific origins (e.g., the Angular SPA). Explicitly allows `Authorization` and `Content-Type` headers with `credentials: true`.
+
+---
+
+## 🛠️ Tech Stack
+
+- **Framework:** NestJS (TypeScript)
+- **Engine:** Fastify
+- **Runtime:** Node.js v24
+- **Package Manager:** pnpm v10.31.0
+- **ORM:** Prisma
+- **Database:** MariaDB
+- **Testing:** Vitest
+- **Linting:** ESLint & Markdownlint
+- **Formatting:** Prettier
+- **Infrastructure:** Docker & Docker Compose
+
+---
+
+## 📖 API Documentation
+
+Interactive documentation is automatically generated via Swagger.
+
+*   **Local Dev (SSL):** [https://localhost.auth.dndmapp.dev:4350/docs](https://localhost.auth.dndmapp.dev:4350/docs)
+*   **Docker/Localhost:** [http://localhost:4350/docs](http://localhost:4350/docs)
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- **Node.js:** v24+
+- **pnpm:** v10.31.0+
+- **mise:** To automatically manage Node.js and pnpm versions. [Install instructions](https://mise.jdx.dev/getting-started.html).
+- **Docker & Docker Compose**
+- **mkcert:** For generating local SSL certificates. [Install instructions](https://github.com/FiloSottile/mkcert#installation).
+- A local MariaDB instance (or via Docker).
+
+### Local Networking Setup
+
+During development, the server is configured to be served via a custom local hostname to support secure cookie sharing across subdomains.
+
+You must map `localhost.auth.dndmapp.dev` to your local loopback address. Edit your hosts file:
+
+- **Windows:** `C:\Windows\System32\drivers\etc\hosts`
+- **Linux/macOS:** `/etc/hosts`
+
+Add the following line:
+
+```text
+127.0.0.1 localhost.auth.dndmapp.dev
 ```
 
-## Compile and run the project
+> [!NOTE]
+> This configuration applies only to local development. Docker containers continue to use standard networking as they are designed to sit behind a reverse proxy.
+
+### Local HTTPS Setup
+
+To support secure cookies and PKCE flows locally, the server must run over HTTPS during development. We use `mkcert` to manage locally trusted certificates.
+
+1. **Install the local CA:**
+
+   ```bash
+   mkcert -install
+   ```
+
+2. **Generate certificates:**
+
+   ```bash
+   pnpm gen:ssl-certs
+   ```
+
+### Installation & Run
+
+1. **Clone the repository:**
+
+   ```bash
+   git clone https://github.com/dnd-mapp/auth-server.git
+   cd auth-server
+   ```
+
+2. **Setup Runtimes:**
+
+   Ensure `mise` is installed. Run the following to install the correct Node.js and pnpm versions defined in `.tool-versions`:
+
+   ```bash
+   mise install
+   ```
+
+3. **Install dependencies:**
+
+   ```bash
+   pnpm install
+   ```
+
+4. **Environment Setup:**
+
+   Copy the example env file and fill in your secrets.
+
+   ```bash
+   cp .env.template .env
+   ```
+
+5. **Database Migration:**
+
+   ```bash
+   pnpm prisma:migrate-dev
+   ```
+
+6. **Run the server:**
+
+   ```bash
+   pnpm start
+   ```
+
+   The API will be available at `https://localhost.auth.dndmapp.dev:4350`.
+
+---
+
+## 🧪 Quality Control
+
+### Testing
+
+We use **Vitest** for unit and integration testing.
+
+- **Run tests (CI):**
+
+  ```bash
+  pnpm test:ci
+  ```
+
+- **Development mode (UI/Watch):**
+  
+  ```bash
+  pnpm test:development
+  ```
+
+### Linting & Formatting
+
+To maintain high code quality and consistent documentation standards:
+
+- **Lint Code (ESLint):**
+
+  ```bash
+  pnpm lint:eslint
+  ```
+
+- **Lint Docs (Markdownlint):**
+
+  ```bash
+  pnpm lint:markdownlint
+  ```
+
+- **Run All Lints:**
+
+  ```bash
+  pnpm lint
+  ```
+
+- **Format Check:**
+
+  ```bash
+  pnpm format:check
+  ```
+
+- **Auto-format:**
+
+  ```bash
+  pnpm format:write
+  ```
+
+---
+
+## 🐳 Docker Deployment
+
+> [!NOTE]
+> The Docker configuration is intended for production-like environments or CI. **Containers are served over HTTP** as they are designed to sit behind a reverse proxy (e.g., Nginx, Traefik) which handles SSL termination.
+
+To spin up the auth server infrastructure:
 
 ```bash
-# development
-$ pnpm run start
-
-# watch mode
-$ pnpm run start:dev
-
-# production mode
-$ pnpm run start:prod
+docker-compose up -d
 ```
 
-## Run tests
+---
 
-```bash
-# unit tests
-$ pnpm run test
+## 🤝 Contributing
 
-# e2e tests
-$ pnpm run test:e2e
+This repository is part of the **D&D Mapp** internal ecosystem. At this time, we are **not accepting external contributions or Pull Requests**.
 
-# test coverage
-$ pnpm run test:cov
-```
+Refer to our global [CONTRIBUTING.md](https://github.com/dnd-mapp/.github/blob/main/CONTRIBUTING.md) for organizational policies.
 
-## Deployment
+---
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+## 🛡️ License
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ pnpm install -g @nestjs/mau
-$ mau deploy
-```
-
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
-
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+This project is licensed under the **MIT License**. See the [LICENSE](./LICENSE) file for more details.
