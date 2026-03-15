@@ -1,6 +1,5 @@
-import { AppModule, configureCors, DEFAULT_SERVER_HOST, DEFAULT_SERVER_PORT } from '@/app';
+import { AppModule, configureCors, configureHelmet, DEFAULT_SERVER_HOST, DEFAULT_SERVER_PORT } from '@/app';
 import { parseInteger } from '@/shared-utils';
-import fastifyHelmet from '@fastify/helmet';
 import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
@@ -13,8 +12,7 @@ async function bootstrap() {
     const port = parseInteger(DEFAULT_SERVER_PORT, process.env['AUTH_SERVER_PORT']);
     const host = process.env['AUTH_SERVER_HOST'] ?? DEFAULT_SERVER_HOST;
 
-    await app.register(fastifyHelmet);
-
+    await configureHelmet(app);
     configureCors(app);
 
     app.enableShutdownHooks();
