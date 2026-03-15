@@ -11,6 +11,8 @@ async function bootstrap() {
     const port = parseInteger(DEFAULT_SERVER_PORT, process.env['AUTH_SERVER_PORT']);
     const host = process.env['AUTH_SERVER_HOST'] ?? DEFAULT_SERVER_HOST;
 
+    app.enableShutdownHooks();
+
     await app.listen(port, host);
 }
 
