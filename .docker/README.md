@@ -1,10 +1,10 @@
 # 🛡️ D&D Mapp | Auth Server (Docker)
 
-![Docker Pulls](https://img.shields.io/docker/pulls/dndmapp/auth-server?style=flat-square)
-![Docker Image Size](https://img.shields.io/docker/image-size/dndmapp/auth-server/latest?style=flat-square)
-![Node Version](https://img.shields.io/badge/Node-v24.14.0-339933?style=flat-square&logo=node.js&logoColor=white)
-![Framework](https://img.shields.io/badge/NestJS-E0234E?style=flat-square&logo=nestjs&logoColor=white)
-![License](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)
+![Docker Pulls](https://img.shields.io/docker/pulls/dndmapp/auth-server)
+![Docker Image Size](https://img.shields.io/docker/image-size/dndmapp/auth-server/latest)
+![Node Version](https://img.shields.io/badge/Node-v24.14.0-339933?logo=node.js&logoColor=white)
+![Framework](https://img.shields.io/badge/NestJS-E0234E?logo=nestjs&logoColor=white)
+![License](https://img.shields.io/badge/License-MIT-yellow)
 
 The **dndmapp/auth-server** is a high-performance, containerized Identity Provider (IdP) built on NestJS and Fastify. It serves as the core security engine for the **D&D Mapp** ecosystem, implementing modern authentication standards like **Authorization Code Flow with PKCE**. This image is engineered for security-first environments, featuring multi-stage builds, hardened Alpine runtimes, and full SBOM/Provenance attestations.
 
