@@ -11,7 +11,7 @@ export default defineConfig({
         clearMocks: true,
         coverage: {
             enabled: true,
-            exclude: ['*.module.ts', 'main.ts', '*/index.ts', '*/config/*.ts'],
+            exclude: ['*.module.ts', 'main.ts', '*/index.ts', '*/config/**/*.ts'],
             include: ['src/**/*.ts'],
             provider: 'v8',
             reportOnFailure: true,
