@@ -8,7 +8,7 @@ async function bootstrap() {
 
     const app = await NestFactory.create(AppModule, fastifyAdapter);
 
-    const port = parseInteger(DEFAULT_SERVER_PORT, process.env['PORT']);
+    const port = parseInteger(DEFAULT_SERVER_PORT, process.env['AUTH_SERVER_PORT']);
     const host = process.env['AUTH_SERVER_HOST'] ?? DEFAULT_SERVER_HOST;
 
     await app.listen(port, host);
