@@ -16,7 +16,7 @@ export default defineConfig({
             provider: 'v8',
             reportOnFailure: true,
             reporter: ['text-summary', 'html'],
-            reportsDirectory: 'coverage',
+            reportsDirectory: 'coverage/auth-server',
             thresholds: {
                 branches: 80,
                 functions: 80,
