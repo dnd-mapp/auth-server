@@ -3,6 +3,7 @@ import {
     configureCors,
     configureFastifyAdapter,
     configureHelmet,
+    configureSwagger,
     DEFAULT_SERVER_HOST,
     DEFAULT_SERVER_PORT,
 } from '@/app';
@@ -21,6 +22,7 @@ async function bootstrap() {
 
     await configureHelmet(app);
     configureCors(app);
+    configureSwagger(app);
 
     app.enableShutdownHooks();
 
