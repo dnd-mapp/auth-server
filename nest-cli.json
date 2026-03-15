@@ -3,7 +3,14 @@
     "collection": "@nestjs/schematics",
     "compilerOptions": {
         "builder": "webpack",
-        "plugins": [],
+        "plugins": [
+            {
+                "name": "@nestjs/swagger",
+                "options": {
+                    "introspectComments": true
+                }
+            }
+        ],
         "tsConfigPath": "tsconfig.app.json"
     },
     "generateOptions": {
