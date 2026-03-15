@@ -26,6 +26,8 @@ FROM base AS packager
 
 COPY --from=builder /app/dist/auth-server .
 
+COPY .docker/healthcheck.mjs .
+
 ENV NODE_ENV="production"
 
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
@@ -40,6 +42,9 @@ ENV AUTH_SERVER_HOST="0.0.0.0"
 WORKDIR /app
 
 COPY --from=packager /app .
+
+HEALTHCHECK --interval=10s --timeout=5s --retries=5 --start-period=15s \
+    CMD node /app/healthcheck.mjs
 
 EXPOSE 4350
 
