@@ -1,24 +1,17 @@
-import {
-    AppModule,
-    configureCors,
-    configureFastifyAdapter,
-    configureHelmet,
-    configureSwagger,
-    DEFAULT_SERVER_HOST,
-    DEFAULT_SERVER_PORT,
-} from '@/app';
-import { parseInteger } from '@/shared-utils';
+import { AppModule, configureCors, configureFastifyAdapter, configureHelmet, configureSwagger } from '@/app';
 import { Logger } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { NestFastifyApplication } from '@nestjs/platform-fastify';
+import { AppConfig, ConfigurationNamespaces, ServerConfig } from './app/config/configurations';
 
 async function bootstrap() {
     const { adapter, ssl } = await configureFastifyAdapter();
 
     const app = await NestFactory.create<NestFastifyApplication>(AppModule, adapter);
 
-    const port = parseInteger(DEFAULT_SERVER_PORT, process.env['AUTH_SERVER_PORT']);
-    const host = process.env['AUTH_SERVER_HOST'] ?? DEFAULT_SERVER_HOST;
+    const configService = app.get(ConfigService<AppConfig, true>);
+    const { host, port } = configService.get<ServerConfig>(ConfigurationNamespaces.SERVER);
 
     await configureHelmet(app);
     await configureSwagger(app);

@@ -1,9 +1,10 @@
 import { FastifyAdapter } from '@nestjs/platform-fastify';
 import { readFile } from 'fs/promises';
+import { EnvironmentVariableNames } from './validation/environment-variables.schema';
 
 export async function configureFastifyAdapter() {
-    const sslCertPath = process.env['SSL_CERT_PATH'];
-    const sslKeyPath = process.env['SSL_KEY_PATH'];
+    const sslCertPath = process.env[EnvironmentVariableNames.SSL_CERT_PATH];
+    const sslKeyPath = process.env[EnvironmentVariableNames.SSL_KEY_PATH];
 
     if (!sslCertPath || !sslKeyPath)
         return {
