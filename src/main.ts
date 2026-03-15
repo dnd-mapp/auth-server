@@ -1,4 +1,5 @@
 import { AppModule, DEFAULT_SERVER_PORT } from '@/app';
+import { parseInteger } from '@/shared-utils';
 import { NestFactory } from '@nestjs/core';
 import { FastifyAdapter } from '@nestjs/platform-fastify';
 
@@ -7,7 +8,7 @@ async function bootstrap() {
 
     const app = await NestFactory.create(AppModule, fastifyAdapter);
 
-    const port = process.env['PORT'] ?? DEFAULT_SERVER_PORT;
+    const port = parseInteger(DEFAULT_SERVER_PORT, process.env['PORT']);
 
     await app.listen(port);
 }
