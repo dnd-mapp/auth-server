@@ -24,6 +24,7 @@
         "noUnusedParameters": true,
         "outDir": "./dist/auth-server",
         "paths": {
+            "@/app": ["src/app/index.ts"],
             "@/shared-utils": ["src/shared/utils/index.ts"]
         },
         "skipDefaultLibCheck": true,
