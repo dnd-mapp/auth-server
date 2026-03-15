@@ -8,6 +8,34 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
+- (n/a)
+
+### Changed
+
+- (n/a)
+
+### Deprecated
+
+- (n/a)
+
+### Removed
+
+- (n/a)
+
+### Fixed
+
+- (n/a)
+
+### Security
+
+- (n/a)
+
+---
+
+## [0.2.0] - 2026-03-15
+
+### Added
+
 - Add Docker container healthcheck integration to ensure orchestration liveness checks pass.
 - Add `appVersion` support and use it in generated OpenAPI spec metadata (version and description).
 - Add helper to read package manifest version from `package.json`.
