@@ -1,8 +1,6 @@
-import { AppModule } from '@/app';
+import { AppModule, DEFAULT_SERVER_PORT } from '@/app';
 import { NestFactory } from '@nestjs/core';
 import { FastifyAdapter } from '@nestjs/platform-fastify';
-
-const DEFAULT_SERVER_PORT = 4350;
 
 async function bootstrap() {
     const fastifyAdapter = new FastifyAdapter();
