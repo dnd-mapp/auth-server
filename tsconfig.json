@@ -25,6 +25,7 @@
         "outDir": "./dist/auth-server",
         "paths": {
             "@/app": ["src/app/index.ts"],
+            "@/prisma/*": ["src/prisma/*"],
             "@/shared-utils": ["src/shared/utils/index.ts"]
         },
         "skipDefaultLibCheck": true,
