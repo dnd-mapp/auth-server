@@ -13,8 +13,9 @@ node_modules/
 .eslintcache
 
 # Compiled output
-coverage/
 dist/
+src/prisma/
+coverage/
 reports/
 
 # System files
@@ -24,6 +25,7 @@ Thumbs.db
 *.pem
 
 .env
+
 .docker/data
 .docker/secrets/mariadb/*.txt
 !.docker/secrets/mariadb/*-template.txt
