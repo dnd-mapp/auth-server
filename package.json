@@ -39,6 +39,7 @@
     "class-transformer": "~0.5",
     "class-validator": "~0.14",
     "fastify": "~5.7",
+    "nanoid": "~5.1",
     "reflect-metadata": "~0.2",
     "rxjs": "~7.8"
   },
