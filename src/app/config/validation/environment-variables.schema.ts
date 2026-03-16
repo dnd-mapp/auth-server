@@ -10,10 +10,16 @@ export const EnvironmentVariableNames = {
     CORS_ORIGINS: 'AUTH_SERVER_CORS_ORIGINS',
     SSL_CERT_PATH: 'AUTH_SERVER_SSL_CERT_PATH',
     SSL_KEY_PATH: 'AUTH_SERVER_SSL_KEY_PATH',
+    DB_HOST: 'AUTH_SERVER_DB_HOST',
+    DB_PORT: 'AUTH_SERVER_DB_PORT',
+    DB_SCHEMA: 'AUTH_SERVER_DB_SCHEMA',
+    DB_USER: 'AUTH_SERVER_DB_USER',
+    DB_PASSWORD: 'AUTH_SERVER_DB_PASSWORD',
 } as const;
 
 export type EnvironmentVariable = (typeof EnvironmentVariableNames)[keyof typeof EnvironmentVariableNames];
 
+// TODO - Validate database environment variables
 export class EnvironmentVariablesSchema {
     @IsHost()
     @IsOptional()
