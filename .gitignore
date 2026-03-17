@@ -14,7 +14,7 @@ node_modules/
 
 # Compiled output
 dist/
-src/prisma/
+prisma/client/
 coverage/
 reports/
 
