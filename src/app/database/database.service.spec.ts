@@ -1,18 +1,50 @@
-import { Test, TestingModule } from '@nestjs/testing';
+import { MockConfigService, MockPrisma } from '@/test';
+import { ConfigService } from '@nestjs/config';
+import { Test } from '@nestjs/testing';
+import { DatabaseModule } from './database.module';
 import { DatabaseService } from './database.service';
 
 describe('DatabaseService', () => {
-  let service: DatabaseService;
+    async function setupTest() {
+        const module = await Test.createTestingModule({
+            imports: [DatabaseModule.forRoot(MockPrisma)],
+        })
+            .overrideProvider(ConfigService)
+            .useFactory({
+                factory: () => new MockConfigService(),
+            })
+            .compile();
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [DatabaseService],
-    }).compile();
+        return {
+            service: module.get(DatabaseService<MockPrisma>),
+        };
+    }
 
-    service = module.get<DatabaseService>(DatabaseService);
-  });
+    it('should connect and disconnect', async () => {
+        const { service } = await setupTest();
 
-  it('should be defined', () => {
-    expect(service).toBeDefined();
-  });
+        expect(service.prisma).not.toBeDefined();
+
+        await service.onModuleInit();
+
+        expect(service.prisma).toBeDefined();
+        expect(service.prisma.connected).toEqual(true);
+
+        await service.onApplicationShutdown();
+
+        expect(service.prisma.connected).toEqual(false);
+    });
+
+    it('should only initialize prisma once', async () => {
+        const { service } = await setupTest();
+
+        await service.onModuleInit();
+
+        const spy = vi.spyOn(service.prisma, '$connect');
+
+        expect(spy).not.toHaveBeenCalled();
+        await service.onModuleInit();
+
+        expect(spy).toHaveBeenCalledTimes(0);
+    });
 });
