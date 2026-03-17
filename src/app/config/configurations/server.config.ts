@@ -1,7 +1,7 @@
-import { DEFAULT_CORS_ORIGINS, DEFAULT_SERVER_HOST, DEFAULT_SERVER_PORT } from '@/app';
 import { parseArrayFromString, parseInteger } from '@/shared-utils';
 import { registerAs } from '@nestjs/config';
 import { readFile } from 'fs/promises';
+import { DEFAULT_CORS_ORIGINS, DEFAULT_SERVER_HOST, DEFAULT_SERVER_PORT } from '../constants';
 import { EnvironmentVariableNames } from '../validation/environment-variables.schema';
 import { ConfigurationNamespaces } from './configuration-namespaces';
 

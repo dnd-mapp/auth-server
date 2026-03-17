@@ -1,7 +1,17 @@
-import { DEFAULT_CORS_ORIGINS, DEFAULT_SERVER_HOST, DEFAULT_SERVER_PORT, PORT_RANGE_MAX, PORT_RANGE_MIN } from '@/app';
 import { parseArrayFromString } from '@/shared-utils';
 import { Transform } from 'class-transformer';
 import { ArrayMinSize, IsArray, IsNotEmpty, IsNumber, IsOptional, IsString, Max, Min } from 'class-validator';
+import {
+    DEFAULT_CORS_ORIGINS,
+    DEFAULT_DB_HOST,
+    DEFAULT_DB_PORT,
+    DEFAULT_DB_SCHEMA,
+    DEFAULT_DB_USER,
+    DEFAULT_SERVER_HOST,
+    DEFAULT_SERVER_PORT,
+    PORT_RANGE_MAX,
+    PORT_RANGE_MIN,
+} from '../constants';
 import { IsHost } from './is-host.decorator';
 
 export const EnvironmentVariableNames = {

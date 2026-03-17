@@ -1,6 +1,6 @@
-import { DEFAULT_DB_HOST, DEFAULT_DB_PORT, DEFAULT_DB_SCHEMA, DEFAULT_DB_USER } from '@/app';
 import { parseInteger } from '@/shared-utils';
 import { registerAs } from '@nestjs/config';
+import { DEFAULT_DB_HOST, DEFAULT_DB_PORT, DEFAULT_DB_SCHEMA, DEFAULT_DB_USER } from '../constants';
 import { EnvironmentVariableNames } from '../validation/environment-variables.schema';
 import { ConfigurationNamespaces } from './configuration-namespaces';
 
