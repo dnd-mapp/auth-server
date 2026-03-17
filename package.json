@@ -10,6 +10,7 @@
     "gen:prisma": "pnpm exec prisma generate",
     "start": "pnpm exec nest start -w",
     "build": "pnpm exec nest build",
+    "prisma:migrate-dev": "pnpm exec prisma migrate dev",
     "docker:build": "docker build -f .docker/Dockerfile -t dndmapp/auth-server:latest .",
     "docker:bake": "docker buildx bake -f .docker/bake.hcl app",
     "docker:compose:up": "docker compose -f .docker/compose.yaml up -d",
