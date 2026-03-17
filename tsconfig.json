@@ -27,7 +27,8 @@
             "@/app": ["src/app/index.ts"],
             "@/common": ["src/common/index.ts"],
             "@/prisma/*": ["./prisma/client/*"],
-            "@/shared-utils": ["src/shared/utils/index.ts"]
+            "@/shared-utils": ["src/shared/utils/index.ts"],
+            "@/test": ["test/index.ts"]
         },
         "skipDefaultLibCheck": true,
         "skipLibCheck": true,
