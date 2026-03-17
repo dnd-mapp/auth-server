@@ -7,6 +7,7 @@
   "license": "MIT",
   "scripts": {
     "gen:ssl-certs": "mkcert -cert-file ssl-cert.pem -key-file ssl-key.pem localhost.auth.dndmapp.dev localhost 127.0.0.1",
+    "gen:prisma": "pnpm exec prisma generate",
     "start": "pnpm exec nest start -w",
     "build": "pnpm exec nest build",
     "docker:build": "docker build -f .docker/Dockerfile -t dndmapp/auth-server:latest .",
