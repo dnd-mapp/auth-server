@@ -17,9 +17,6 @@ export const EnvironmentVariableNames = {
     DB_PASSWORD: 'AUTH_SERVER_DB_PASSWORD',
 } as const;
 
-export type EnvironmentVariable = (typeof EnvironmentVariableNames)[keyof typeof EnvironmentVariableNames];
-
-// TODO - Validate database environment variables
 export class EnvironmentVariablesSchema {
     @IsHost()
     @IsOptional()
@@ -48,4 +45,28 @@ export class EnvironmentVariablesSchema {
     @IsString()
     @IsOptional()
     public [EnvironmentVariableNames.SSL_KEY_PATH]?: string;
+
+    @IsHost()
+    @IsOptional()
+    public [EnvironmentVariableNames.DB_HOST]: string = DEFAULT_DB_HOST;
+
+    @Max(PORT_RANGE_MAX)
+    @Min(PORT_RANGE_MIN)
+    @IsNumber({ maxDecimalPlaces: 0, allowNaN: false, allowInfinity: false })
+    @IsOptional()
+    public [EnvironmentVariableNames.DB_PORT]: number = DEFAULT_DB_PORT;
+
+    @IsNotEmpty()
+    @IsString()
+    @IsOptional()
+    public [EnvironmentVariableNames.DB_SCHEMA]: string = DEFAULT_DB_SCHEMA;
+
+    @IsNotEmpty()
+    @IsString()
+    @IsOptional()
+    public [EnvironmentVariableNames.DB_USER]: string = DEFAULT_DB_USER;
+
+    @IsNotEmpty()
+    @IsString()
+    public [EnvironmentVariableNames.DB_PASSWORD]!: string;
 }
