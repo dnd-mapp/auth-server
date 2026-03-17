@@ -1,14 +1,16 @@
-import { Inject, Injectable, OnApplicationShutdown, OnModuleInit } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { PrismaMariaDb } from '@prisma/adapter-mariadb';
-import { AppConfig, ConfigurationNamespaces, DatabaseConfig } from '../config/configurations';
 import {
+    AppConfig,
+    ConfigurationNamespaces,
+    DatabaseConfig,
     PRISMA_CLIENT,
     PRISMA_CLIENT_OPTIONS,
     PrismaClientCtor,
     PrismaClientOptions,
     PrismaLikeClient,
-} from './provide-prisma';
+} from '@/common';
+import { Inject, Injectable, OnApplicationShutdown, OnModuleInit } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { PrismaMariaDb } from '@prisma/adapter-mariadb';
 
 @Injectable()
 export class DatabaseService<
@@ -39,15 +41,14 @@ export class DatabaseService<
     }
 
     public async onModuleInit() {
-        this.initializePrisma(this.Client, this.options);
-        await this.prisma.$connect();
+        await this.initializePrisma(this.Client, this.options);
     }
 
     public async onApplicationShutdown() {
         await this.prisma.$disconnect();
     }
 
-    private initializePrisma(Client: TCtor, options: TClientOptions) {
+    private async initializePrisma(Client: TCtor, options: TClientOptions) {
         if (this.prisma) return;
         const { host, port, schema, user, password } = this.configService.get<DatabaseConfig>(
             ConfigurationNamespaces.DATABASE
@@ -62,5 +63,6 @@ export class DatabaseService<
         });
 
         this._prisma = new Client({ adapter: adapter, ...options });
+        await this._prisma.$connect();
     }
 }

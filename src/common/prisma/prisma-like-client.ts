@@ -1,7 +1,3 @@
-export const PRISMA_CLIENT = Symbol('PRISMA_CLIENT');
-
-export const PRISMA_CLIENT_OPTIONS = Symbol('PRISMA_CLIENT_OPTIONS');
-
 export interface PrismaLikeClient {
     $connect(): Promise<void>;
     $disconnect(): Promise<void>;

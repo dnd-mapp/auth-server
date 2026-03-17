@@ -1,6 +1,6 @@
+import { PRISMA_CLIENT, PRISMA_CLIENT_OPTIONS, PrismaClientCtor, PrismaClientOptions } from '@/common';
 import { DynamicModule, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { PRISMA_CLIENT, PRISMA_CLIENT_OPTIONS, PrismaClientCtor, PrismaClientOptions } from './provide-prisma';
 
 @Module({})
 export class DatabaseCoreModule {

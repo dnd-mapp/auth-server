@@ -1,16 +1,8 @@
+import { ConfigurationNamespaces, DatabaseConfig } from '@/common';
 import { parseInteger } from '@/shared-utils';
 import { registerAs } from '@nestjs/config';
 import { DEFAULT_DB_HOST, DEFAULT_DB_PORT, DEFAULT_DB_SCHEMA, DEFAULT_DB_USER } from '../constants';
 import { EnvironmentVariableNames } from '../validation/environment-variables.schema';
-import { ConfigurationNamespaces } from './configuration-namespaces';
-
-export interface DatabaseConfig {
-    host: string;
-    port: number;
-    schema: string;
-    user: string;
-    password: string;
-}
 
 export const databaseConfig = registerAs<DatabaseConfig>(ConfigurationNamespaces.DATABASE, async () => {
     return {
