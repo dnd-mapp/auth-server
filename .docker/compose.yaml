@@ -16,12 +16,8 @@ services:
         ports:
             - '3306:3306/tcp'
         environment:
-            - MARIADB_DATABASE=dma_auth_dev
-            - MARIADB_USER=dma_auth_dev_user
-            - MARIADB_PASSWORD_FILE=/run/secrets/user-password
             - MARIADB_ROOT_PASSWORD_FILE=/run/secrets/root-password
         secrets:
-            - user-password
             - root-password
         volumes:
             - ./data/mariadb:/var/lib/mysql
@@ -43,7 +39,5 @@ services:
         volumes:
             - ./data/dbeaver:/opt/cloudbeaver/workspace
 secrets:
-    user-password:
-        file: ./secrets/mariadb/user.txt
     root-password:
         file: ./secrets/mariadb/root.txt
