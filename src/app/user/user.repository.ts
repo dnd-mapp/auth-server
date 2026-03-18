@@ -43,4 +43,22 @@ export class UserRepository {
         }
         return recordsToUserDtos(queryResult);
     }
+
+    public async findById(id: string) {
+        const { data: queryResult, error } = await tryCatch(
+            this.databaseService.prisma.user.findUnique({
+                select: { ...selectedUserAttributes },
+                where: { id: id },
+            })
+        );
+
+        if (error) {
+            this.logger.error(`Database error fetching user with ID "${id}": ${error.message}`, error.stack);
+            throw error;
+        }
+        if (!queryResult) {
+            return null;
+        }
+        return recordToUserDto(queryResult);
+    }
 }

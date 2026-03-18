@@ -2,7 +2,9 @@ import { MockConfigService, MockPrisma } from '@/test';
 import { Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Test } from '@nestjs/testing';
+import { nanoid } from 'nanoid';
 import { DatabaseModule, DatabaseService } from '../database';
+import { UserDto } from './dtos/user.dto';
 import { UserModule } from './user.module';
 import { UserRepository } from './user.repository';
 
@@ -40,6 +42,27 @@ describe('UserRepository', () => {
                 Promise.reject(new Error('not connected'))
             );
             await expect(repository.findAll()).rejects.toThrow();
+        });
+    });
+
+    describe('findById', () => {
+        it('should return a user by ID', async () => {
+            const { repository } = await setupTest();
+            expect(await repository.findById('mb9NzZCnMCCrWoETc2_DT')).toBeInstanceOf(UserDto);
+        });
+
+        it('should return null', async () => {
+            const { repository } = await setupTest();
+            expect(await repository.findById(nanoid())).toEqual(null);
+        });
+
+        it('should throw a database error', async () => {
+            const { repository, databaseService } = await setupTest();
+
+            vi.spyOn(databaseService.prisma.user, 'findUnique').mockImplementationOnce(() =>
+                Promise.reject(new Error('not connected'))
+            );
+            await expect(repository.findById('mb9NzZCnMCCrWoETc2_DT')).rejects.toThrow();
         });
     });
 });
