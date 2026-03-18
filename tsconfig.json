@@ -25,6 +25,8 @@
         "outDir": "./dist/auth-server",
         "paths": {
             "@/app": ["src/app/index.ts"],
+            "@/auth-domain": ["src/auth/domain/src/index.ts"],
+            "@/auth-domain/test": ["src/auth/domain/test/index.ts"],
             "@/common": ["src/common/index.ts"],
             "@/prisma/*": ["./prisma/client/*"],
             "@/shared-utils": ["src/shared/utils/index.ts"],

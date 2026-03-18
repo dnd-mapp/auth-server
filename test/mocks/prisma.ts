@@ -1,9 +1,12 @@
 import { PrismaLikeClient } from '@/common';
+import { MockPrismaUserDB } from './db/mock-prisma-user.db';
 
 export class MockPrisma implements PrismaLikeClient {
     public connected = false;
 
     public options: Record<string, unknown>;
+
+    public user = new MockPrismaUserDB();
 
     constructor(options: Record<string, unknown>) {
         this.options = options;
