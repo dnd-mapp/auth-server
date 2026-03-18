@@ -7,7 +7,7 @@ CREATE USER IF NOT EXISTS 'app'@'%' IDENTIFIED BY 'app_password';
 CREATE DATABASE IF NOT EXISTS `app_db`
     CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
-GRANT ALL PRIVILEGES ON `app_db`.* TO 'prisma_user'@'%';
+GRANT ALL PRIVILEGES ON `app_db`.* TO 'prisma'@'%';
 GRANT SELECT, INSERT, UPDATE, DELETE ON `app_db`.* TO 'app';
 
 
@@ -15,7 +15,7 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON `app_db`.* TO 'app';
 CREATE DATABASE IF NOT EXISTS `app_db_shadow`
     CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
-GRANT ALL PRIVILEGES ON `app_db_shadow`.* TO 'prisma_user'@'%';
+GRANT ALL PRIVILEGES ON `app_db_shadow`.* TO 'prisma'@'%';
 
 -- 4. Apply privileges.
 FLUSH PRIVILEGES;
