@@ -5,6 +5,7 @@ import { ThrottlerModule } from '@nestjs/throttler';
 import { configModuleOptions, provideAppThrottler, provideGlobalSerialization, throttlerModuleOptions } from './config';
 import { DatabaseModule } from './database';
 import { HealthModule } from './health/health.module';
+import { UserModule } from './user';
 
 @Module({
     imports: [
@@ -12,6 +13,7 @@ import { HealthModule } from './health/health.module';
         ThrottlerModule.forRoot(throttlerModuleOptions),
         HealthModule,
         DatabaseModule.forRoot(PrismaClient),
+        UserModule,
     ],
     providers: [provideAppThrottler(), provideGlobalSerialization()],
 })
