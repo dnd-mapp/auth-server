@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@dnd-mapp/shared-utils':
+        specifier: ~1.2
+        version: 1.2.0
       '@dotenvx/dotenvx':
         specifier: ~1.55
         version: 1.55.1
@@ -231,6 +234,10 @@ packages:
   '@cspotcode/source-map-support@0.8.1':
     resolution: {integrity: sha512-IchNf6dN4tHoMFIn/7OE8LWZ19Y6q/67Bmf6vnGREv8RSbBVb9LPJxEcnwrcwX6ixSvaiGoomAUvu4YSxXrVgw==}
     engines: {node: '>=12'}
+
+  '@dnd-mapp/shared-utils@1.2.0':
+    resolution: {integrity: sha512-poGRB0aTLPrNO7+ztS9yVY7NXPYeTMde8gC8EMdMcxDtWMyM1Wp9/WPSh9VhtIpB68gFx6A47p563rq3hwEK0w==}
+    engines: {node: '>=24.14.0'}
 
   '@dotenvx/dotenvx@1.55.1':
     resolution: {integrity: sha512-WEuKyoe9CA7dfcFBnNbL0ndbCNcptaEYBygfFo9X1qEG+HD7xku4CYIplw6sbAHJavesZWbVBHeRSpvri0eKqw==}
@@ -3583,6 +3590,10 @@ snapshots:
   '@cspotcode/source-map-support@0.8.1':
     dependencies:
       '@jridgewell/trace-mapping': 0.3.9
+
+  '@dnd-mapp/shared-utils@1.2.0':
+    dependencies:
+      tslib: 2.8.1
 
   '@dotenvx/dotenvx@1.55.1':
     dependencies:
