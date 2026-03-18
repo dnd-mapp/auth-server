@@ -1,7 +1,7 @@
+import { AppConfig, ConfigurationNamespaces, ServerConfig } from '@/common';
 import { HttpStatus } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFastifyApplication } from '@nestjs/platform-fastify';
-import { AppConfig, ConfigurationNamespaces, ServerConfig } from './configurations';
 import { CORS_MAX_AGE } from './constants';
 
 export function configureCors(app: NestFastifyApplication) {

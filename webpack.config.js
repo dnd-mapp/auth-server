@@ -23,6 +23,9 @@ function webpackConfig(options) {
     parsedManifest.dependencies = {
         // Will use the installed version as defined in the pnpm-lock file.
         '@fastify/static': '',
+        '@dotenvx/dotenvx': '',
+        'prisma': '7.5.0',
+        'tsx': '',
     };
 
     return {
@@ -48,7 +51,15 @@ function webpackConfig(options) {
             filename: 'main.js',
             path: resolve(__dirname, 'dist/auth-server'),
         },
-        plugins: [...(isProduction ? [new GeneratePackageJsonPlugin(parsedManifest)] : [])],
+        plugins: [
+            ...(isProduction
+                ? [
+                      new GeneratePackageJsonPlugin(parsedManifest, {
+                          excludeDependencies: ['node:path', 'node:url', 'node:buffer'],
+                      }),
+                  ]
+                : []),
+        ],
         resolve: {
             extensions: ['.ts', '.js'],
             plugins: [

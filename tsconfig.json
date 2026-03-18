@@ -10,7 +10,7 @@
         "experimentalDecorators": true,
         "forceConsistentCasingInFileNames": true,
         "isolatedModules": true,
-        "module": "nodenext",
+        "module": "NodeNext",
         "moduleResolution": "nodenext",
         "newLine": "lf",
         "noFallthroughCasesInSwitch": true,
@@ -25,7 +25,10 @@
         "outDir": "./dist/auth-server",
         "paths": {
             "@/app": ["src/app/index.ts"],
-            "@/shared-utils": ["src/shared/utils/index.ts"]
+            "@/common": ["src/common/index.ts"],
+            "@/prisma/*": ["./prisma/client/*"],
+            "@/shared-utils": ["src/shared/utils/index.ts"],
+            "@/test": ["test/index.ts"]
         },
         "skipDefaultLibCheck": true,
         "skipLibCheck": true,

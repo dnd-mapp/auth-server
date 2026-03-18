@@ -7,8 +7,12 @@
   "license": "MIT",
   "scripts": {
     "gen:ssl-certs": "mkcert -cert-file ssl-cert.pem -key-file ssl-key.pem localhost.auth.dndmapp.dev localhost 127.0.0.1",
+    "gen:prisma": "pnpm exec prisma generate",
     "start": "pnpm exec nest start -w",
     "build": "pnpm exec nest build",
+    "prisma:migrate-dev": "pnpm exec prisma migrate dev",
+    "prisma:migrate-deploy": "pnpm exec prisma migrate deploy",
+    "prisma:seed": "pnpm exec prisma db seed",
     "docker:build": "docker build -f .docker/Dockerfile -t dndmapp/auth-server:latest .",
     "docker:bake": "docker buildx bake -f .docker/bake.hcl app",
     "docker:compose:up": "docker compose -f .docker/compose.yaml up -d",
@@ -27,6 +31,7 @@
     "pnpm": ">=10.31.0"
   },
   "dependencies": {
+    "@dotenvx/dotenvx": "~1.55",
     "@fastify/helmet": "~13.0",
     "@fastify/static": "~9.0",
     "@nestjs/common": "~11.1",
@@ -36,11 +41,17 @@
     "@nestjs/swagger": "~11.2",
     "@nestjs/terminus": "~11.1",
     "@nestjs/throttler": "~6.5",
+    "@prisma/adapter-mariadb": "~7.5",
+    "@prisma/client": "~7.5",
     "class-transformer": "~0.5",
     "class-validator": "~0.14",
     "fastify": "~5.7",
+    "mariadb": "~3.5",
+    "nanoid": "~5.1",
+    "prisma": "~7.5",
     "reflect-metadata": "~0.2",
-    "rxjs": "~7.8"
+    "rxjs": "~7.8",
+    "tsx": "~4.21"
   },
   "devDependencies": {
     "@eslint/eslintrc": "~3.3",
