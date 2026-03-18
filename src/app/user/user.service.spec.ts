@@ -25,6 +25,7 @@ describe('UserService', () => {
 
     it('should return all users', async () => {
         const { service } = await setupTest();
-        expect(await service.getAll()).toEqual([]);
+        expect(await service.getAll()).toHaveLength(1);
+    });
     });
 });

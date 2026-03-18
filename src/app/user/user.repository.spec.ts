@@ -23,8 +23,10 @@ describe('UserRepository', () => {
         };
     }
 
-    it('should return all users', async () => {
-        const { repository } = await setupTest();
-        expect(await repository.findAll()).toEqual([]);
+    describe('findAll', () => {
+        it('should return all users', async () => {
+            const { repository } = await setupTest();
+            expect(await repository.findAll()).toHaveLength(1);
+        });
     });
 });

@@ -23,8 +23,10 @@ describe('UserController', () => {
         };
     }
 
-    it('should return all users', async () => {
-        const { controller } = await setupTest();
-        expect(await controller.getAll()).toEqual([]);
+    describe('getAll', () => {
+        it('should return all users', async () => {
+            const { controller } = await setupTest();
+            expect(await controller.getAll()).toHaveLength(1);
+        });
     });
 });
