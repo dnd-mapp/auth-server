@@ -51,7 +51,15 @@ function webpackConfig(options) {
             filename: 'main.js',
             path: resolve(__dirname, 'dist/auth-server'),
         },
-        plugins: [...(isProduction ? [new GeneratePackageJsonPlugin(parsedManifest)] : [])],
+        plugins: [
+            ...(isProduction
+                ? [
+                      new GeneratePackageJsonPlugin(parsedManifest, {
+                          excludeDependencies: ['node:path', 'node:url', 'node:buffer'],
+                      }),
+                  ]
+                : []),
+        ],
         resolve: {
             extensions: ['.ts', '.js'],
             plugins: [
