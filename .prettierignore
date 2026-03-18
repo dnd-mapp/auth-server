@@ -28,3 +28,5 @@ node_modules/
 coverage/
 dist/
 reports/
+
+bruno/
