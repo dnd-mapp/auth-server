@@ -19,7 +19,8 @@ COPY . .
 
 ENV NODE_ENV="production"
 
-RUN pnpm build
+RUN pnpm gen:prisma && \
+    pnpm build
 
 
 FROM base AS packager
