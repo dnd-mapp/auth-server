@@ -16,6 +16,8 @@ describe('UserController', () => {
             })
             .compile();
 
+        module.useLogger(false);
+
         await module.init();
 
         return {
