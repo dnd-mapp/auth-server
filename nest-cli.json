@@ -11,7 +11,8 @@
                 }
             }
         ],
-        "tsConfigPath": "tsconfig.app.json"
+        "tsConfigPath": "tsconfig.app.json",
+        "webpackConfigPath": "webpack.config.js"
     },
     "generateOptions": {
         "baseDir": "app"

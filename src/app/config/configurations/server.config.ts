@@ -1,25 +1,9 @@
-import { DEFAULT_CORS_ORIGINS, DEFAULT_SERVER_HOST, DEFAULT_SERVER_PORT } from '@/app';
+import { ConfigurationNamespaces, ServerConfig, SslConfig } from '@/common';
 import { parseArrayFromString, parseInteger } from '@/shared-utils';
 import { registerAs } from '@nestjs/config';
 import { readFile } from 'fs/promises';
+import { DEFAULT_CORS_ORIGINS, DEFAULT_SERVER_HOST, DEFAULT_SERVER_PORT } from '../constants';
 import { EnvironmentVariableNames } from '../validation/environment-variables.schema';
-import { ConfigurationNamespaces } from './configuration-namespaces';
-
-interface CorsConfig {
-    origins: string[];
-}
-
-interface SslConfig {
-    cert?: string;
-    key?: string;
-}
-
-export interface ServerConfig {
-    host: string;
-    port: number;
-    cors: CorsConfig;
-    ssl: SslConfig;
-}
 
 export const serverConfig = registerAs<ServerConfig>(ConfigurationNamespaces.SERVER, async () => {
     const sslCertPath = process.env[EnvironmentVariableNames.SSL_CERT_PATH];

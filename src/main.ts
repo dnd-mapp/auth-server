@@ -6,11 +6,11 @@ import {
     configureHelmet,
     configureSwagger,
 } from '@/app';
+import { AppConfig, ConfigurationNamespaces, ServerConfig } from '@/common';
 import { Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { NestFastifyApplication } from '@nestjs/platform-fastify';
-import { AppConfig, ConfigurationNamespaces, ServerConfig } from './app/config/configurations';
 
 async function bootstrap() {
     const { adapter, ssl } = await configureFastifyAdapter();

@@ -11,3 +11,11 @@ export const DEFAULT_SERVER_HOST = '0.0.0.0';
 export const DEFAULT_CORS_ORIGINS = ['https://localhost.www.dndmapp.dev:4200'];
 
 export const CORS_MAX_AGE = convertTime(1, TimeUnits.HOURS, TimeUnits.SECONDS);
+
+export const DEFAULT_DB_HOST = 'localhost';
+
+export const DEFAULT_DB_PORT = 3306;
+
+export const DEFAULT_DB_SCHEMA = 'my_db';
+
+export const DEFAULT_DB_USER = 'root';
