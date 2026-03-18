@@ -27,7 +27,11 @@ FROM base AS packager
 
 COPY --from=builder /app/dist/auth-server .
 
-COPY .docker/healthcheck.mjs .
+COPY .docker/healthcheck.mjs .docker/entrypoint.sh prisma.config.ts ./
+
+COPY --from=builder /app/prisma ./prisma
+
+RUN chmod +x entrypoint.sh
 
 ENV NODE_ENV="production"
 
