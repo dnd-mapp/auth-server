@@ -6,4 +6,9 @@ export class MockPrismaUserDB {
     public async findMany() {
         return await Promise.resolve(this.db.getAll());
     }
+
+    public async findUnique(params: { where: { id: string } }) {
+        const { where } = params;
+        return await Promise.resolve(this.db.getById(where.id));
+    }
 }

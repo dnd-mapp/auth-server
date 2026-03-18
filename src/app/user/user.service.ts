@@ -12,4 +12,8 @@ export class UserService {
     public async getAll() {
         return await this.userRepository.findAll();
     }
+
+    public async getById(id: string) {
+        return await this.userRepository.findById(id);
+    }
 }

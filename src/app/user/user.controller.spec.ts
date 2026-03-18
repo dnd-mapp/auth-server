@@ -1,7 +1,11 @@
+import { theLegend27 } from '@/auth-domain/test';
 import { MockConfigService, MockPrisma } from '@/test';
+import { NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Test } from '@nestjs/testing';
+import { nanoid } from 'nanoid';
 import { DatabaseModule } from '../database';
+import { UserDto } from './dtos/user.dto';
 import { UserController } from './user.controller';
 import { UserModule } from './user.module';
 
@@ -16,6 +20,8 @@ describe('UserController', () => {
             })
             .compile();
 
+        module.useLogger(false);
+
         await module.init();
 
         return {
@@ -23,8 +29,22 @@ describe('UserController', () => {
         };
     }
 
-    it('should return all users', async () => {
-        const { controller } = await setupTest();
-        expect(await controller.getAll()).toEqual([]);
+    describe('getAll', () => {
+        it('should return all users', async () => {
+            const { controller } = await setupTest();
+            expect(await controller.getAll()).toHaveLength(1);
+        });
+    });
+
+    describe('getById', () => {
+        it('should return a user by ID', async () => {
+            const { controller } = await setupTest();
+            expect(await controller.getById(theLegend27.id)).toBeInstanceOf(UserDto);
+        });
+
+        it('should throw a NotFoundException', async () => {
+            const { controller } = await setupTest();
+            await expect(controller.getById(nanoid())).rejects.toBeInstanceOf(NotFoundException);
+        });
     });
 });
