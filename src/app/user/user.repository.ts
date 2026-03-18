@@ -1,5 +1,6 @@
 import { Prisma, PrismaClient, User as PrismaUser } from '@/prisma/client';
-import { Injectable } from '@nestjs/common';
+import { tryCatch } from '@dnd-mapp/shared-utils';
+import { Injectable, Logger } from '@nestjs/common';
 import { DatabaseService } from '../database';
 import { UserDto } from './dtos/user.dto';
 
@@ -22,6 +23,7 @@ export const selectedUserAttributes: Prisma.UserSelect = {
 
 @Injectable()
 export class UserRepository {
+    private readonly logger = new Logger(UserRepository.name);
     private readonly databaseService: DatabaseService<PrismaClient>;
 
     constructor(databaseService: DatabaseService<PrismaClient>) {
@@ -29,10 +31,16 @@ export class UserRepository {
     }
 
     public async findAll() {
-        const queryResult = await this.databaseService.prisma.user.findMany({
-            select: { ...selectedUserAttributes },
-        });
+        const { data: queryResult, error } = await tryCatch(
+            this.databaseService.prisma.user.findMany({
+                select: { ...selectedUserAttributes },
+            })
+        );
 
+        if (error) {
+            this.logger.error(`Database error fetching users: ${error.message}`, error.stack);
+            throw error;
+        }
         return recordsToUserDtos(queryResult);
     }
 }
