@@ -47,4 +47,6 @@ HEALTHCHECK --interval=10s --timeout=5s --retries=5 --start-period=15s \
 
 EXPOSE 4350
 
+#ENTRYPOINT ["/app/entrypoint.sh"]
+
 CMD ["node", "/app/main.js"]
