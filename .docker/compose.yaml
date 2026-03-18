@@ -4,11 +4,26 @@ services:
         image: dndmapp/auth-server:latest
         container_name: auth-server
         restart: unless-stopped
+        entrypoint: ''
+        depends_on:
+            db-migration:
+                condition: service_completed_successfully
+            mariadb-server:
+                condition: service_healthy
+        env_file:
+            - ../.env
+        ports:
+            - '4350:4350/tcp'
+    db-migration:
+        image: dndmapp/auth-server:latest
+        container_name: db-migration
+        restart: on-failure
+        entrypoint: ['/bin/sh', '-c', 'npx prisma migrate deploy && npx prisma db seed']
+        env_file:
+            - ../.env
         depends_on:
             mariadb-server:
                 condition: service_healthy
-        ports:
-            - '4350:4350/tcp'
     mariadb-server:
         image: mariadb:latest
         container_name: mariadb
@@ -21,6 +36,7 @@ services:
             - root-password
         volumes:
             - ./data/mariadb:/var/lib/mysql
+            - ./mariadb-init.sql:/docker-entrypoint-initdb.d/mariadb-init.sql
         healthcheck:
             test: ['CMD', 'healthcheck.sh', '--connect', '--innodb_initialized']
             start_period: 10s
