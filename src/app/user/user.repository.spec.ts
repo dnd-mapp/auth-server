@@ -1,4 +1,5 @@
-import { MockPrisma } from '@/test';
+import { MockConfigService, MockPrisma } from '@/test';
+import { ConfigService } from '@nestjs/config';
 import { Test } from '@nestjs/testing';
 import { DatabaseModule } from '../database';
 import { UserModule } from './user.module';
@@ -8,15 +9,22 @@ describe('UserRepository', () => {
     async function setupTest() {
         const module = await Test.createTestingModule({
             imports: [DatabaseModule.forRoot(MockPrisma), UserModule],
-        }).compile();
+        })
+            .overrideProvider(ConfigService)
+            .useFactory({
+                factory: () => new MockConfigService(),
+            })
+            .compile();
+
+        await module.init();
 
         return {
             repository: module.get(UserRepository),
         };
     }
 
-    it('should be defined', async () => {
+    it('should return all users', async () => {
         const { repository } = await setupTest();
-        expect(repository).toBeDefined();
+        expect(await repository.findAll()).toEqual([]);
     });
 });
