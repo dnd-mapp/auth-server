@@ -23,6 +23,9 @@ function webpackConfig(options) {
     parsedManifest.dependencies = {
         // Will use the installed version as defined in the pnpm-lock file.
         '@fastify/static': '',
+        '@dotenvx/dotenvx': '',
+        'prisma': '7.5.0',
+        'tsx': '',
     };
 
     return {
