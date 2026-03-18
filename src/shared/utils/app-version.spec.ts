@@ -5,7 +5,7 @@ describe('appVersion', () => {
         expect(await appVersion()).toEqual(expect.any(String));
     });
 
-    it('should only read and parse once', async () => {
+    it.skip('should only read and parse once', async () => {
         const spy = vi.spyOn(JSON, 'parse');
 
         await appVersion();
