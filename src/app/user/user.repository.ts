@@ -53,7 +53,7 @@ export class UserRepository {
         const { data: queryResult, error } = await tryCatch(
             this.databaseService.prisma.user.findUnique({
                 select: { ...selectedUserAttributes },
-                where: { id: id },
+                where: { id: id, removedAt: null },
             })
         );
 
