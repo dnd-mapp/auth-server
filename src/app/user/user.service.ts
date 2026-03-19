@@ -1,5 +1,5 @@
 import { ConflictException, Injectable, Logger, NotFoundException } from '@nestjs/common';
-import { GetUserQueryParams, UpdateUserDto } from './dtos';
+import { CreateUserDto, GetUserQueryParams, UpdateUserDto } from './dtos';
 import { UserRepository } from './user.repository';
 
 @Injectable()
@@ -34,6 +34,18 @@ export class UserService {
         this.logger.log(`Updating user ID "${id}" with new data`);
 
         return await this.userRepository.update(id, data);
+    }
+
+    public async create(data: CreateUserDto) {
+        const { username } = data;
+
+        if (await this.isUsernameTaken(username)) {
+            this.logger.warn(`User creation failed: Username "${username}" is already taken`);
+            throw new ConflictException(`Username "${username}" is already in use`);
+        }
+        this.logger.log(`Creating new user record for username: "${username}"`);
+
+        return await this.userRepository.create(data);
     }
 
     public async removeById(id: string) {

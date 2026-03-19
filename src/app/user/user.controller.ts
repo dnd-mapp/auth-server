@@ -8,10 +8,13 @@ import {
     Logger,
     NotFoundException,
     Param,
+    Post,
     Put,
     Query,
+    Res,
 } from '@nestjs/common';
-import { GetUserQueryParams, UpdateUserDto, UserDto } from './dtos';
+import { type FastifyReply } from 'fastify';
+import { CreateUserDto, GetUserQueryParams, UpdateUserDto, UserDto } from './dtos';
 import { UserService } from './user.service';
 
 @Controller('/users')
@@ -37,6 +40,32 @@ export class UserController {
     public async getAll(@Query() queryParams?: GetUserQueryParams): Promise<UserDto[]> {
         this.logger.log('Fetching all users');
         return await this.userService.getAll(queryParams);
+    }
+
+    /**
+     * Create a new user.
+     *
+     * @remarks Registers a new user in the system. Validates that the
+     * username is unique before persistence.
+     *
+     * @param data The user registration data (e.g., username).
+     * @param response Fastify response object to set the Location header.
+     * @returns The newly created user record.
+     * @throws {409} If the username is already taken.
+     * @throws {500} If the database insertion fails.
+     */
+    @Post()
+    @HttpCode(HttpStatus.CREATED)
+    public async create(
+        @Body() data: CreateUserDto,
+        @Res({ passthrough: true }) response: FastifyReply
+    ): Promise<UserDto> {
+        this.logger.log(`Received request to create a new user with username: "${data.username}"`);
+
+        const created = await this.userService.create(data);
+
+        response.headers({ location: `/users/${created.id}` });
+        return created;
     }
 
     /**
