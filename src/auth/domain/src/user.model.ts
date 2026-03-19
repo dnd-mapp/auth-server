@@ -5,3 +5,7 @@ export interface User {
     updatedAt: Date;
     removedAt: Date | null;
 }
+
+export type CreateUserData = Pick<User, 'username'>;
+
+export type UpdateUserData = Pick<User, 'username'>;
