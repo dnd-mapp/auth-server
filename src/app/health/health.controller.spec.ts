@@ -1,12 +1,22 @@
+import { MockConfigService, MockPrisma } from '@/test';
+import { ConfigService } from '@nestjs/config';
 import { Test } from '@nestjs/testing';
+import { DatabaseModule } from '../database';
 import { HealthController } from './health.controller';
 import { HealthModule } from './health.module';
 
 describe('HealthController', () => {
     async function setupTest() {
         const module = await Test.createTestingModule({
-            imports: [HealthModule],
-        }).compile();
+            imports: [DatabaseModule.forRoot(MockPrisma), HealthModule],
+        })
+            .overrideProvider(ConfigService)
+            .useFactory({
+                factory: () => new MockConfigService(),
+            })
+            .compile();
+
+        await module.init();
 
         return {
             controller: module.get(HealthController),
@@ -29,8 +39,16 @@ describe('HealthController', () => {
 
         expect(await controller.readiness()).toEqual({
             status: 'ok',
-            details: {},
-            info: {},
+            details: {
+                database: {
+                    status: 'up',
+                },
+            },
+            info: {
+                database: {
+                    status: 'up',
+                },
+            },
             error: {},
         });
     });
