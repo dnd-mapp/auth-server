@@ -10,14 +10,23 @@ export class UserController {
         this.userService = userService;
     }
 
+    /**
+     * Retrieve a list of all active users.
+     */
     @Get()
     public async getAll() {
         this.logger.log('Fetching all users');
         return await this.userService.getAll();
     }
 
-    @Get('/:user_id')
-    public async getById(@Param('user_id') userId: string) {
+    /**
+     * Retrieve a single user by their unique ID.
+     *
+     * @param userId the nanoid of the user.
+     * @returns The user object if found.
+     */
+    @Get('/:userId')
+    public async getById(@Param('userId') userId: string) {
         this.logger.log(`Fetching user with ID "${userId}"`);
         const byId = await this.userService.getById(userId);
 
