@@ -10,6 +10,7 @@ export class UserBuilder {
         this.user = {
             id: id,
             username: `user-${id}`,
+            removedAt: null,
         };
     }
 
@@ -24,6 +25,11 @@ export class UserBuilder {
 
     public withUsername(username: string) {
         this.user.username = username;
+        return this;
+    }
+
+    public withRemovedAt(timestamp: Date) {
+        this.user.removedAt = timestamp;
         return this;
     }
 }

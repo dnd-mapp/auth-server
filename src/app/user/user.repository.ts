@@ -1,6 +1,6 @@
 import { Prisma, PrismaClient, User as PrismaUser } from '@/prisma/client';
 import { tryCatch } from '@dnd-mapp/shared-utils';
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
 import { DatabaseService } from '../database';
 import { UserDto } from './dtos/user.dto';
 
@@ -9,6 +9,7 @@ export function recordToUserDto(record: PrismaUser) {
 
     dto.id = record.id;
     dto.username = record.username;
+    dto.removedAt = record.removedAt;
     return dto;
 }
 
@@ -19,6 +20,7 @@ export function recordsToUserDtos(records: PrismaUser[]) {
 export const selectedUserAttributes: Prisma.UserSelect = {
     id: true,
     username: true,
+    removedAt: true,
 };
 
 @Injectable()
@@ -34,12 +36,15 @@ export class UserRepository {
         const { data: queryResult, error } = await tryCatch(
             this.databaseService.prisma.user.findMany({
                 select: { ...selectedUserAttributes },
+                where: { removedAt: null },
             })
         );
 
         if (error) {
-            this.logger.error(`Database error fetching users: ${error.message}`, error.stack);
-            throw error;
+            this.logger.error(`Failed to fetch all users`, error.stack);
+            throw new InternalServerErrorException('An unexpected error occurred while retrieving users', {
+                cause: error,
+            });
         }
         return recordsToUserDtos(queryResult);
     }
@@ -48,17 +53,35 @@ export class UserRepository {
         const { data: queryResult, error } = await tryCatch(
             this.databaseService.prisma.user.findUnique({
                 select: { ...selectedUserAttributes },
-                where: { id: id },
+                where: { id: id, removedAt: null },
             })
         );
 
         if (error) {
-            this.logger.error(`Database error fetching user with ID "${id}": ${error.message}`, error.stack);
-            throw error;
+            this.logger.error(`Failed to fetch user with ID "${id}"`, error.stack);
+            throw new InternalServerErrorException('An unexpected error occurred while retrieving the user record', {
+                cause: error,
+            });
         }
         if (!queryResult) {
             return null;
         }
         return recordToUserDto(queryResult);
+    }
+
+    public async softDeleteById(id: string) {
+        const { error } = await tryCatch(
+            this.databaseService.prisma.user.update({
+                where: { id: id },
+                data: { removedAt: new Date() },
+            })
+        );
+
+        if (error) {
+            this.logger.error(`Failed to perform soft delete for user with ID "${id}"`, error.stack);
+            throw new InternalServerErrorException('An unexpected error occurred while deactivating the user', {
+                cause: error,
+            });
+        }
     }
 }

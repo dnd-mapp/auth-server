@@ -1,4 +1,4 @@
-import { Controller, Get, Logger, NotFoundException, Param } from '@nestjs/common';
+import { Controller, Delete, Get, HttpCode, HttpStatus, Logger, NotFoundException, Param } from '@nestjs/common';
 import { UserService } from './user.service';
 
 @Controller('/users')
@@ -10,21 +10,45 @@ export class UserController {
         this.userService = userService;
     }
 
+    /**
+     * Retrieve a list of all active users.
+     */
     @Get()
     public async getAll() {
         this.logger.log('Fetching all users');
         return await this.userService.getAll();
     }
 
-    @Get('/:user_id')
-    public async getById(@Param('user_id') userId: string) {
+    /**
+     * Retrieve a single user by their unique ID.
+     *
+     * @param userId the nanoid of the user.
+     * @returns The user object if found.
+     */
+    @Get('/:userId')
+    public async getById(@Param('userId') userId: string) {
         this.logger.log(`Fetching user with ID "${userId}"`);
         const byId = await this.userService.getById(userId);
 
         if (!byId) {
-            this.logger.warn(`User lookup failed: ID "${userId}" no found`);
+            this.logger.warn(`User lookup failed: ID "${userId}" not found`);
             throw new NotFoundException(`User with ID "${userId}" was not found`);
         }
         return byId;
+    }
+
+    /**
+     * Soft-deletes a user from the system. Marks the `removedAt` field with the current timestamp.
+     *
+     * @param userId The nanoid of the user to deactivate
+     */
+    @Delete('/:userId')
+    @HttpCode(HttpStatus.NO_CONTENT)
+    public async removeById(@Param('userId') userId: string) {
+        this.logger.log(`Initiating soft delete for user ID "${userId}"`);
+
+        await this.userService.removeById(userId);
+
+        this.logger.log(`User ID "${userId}" successfully marked as removed`);
     }
 }
