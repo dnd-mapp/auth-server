@@ -1,4 +1,4 @@
-import { Controller, Get, Logger, NotFoundException, Param } from '@nestjs/common';
+import { Controller, Delete, Get, HttpCode, HttpStatus, Logger, NotFoundException, Param } from '@nestjs/common';
 import { UserService } from './user.service';
 
 @Controller('/users')
@@ -35,5 +35,20 @@ export class UserController {
             throw new NotFoundException(`User with ID "${userId}" was not found`);
         }
         return byId;
+    }
+
+    /**
+     * Soft-deletes a user from the system. Marks the `removedAt` field with the current timestamp.
+     *
+     * @param userId The nanoid of the user to deactivate
+     */
+    @Delete('/:userId')
+    @HttpCode(HttpStatus.NO_CONTENT)
+    public async removeById(@Param('userId') userId: string) {
+        this.logger.log(`Initiating soft delete for user ID "${userId}"`);
+
+        await this.userService.removeById(userId);
+
+        this.logger.log(`User ID "${userId}" successfully marked as removed`);
     }
 }

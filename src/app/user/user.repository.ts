@@ -68,4 +68,20 @@ export class UserRepository {
         }
         return recordToUserDto(queryResult);
     }
+
+    public async softDeleteById(id: string) {
+        const { error } = await tryCatch(
+            this.databaseService.prisma.user.update({
+                where: { id: id },
+                data: { removedAt: new Date() },
+            })
+        );
+
+        if (error) {
+            this.logger.error(`Failed to perform soft delete for user with ID "${id}"`, error.stack);
+            throw new InternalServerErrorException('An unexpected error occurred while deactivating the user', {
+                cause: error,
+            });
+        }
+    }
 }
