@@ -32,11 +32,11 @@ export class UserRepository {
         this.databaseService = databaseService;
     }
 
-    public async findAll() {
+    public async findAll(queryParams?: GetUserQueryParams) {
         const { data: queryResult, error } = await tryCatch(
             this.databaseService.prisma.user.findMany({
                 select: { ...selectedUserAttributes },
-                where: { removedAt: null },
+                ...(queryParams?.includeDeactivated ? {} : { where: { removedAt: null } }),
             })
         );
 

@@ -1,7 +1,7 @@
-import { IsBooleanString, IsOptional } from 'class-validator';
+import { IsBoolean, IsOptional } from 'class-validator';
 
 export class GetUserQueryParams {
-    @IsBooleanString()
+    @IsBoolean()
     @IsOptional()
     includeDeactivated?: boolean;
 }

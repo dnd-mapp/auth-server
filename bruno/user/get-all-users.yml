@@ -6,6 +6,11 @@ info:
 http:
   method: GET
   url: "{{SERVER_URL}}/users"
+  params:
+    - name: includeDeactivated
+      value: "true"
+      type: query
+      disabled: true
   auth: inherit
 
 settings:
