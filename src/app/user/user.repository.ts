@@ -41,6 +41,7 @@ export class UserRepository {
             this.databaseService.prisma.user.findMany({
                 select: { ...selectedUserAttributes },
                 ...(queryParams?.includeDeactivated ? {} : { where: { deletedAt: null } }),
+                orderBy: { username: 'asc' },
             })
         );
 
