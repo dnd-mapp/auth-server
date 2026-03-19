@@ -1,6 +1,6 @@
 import { Prisma, PrismaClient, User as PrismaUser } from '@/prisma/client';
 import { tryCatch } from '@dnd-mapp/shared-utils';
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
 import { DatabaseService } from '../database';
 import { UserDto } from './dtos/user.dto';
 
@@ -41,8 +41,10 @@ export class UserRepository {
         );
 
         if (error) {
-            this.logger.error(`Database error fetching users: ${error.message}`, error.stack);
-            throw error;
+            this.logger.error(`Failed to fetch all users`, error.stack);
+            throw new InternalServerErrorException('An unexpected error occurred while retrieving users', {
+                cause: error,
+            });
         }
         return recordsToUserDtos(queryResult);
     }
@@ -56,8 +58,10 @@ export class UserRepository {
         );
 
         if (error) {
-            this.logger.error(`Database error fetching user with ID "${id}": ${error.message}`, error.stack);
-            throw error;
+            this.logger.error(`Failed to fetch user with ID "${id}"`, error.stack);
+            throw new InternalServerErrorException('An unexpected error occurred while retrieving the user record', {
+                cause: error,
+            });
         }
         if (!queryResult) {
             return null;
