@@ -9,6 +9,7 @@ export function recordToUserDto(record: PrismaUser) {
 
     dto.id = record.id;
     dto.username = record.username;
+    dto.removedAt = record.removedAt;
     return dto;
 }
 
@@ -19,6 +20,7 @@ export function recordsToUserDtos(records: PrismaUser[]) {
 export const selectedUserAttributes: Prisma.UserSelect = {
     id: true,
     username: true,
+    removedAt: true,
 };
 
 @Injectable()

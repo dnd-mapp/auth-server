@@ -1,5 +1,5 @@
-import { IsNotEmpty, IsString, MinLength } from 'class-validator';
 import { User } from '@/auth-domain';
+import { IsDate, IsNotEmpty, IsString, MinLength } from 'class-validator';
 
 export class UserDto implements User {
     /**
@@ -18,4 +18,11 @@ export class UserDto implements User {
     @IsNotEmpty()
     @IsString()
     public username!: string;
+
+    /**
+     * The timestamp when the user was soft-deleted. If null, the user is considered active.
+     * @example "2024-03-19T09:00:00.000Z"
+     */
+    @IsDate()
+    public removedAt!: Date | null;
 }
