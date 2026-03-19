@@ -2,7 +2,7 @@ import { Prisma, PrismaClient, User as PrismaUser } from '@/prisma/client';
 import { tryCatch } from '@dnd-mapp/shared-utils';
 import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
 import { DatabaseService } from '../database';
-import { GetUserQueryParams, UpdateUserDto, UserDto } from './dtos';
+import { CreateUserDto, GetUserQueryParams, UpdateUserDto, UserDto } from './dtos';
 
 export function recordToUserDto(record: PrismaUser) {
     const dto = new UserDto();
@@ -41,6 +41,7 @@ export class UserRepository {
             this.databaseService.prisma.user.findMany({
                 select: { ...selectedUserAttributes },
                 ...(queryParams?.includeDeactivated ? {} : { where: { deletedAt: null } }),
+                orderBy: { username: 'asc' },
             })
         );
 
@@ -96,7 +97,7 @@ export class UserRepository {
     public async update(id: string, data: UpdateUserDto) {
         const { username } = data;
 
-        const { data: queryResult, error } = await tryCatch(
+        const { data: updated, error } = await tryCatch(
             this.databaseService.prisma.user.update({
                 select: { ...selectedUserAttributes },
                 where: { id: id },
@@ -112,7 +113,28 @@ export class UserRepository {
                 cause: error,
             });
         }
-        return recordToUserDto(queryResult);
+        return recordToUserDto(updated);
+    }
+
+    public async create(data: CreateUserDto) {
+        const { username } = data;
+
+        const { data: created, error } = await tryCatch(
+            this.databaseService.prisma.user.create({
+                select: { ...selectedUserAttributes },
+                data: {
+                    username: username,
+                },
+            })
+        );
+
+        if (error) {
+            this.logger.error(`Failed to create database record for username "${username}"`, error.stack);
+            throw new InternalServerErrorException('An unexpected error occurred while creating the user record', {
+                cause: error,
+            });
+        }
+        return recordToUserDto(created);
     }
 
     public async softDeleteById(id: string) {
