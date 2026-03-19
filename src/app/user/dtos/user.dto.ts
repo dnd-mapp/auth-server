@@ -1,6 +1,7 @@
 import { IsNotEmpty, IsString, MinLength } from 'class-validator';
+import { User } from '@/auth-domain';
 
-export class UserDto {
+export class UserDto implements User {
     /**
      * The unique identifier for the user
      * @example '6uP8yIBni7G_SMObi1bUw'
