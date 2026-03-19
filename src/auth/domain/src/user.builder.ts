@@ -6,10 +6,13 @@ export class UserBuilder {
 
     constructor() {
         const id = nanoid();
+        const timestamp = new Date();
 
         this.user = {
             id: id,
             username: `user-${id}`,
+            createdAt: timestamp,
+            updatedAt: timestamp,
             removedAt: null,
         };
     }
@@ -25,6 +28,16 @@ export class UserBuilder {
 
     public withUsername(username: string) {
         this.user.username = username;
+        return this;
+    }
+
+    public withCreatedAt(timestamp: Date) {
+        this.user.createdAt = timestamp;
+        return this;
+    }
+
+    public withUpdatedAt(timestamp: Date) {
+        this.user.updatedAt = timestamp;
         return this;
     }
 

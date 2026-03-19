@@ -9,7 +9,9 @@ export function recordToUserDto(record: PrismaUser) {
 
     dto.id = record.id;
     dto.username = record.username;
-    dto.removedAt = record.removedAt;
+    dto.createdAt = record.createdAt;
+    dto.updatedAt = record.updatedAt;
+    dto.removedAt = record.deletedAt;
     return dto;
 }
 
@@ -20,7 +22,9 @@ export function recordsToUserDtos(records: PrismaUser[]) {
 export const selectedUserAttributes: Prisma.UserSelect = {
     id: true,
     username: true,
-    removedAt: true,
+    createdAt: true,
+    updatedAt: true,
+    deletedAt: true,
 };
 
 @Injectable()
@@ -36,7 +40,7 @@ export class UserRepository {
         const { data: queryResult, error } = await tryCatch(
             this.databaseService.prisma.user.findMany({
                 select: { ...selectedUserAttributes },
-                ...(queryParams?.includeDeactivated ? {} : { where: { removedAt: null } }),
+                ...(queryParams?.includeDeactivated ? {} : { where: { deletedAt: null } }),
             })
         );
 
@@ -53,7 +57,7 @@ export class UserRepository {
         const { data: queryResult, error } = await tryCatch(
             this.databaseService.prisma.user.findUnique({
                 select: { ...selectedUserAttributes },
-                where: { id: id, ...(params?.includeDeactivated ? {} : { removedAt: null }) },
+                where: { id: id, ...(params?.includeDeactivated ? {} : { deletedAt: null }) },
             })
         );
 
@@ -73,7 +77,7 @@ export class UserRepository {
         const { error } = await tryCatch(
             this.databaseService.prisma.user.update({
                 where: { id: id },
-                data: { removedAt: new Date() },
+                data: { deletedAt: new Date() },
             })
         );
 
