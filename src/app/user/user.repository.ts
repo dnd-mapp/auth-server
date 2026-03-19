@@ -2,14 +2,16 @@ import { Prisma, PrismaClient, User as PrismaUser } from '@/prisma/client';
 import { tryCatch } from '@dnd-mapp/shared-utils';
 import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
 import { DatabaseService } from '../database';
-import { GetUserQueryParams, UserDto } from './dtos';
+import { GetUserQueryParams, UpdateUserDto, UserDto } from './dtos';
 
 export function recordToUserDto(record: PrismaUser) {
     const dto = new UserDto();
 
     dto.id = record.id;
     dto.username = record.username;
-    dto.removedAt = record.removedAt;
+    dto.createdAt = record.createdAt;
+    dto.updatedAt = record.updatedAt;
+    dto.removedAt = record.deletedAt;
     return dto;
 }
 
@@ -20,7 +22,9 @@ export function recordsToUserDtos(records: PrismaUser[]) {
 export const selectedUserAttributes: Prisma.UserSelect = {
     id: true,
     username: true,
-    removedAt: true,
+    createdAt: true,
+    updatedAt: true,
+    deletedAt: true,
 };
 
 @Injectable()
@@ -36,7 +40,7 @@ export class UserRepository {
         const { data: queryResult, error } = await tryCatch(
             this.databaseService.prisma.user.findMany({
                 select: { ...selectedUserAttributes },
-                ...(queryParams?.includeDeactivated ? {} : { where: { removedAt: null } }),
+                ...(queryParams?.includeDeactivated ? {} : { where: { deletedAt: null } }),
             })
         );
 
@@ -53,7 +57,7 @@ export class UserRepository {
         const { data: queryResult, error } = await tryCatch(
             this.databaseService.prisma.user.findUnique({
                 select: { ...selectedUserAttributes },
-                where: { id: id, ...(params?.includeDeactivated ? {} : { removedAt: null }) },
+                where: { id: id, ...(params?.includeDeactivated ? {} : { deletedAt: null }) },
             })
         );
 
@@ -69,11 +73,53 @@ export class UserRepository {
         return recordToUserDto(queryResult);
     }
 
+    public async findByUsername(username: string) {
+        const { data: queryResult, error } = await tryCatch(
+            this.databaseService.prisma.user.findUnique({
+                select: { ...selectedUserAttributes },
+                where: { username: username },
+            })
+        );
+
+        if (error) {
+            this.logger.error(`Failed to fetch user with username "${username}"`, error.stack);
+            throw new InternalServerErrorException('An unexpected error occurred while retrieving the user record', {
+                cause: error,
+            });
+        }
+        if (!queryResult) {
+            return null;
+        }
+        return recordToUserDto(queryResult);
+    }
+
+    public async update(id: string, data: UpdateUserDto) {
+        const { username } = data;
+
+        const { data: queryResult, error } = await tryCatch(
+            this.databaseService.prisma.user.update({
+                select: { ...selectedUserAttributes },
+                where: { id: id },
+                data: {
+                    username: username,
+                },
+            })
+        );
+
+        if (error) {
+            this.logger.error(`Failed to update database record for user ID "${id}"`, error.stack);
+            throw new InternalServerErrorException('An unexpected error occurred while updating the user record', {
+                cause: error,
+            });
+        }
+        return recordToUserDto(queryResult);
+    }
+
     public async softDeleteById(id: string) {
         const { error } = await tryCatch(
             this.databaseService.prisma.user.update({
                 where: { id: id },
-                data: { removedAt: new Date() },
+                data: { deletedAt: new Date() },
             })
         );
 

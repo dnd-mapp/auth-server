@@ -1,5 +1,17 @@
-import { Controller, Delete, Get, HttpCode, HttpStatus, Logger, NotFoundException, Param, Query } from '@nestjs/common';
-import { GetUserQueryParams } from './dtos';
+import {
+    Body,
+    Controller,
+    Delete,
+    Get,
+    HttpCode,
+    HttpStatus,
+    Logger,
+    NotFoundException,
+    Param,
+    Put,
+    Query,
+} from '@nestjs/common';
+import { GetUserQueryParams, UpdateUserDto, UserDto } from './dtos';
 import { UserService } from './user.service';
 
 @Controller('/users')
@@ -22,7 +34,7 @@ export class UserController {
      * @throws {500} If the database query fails.
      */
     @Get()
-    public async getAll(@Query() queryParams?: GetUserQueryParams) {
+    public async getAll(@Query() queryParams?: GetUserQueryParams): Promise<UserDto[]> {
         this.logger.log('Fetching all users');
         return await this.userService.getAll(queryParams);
     }
@@ -40,7 +52,7 @@ export class UserController {
      * @throws {500} If the database query fails.
      */
     @Get('/:userId')
-    public async getById(@Param('userId') userId: string, @Query() queryParams?: GetUserQueryParams) {
+    public async getById(@Param('userId') userId: string, @Query() queryParams?: GetUserQueryParams): Promise<UserDto> {
         this.logger.log(`Fetching user with ID "${userId}"`);
         const byId = await this.userService.getById(userId, queryParams);
 
@@ -49,6 +61,26 @@ export class UserController {
             throw new NotFoundException(`User with ID "${userId}" was not found`);
         }
         return byId;
+    }
+
+    /**
+     * Update an existing user's details.
+     *
+     * @remarks Modifies user information based on the provided ID.
+     * Validates that the username is not already taken by another user.
+     *
+     * @param userId The unique nanoid of the user.
+     * @param data The updated user data (e.g., username).
+     * @returns The updated user record.
+     * @throws {404} If the user does not exist or is soft-deleted.
+     * @throws {409} If the new username is already in use by another account.
+     * @throws {500} If the database update fails.
+     */
+    @Put('/:userId')
+    public async updateById(@Param('userId') userId: string, @Body() data: UpdateUserDto): Promise<UserDto> {
+        this.logger.log(`Request to update user with ID "${userId}"`);
+
+        return await this.userService.update(userId, data);
     }
 
     /**
@@ -63,7 +95,7 @@ export class UserController {
      */
     @Delete('/:userId')
     @HttpCode(HttpStatus.NO_CONTENT)
-    public async removeById(@Param('userId') userId: string) {
+    public async removeById(@Param('userId') userId: string): Promise<void> {
         this.logger.log(`Initiating soft delete for user ID "${userId}"`);
 
         await this.userService.removeById(userId);
@@ -83,7 +115,7 @@ export class UserController {
      */
     @Delete('/:userId/purge')
     @HttpCode(HttpStatus.NO_CONTENT)
-    public async purgeById(@Param('userId') userId: string) {
+    public async purgeById(@Param('userId') userId: string): Promise<void> {
         this.logger.log(`Initiating purge for user ID "${userId}"`);
 
         await this.userService.purgeById(userId);

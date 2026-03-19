@@ -20,6 +20,20 @@ export class UserDto implements User {
     public username!: string;
 
     /**
+     * The timestamp when the user record was first created.
+     * @example "2024-03-19T09:00:00.000Z"
+     */
+    @IsDate()
+    public createdAt!: Date;
+
+    /**
+     * The timestamp when the user record was last modified.
+     * @example "2024-03-20T14:30:00.000Z"
+     */
+    @IsDate()
+    public updatedAt!: Date;
+
+    /**
      * The timestamp when the user was soft-deleted. If null, the user is considered active.
      * @example "2024-03-19T09:00:00.000Z"
      */
