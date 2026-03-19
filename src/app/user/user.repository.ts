@@ -36,6 +36,7 @@ export class UserRepository {
         const { data: queryResult, error } = await tryCatch(
             this.databaseService.prisma.user.findMany({
                 select: { ...selectedUserAttributes },
+                where: { removedAt: null },
             })
         );
 
