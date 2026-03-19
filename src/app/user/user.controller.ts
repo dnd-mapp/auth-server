@@ -31,7 +31,7 @@ export class UserController {
         const byId = await this.userService.getById(userId);
 
         if (!byId) {
-            this.logger.warn(`User lookup failed: ID "${userId}" no found`);
+            this.logger.warn(`User lookup failed: ID "${userId}" not found`);
             throw new NotFoundException(`User with ID "${userId}" was not found`);
         }
         return byId;
