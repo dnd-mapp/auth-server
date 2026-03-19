@@ -4,7 +4,7 @@ import { ConfigService } from '@nestjs/config';
 import { Test } from '@nestjs/testing';
 import { nanoid } from 'nanoid';
 import { DatabaseModule, DatabaseService } from '../database';
-import { UserDto } from './dtos/user.dto';
+import { UserDto } from './dtos';
 import { UserModule } from './user.module';
 import { UserRepository } from './user.repository';
 
