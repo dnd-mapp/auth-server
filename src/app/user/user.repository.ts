@@ -2,7 +2,7 @@ import { Prisma, PrismaClient, User as PrismaUser } from '@/prisma/client';
 import { tryCatch } from '@dnd-mapp/shared-utils';
 import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
 import { DatabaseService } from '../database';
-import { GetUserQueryParams, UserDto } from './dtos';
+import { GetUserQueryParams, UpdateUserDto, UserDto } from './dtos';
 
 export function recordToUserDto(record: PrismaUser) {
     const dto = new UserDto();
@@ -69,6 +69,48 @@ export class UserRepository {
         }
         if (!queryResult) {
             return null;
+        }
+        return recordToUserDto(queryResult);
+    }
+
+    public async findByUsername(username: string) {
+        const { data: queryResult, error } = await tryCatch(
+            this.databaseService.prisma.user.findUnique({
+                select: { ...selectedUserAttributes },
+                where: { username: username },
+            })
+        );
+
+        if (error) {
+            this.logger.error(`Failed to fetch user with username "${username}"`, error.stack);
+            throw new InternalServerErrorException('An unexpected error occurred while retrieving the user record', {
+                cause: error,
+            });
+        }
+        if (!queryResult) {
+            return null;
+        }
+        return recordToUserDto(queryResult);
+    }
+
+    public async update(id: string, data: UpdateUserDto) {
+        const { username } = data;
+
+        const { data: queryResult, error } = await tryCatch(
+            this.databaseService.prisma.user.update({
+                select: { ...selectedUserAttributes },
+                where: { id: id },
+                data: {
+                    username: username,
+                },
+            })
+        );
+
+        if (error) {
+            this.logger.error(`Failed to update database record for user ID "${id}"`, error.stack);
+            throw new InternalServerErrorException('An unexpected error occurred while updating the user record', {
+                cause: error,
+            });
         }
         return recordToUserDto(queryResult);
     }
