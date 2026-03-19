@@ -1,4 +1,5 @@
-import { Controller, Delete, Get, HttpCode, HttpStatus, Logger, NotFoundException, Param } from '@nestjs/common';
+import { Controller, Delete, Get, HttpCode, HttpStatus, Logger, NotFoundException, Param, Query } from '@nestjs/common';
+import { GetUserQueryParams } from './dtos';
 import { UserService } from './user.service';
 
 @Controller('/users')
@@ -11,24 +12,37 @@ export class UserController {
     }
 
     /**
-     * Retrieve a list of all active users.
+     * Retrieve a list of users.
+     *
+     * @remarks Fetches all users from the database. Can be filtered to include
+     * soft-deleted (deactivated) users via query parameters.
+     *
+     * @param queryParams Filtering options (e.g., includeDeactivated)
+     * @returns A list of user records.
+     * @throws {500} If the database query fails.
      */
     @Get()
-    public async getAll() {
+    public async getAll(@Query() queryParams?: GetUserQueryParams) {
         this.logger.log('Fetching all users');
-        return await this.userService.getAll();
+        return await this.userService.getAll(queryParams);
     }
 
     /**
-     * Retrieve a single user by their unique ID.
+     * Retrieve a single user by ID.
      *
-     * @param userId the nanoid of the user.
-     * @returns The user object if found.
+     * @remarks Finds a user record by its unique nanoid. Returns 404 if the user
+     * does not exist or is soft-deleted (unless specified otherwise).
+     *
+     * @param userId The unique nanoid of the user.
+     * @param queryParams Filtering options.
+     * @returns The user object.
+     * @throws {404} If no user is found with the provided ID.
+     * @throws {500} If the database query fails.
      */
     @Get('/:userId')
-    public async getById(@Param('userId') userId: string) {
+    public async getById(@Param('userId') userId: string, @Query() queryParams?: GetUserQueryParams) {
         this.logger.log(`Fetching user with ID "${userId}"`);
-        const byId = await this.userService.getById(userId);
+        const byId = await this.userService.getById(userId, queryParams);
 
         if (!byId) {
             this.logger.warn(`User lookup failed: ID "${userId}" not found`);
@@ -38,9 +52,14 @@ export class UserController {
     }
 
     /**
-     * Soft-deletes a user from the system. Marks the `removedAt` field with the current timestamp.
+     * Soft-delete a user.
      *
-     * @param userId The nanoid of the user to deactivate
+     * @remarks Deactivates a user by setting the `removedAt` timestamp.
+     * The record remains in the database but will be hidden from standard lookups.
+     *
+     * @param userId The unique nanoid of the user to deactivate.
+     * @throws {404} If the user does not exist or is already deleted.
+     * @throws {500} If the database query fails.
      */
     @Delete('/:userId')
     @HttpCode(HttpStatus.NO_CONTENT)
@@ -53,9 +72,14 @@ export class UserController {
     }
 
     /**
-     * Permanently removes a user from the database. This action is irreversible.
+     * Permanently purge a user.
      *
-     * @param userId The nanoid of the user to permanently remove.
+     * @remarks Irreversibly deletes a user record from the database.
+     * This action cannot be undone.
+     *
+     * @param userId The unique nanoid of the user to permanently remove.
+     * @throws {404} If the user does not exist.
+     * @throws {500} If the database query fails.
      */
     @Delete('/:userId/purge')
     @HttpCode(HttpStatus.NO_CONTENT)

@@ -21,4 +21,8 @@ export class MockPrisma implements PrismaLikeClient {
         await Promise.resolve();
         this.connected = false;
     }
+
+    public async $runCommandRaw(_command: unknown) {
+        return await Promise.resolve();
+    }
 }

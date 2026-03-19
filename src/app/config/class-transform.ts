@@ -15,7 +15,6 @@ export function configureGlobalValidation(app: NestFastifyApplication) {
                 enableImplicitConversion: true,
                 enableCircularCheck: true,
                 exposeDefaultValues: true,
-                excludeExtraneousValues: true,
             },
             transform: true,
             validateCustomDecorators: true,

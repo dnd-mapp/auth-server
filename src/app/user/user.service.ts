@@ -11,8 +11,8 @@ export class UserService {
         this.userRepository = userRepository;
     }
 
-    public async getAll() {
-        return await this.userRepository.findAll();
+    public async getAll(queryParams?: GetUserQueryParams) {
+        return await this.userRepository.findAll(queryParams);
     }
 
     public async getById(id: string, params?: GetUserQueryParams) {

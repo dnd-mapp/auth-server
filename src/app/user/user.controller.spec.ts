@@ -5,7 +5,7 @@ import { ConfigService } from '@nestjs/config';
 import { Test } from '@nestjs/testing';
 import { nanoid } from 'nanoid';
 import { DatabaseModule } from '../database';
-import { UserDto } from './dtos/user.dto';
+import { UserDto } from './dtos';
 import { UserController } from './user.controller';
 import { UserModule } from './user.module';
 
