@@ -23,13 +23,13 @@ export default defineConfig(
         },
     },
     {
-        files: ['*.ts', '*.mts', '*.cts'],
+        files: ['**/*.ts', '**/*.mts', '**/*.cts'],
         rules: {
             '@typescript-eslint/no-unused-vars': 'off',
         },
     },
     {
-        files: ['*.js', '*.mjs', '*.cjs'],
+        files: ['**/*.js', '**/*.mjs', '**/*.cjs'],
         rules: {},
     },
     eslintConfigPrettierFlat
