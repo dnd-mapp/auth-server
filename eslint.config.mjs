@@ -24,7 +24,9 @@ export default defineConfig(
     },
     {
         files: ['*.ts', '*.mts', '*.cts'],
-        rules: {},
+        rules: {
+            '@typescript-eslint/no-unused-vars': 'off',
+        },
     },
     {
         files: ['*.js', '*.mjs', '*.cjs'],
