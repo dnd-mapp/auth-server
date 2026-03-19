@@ -51,4 +51,19 @@ export class UserController {
 
         this.logger.log(`User ID "${userId}" successfully marked as removed`);
     }
+
+    /**
+     * Permanently removes a user from the database. This action is irreversible.
+     *
+     * @param userId The nanoid of the user to permanently remove.
+     */
+    @Delete('/:userId/purge')
+    @HttpCode(HttpStatus.NO_CONTENT)
+    public async purgeById(@Param('userId') userId: string) {
+        this.logger.log(`Initiating purge for user ID "${userId}"`);
+
+        await this.userService.purgeById(userId);
+
+        this.logger.log(`User ID "${userId}" successfully removed permanently`);
+    }
 }

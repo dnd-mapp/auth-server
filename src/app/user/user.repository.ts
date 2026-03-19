@@ -2,7 +2,7 @@ import { Prisma, PrismaClient, User as PrismaUser } from '@/prisma/client';
 import { tryCatch } from '@dnd-mapp/shared-utils';
 import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
 import { DatabaseService } from '../database';
-import { UserDto } from './dtos/user.dto';
+import { GetUserQueryParams, UserDto } from './dtos';
 
 export function recordToUserDto(record: PrismaUser) {
     const dto = new UserDto();
@@ -49,11 +49,11 @@ export class UserRepository {
         return recordsToUserDtos(queryResult);
     }
 
-    public async findById(id: string) {
+    public async findById(id: string, params?: GetUserQueryParams) {
         const { data: queryResult, error } = await tryCatch(
             this.databaseService.prisma.user.findUnique({
                 select: { ...selectedUserAttributes },
-                where: { id: id, removedAt: null },
+                where: { id: id, ...(params?.includeDeactivated ? {} : { removedAt: null }) },
             })
         );
 
@@ -80,6 +80,17 @@ export class UserRepository {
         if (error) {
             this.logger.error(`Failed to perform soft delete for user with ID "${id}"`, error.stack);
             throw new InternalServerErrorException('An unexpected error occurred while deactivating the user', {
+                cause: error,
+            });
+        }
+    }
+
+    public async purgeById(id: string) {
+        const { error } = await tryCatch(this.databaseService.prisma.user.delete({ where: { id: id } }));
+
+        if (error) {
+            this.logger.error(`Failed to permanently delete for user with ID "${id}"`, error.stack);
+            throw new InternalServerErrorException('An unexpected error occurred while permanently delete the user', {
                 cause: error,
             });
         }
