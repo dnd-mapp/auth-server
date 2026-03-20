@@ -29,7 +29,7 @@ model Permission {
     name String @unique(map: "uq_permission_name")
 
     createdAt DateTime @default(now()) @map(name: "created_at")
-    updateAt  DateTime @updatedAt @map(name: "updated_at")
+    updatedAt DateTime @updatedAt @map(name: "updated_at")
 
     @@map(name: "permissions")
 }
