@@ -1,2 +1,1 @@
-export * from './user.builder';
-export * from './user.model';
+export * from './user';
