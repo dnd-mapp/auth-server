@@ -36,6 +36,17 @@ async function createUsers() {
     console.log('Users created');
 }
 
+async function createRoles() {
+    console.log('Creating roles...');
+
+    await prisma.role.createMany({
+        data: [{ name: 'Super Admin' }, { name: 'Admin' }, { name: 'Player' }, { name: 'Dungeon Master' }],
+        skipDuplicates: true,
+    });
+
+    console.log('Roles created');
+}
+
 async function createPermissions() {
     console.log('Creating permissions...');
 
@@ -53,6 +64,10 @@ async function createPermissions() {
             { name: 'permissions:read:any' },
             { name: 'permissions:update:any' },
             { name: 'permissions:delete' },
+            { name: 'roles:create' },
+            { name: 'roles:read:any' },
+            { name: 'roles:update:any' },
+            { name: 'roles:delete' },
         ],
         skipDuplicates: true,
     });
@@ -64,6 +79,7 @@ export async function main() {
     console.log('Seeding database...');
 
     await createUsers();
+    await createRoles();
     await createPermissions();
 }
 
