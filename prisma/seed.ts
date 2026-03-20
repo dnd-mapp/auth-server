@@ -14,9 +14,9 @@ const adapter = new PrismaMariaDb({
 
 const prisma = new PrismaClient({ adapter: adapter });
 
-export async function main() {
-    console.log('Seeding database...');
+async function createUsers() {
     console.log('Creating users...');
+
     await prisma.user.createMany({
         data: [
             { username: 'CritHitWizard' },
@@ -34,6 +34,33 @@ export async function main() {
     });
 
     console.log('Users created');
+}
+
+async function createPermissions() {
+    console.log('Creating permissions...');
+
+    await prisma.permission.createMany({
+        data: [
+            { name: 'users:create' },
+            { name: 'users:read:any' },
+            { name: 'users:read:self' },
+            { name: 'users:update:any' },
+            { name: 'users:update:self' },
+            { name: 'users:delete' },
+            { name: 'users:purge' },
+            { name: 'users:restore' },
+        ],
+        skipDuplicates: true,
+    });
+
+    console.log('Permissions created');
+}
+
+export async function main() {
+    console.log('Seeding database...');
+
+    await createUsers();
+    await createPermissions();
 }
 
 main()
