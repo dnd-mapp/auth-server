@@ -6,6 +6,7 @@ import { configModuleOptions, provideAppThrottler, provideGlobalSerialization, t
 import { DatabaseModule } from './database';
 import { HealthModule } from './health/health.module';
 import { PermissionModule } from './permission';
+import { RoleModule } from './role';
 import { UserModule } from './user';
 
 @Module({
@@ -16,6 +17,7 @@ import { UserModule } from './user';
         DatabaseModule.forRoot(PrismaClient),
         UserModule,
         PermissionModule,
+        RoleModule,
     ],
     providers: [provideAppThrottler(), provideGlobalSerialization()],
 })
