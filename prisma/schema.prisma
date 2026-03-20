@@ -24,6 +24,16 @@ model User {
     @@map(name: "users")
 }
 
+model Role {
+    id   String @id @default(nanoid())
+    name String @unique(map: "uq_role_name")
+
+    createdAt DateTime @default(now()) @map(name: "created_at")
+    updatedAt DateTime @updatedAt @map(name: "updated_at")
+
+    @@map(name: "roles")
+}
+
 model Permission {
     id   String @id @default(nanoid())
     name String @unique(map: "uq_permission_name")
