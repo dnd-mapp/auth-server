@@ -49,6 +49,10 @@ async function createPermissions() {
             { name: 'users:delete' },
             { name: 'users:purge' },
             { name: 'users:restore' },
+            { name: 'permissions:create' },
+            { name: 'permissions:read:any' },
+            { name: 'permissions:update:any' },
+            { name: 'permissions:delete' },
         ],
         skipDuplicates: true,
     });
