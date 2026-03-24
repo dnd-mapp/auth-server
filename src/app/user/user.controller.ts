@@ -15,7 +15,7 @@ import {
 } from '@nestjs/common';
 import { type FastifyReply } from 'fastify';
 import { CreateUserDto, GetUserQueryParams, UpdateUserDto, UserDto } from './dtos';
-import { UserService } from './user.service';
+import { UserService } from './services';
 
 @Controller('/users')
 export class UserController {
