@@ -12,7 +12,7 @@ export class RoleDto implements Role {
 
     /**
      * The unique name of the role
-     * @example 'resource:write'
+     * @example 'Admin'
      */
     @MinLength(3)
     @IsNotEmpty()

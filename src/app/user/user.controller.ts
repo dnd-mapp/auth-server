@@ -14,16 +14,19 @@ import {
     Res,
 } from '@nestjs/common';
 import { type FastifyReply } from 'fastify';
+import { RoleDto } from '../role';
 import { CreateUserDto, GetUserQueryParams, UpdateUserDto, UserDto } from './dtos';
-import { UserService } from './services';
+import { UserRoleService, UserService } from './services';
 
 @Controller('/users')
 export class UserController {
     private readonly logger = new Logger(UserController.name);
     private readonly userService: UserService;
+    private readonly userRoleService: UserRoleService;
 
-    constructor(userService: UserService) {
+    constructor(userService: UserService, userRoleService: UserRoleService) {
         this.userService = userService;
+        this.userRoleService = userRoleService;
     }
 
     /**
@@ -150,5 +153,22 @@ export class UserController {
         await this.userService.purgeById(userId);
 
         this.logger.log(`User ID "${userId}" successfully removed permanently`);
+    }
+
+    /**
+     * Retrieve all roles assigned to a user.
+     *
+     * @remarks Fetches a collection of roles currently associated with the specified user ID.
+     *
+     * @param userId The unique nanoid of the user.
+     * @returns A list of roles assigned to the user.
+     * @throws {404} If the user does not exist.
+     * @throws {500} If the database query fails.
+     */
+    @Get('/:userId/roles')
+    public async getRolesForUser(@Param('userId') userId: string): Promise<RoleDto[]> {
+        this.logger.log(`Fetching all roles assigned to user ID "${userId}"`);
+
+        return await this.userRoleService.getAllRolesForUser(userId);
     }
 }

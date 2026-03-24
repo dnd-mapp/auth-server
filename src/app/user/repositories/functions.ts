@@ -2,14 +2,20 @@ import { Prisma } from '@/prisma/client';
 import { recordToRoleDto, selectedRoleAttributes } from '../../role';
 import { UserDto } from '../dtos';
 
+export const selectedUserRoleAttributes = {
+    role: {
+        select: {
+            ...selectedRoleAttributes,
+        },
+    },
+} satisfies Prisma.UserRoleSelect;
+
 export const selectedUserAttributes = {
     id: true,
     username: true,
     roles: {
         select: {
-            role: {
-                select: { ...selectedRoleAttributes },
-            },
+            ...selectedUserRoleAttributes,
         },
     },
     createdAt: true,

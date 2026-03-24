@@ -20,6 +20,10 @@ export class UserDto implements User {
     @IsString()
     public username!: string;
 
+    /**
+     * The roles currently assigned to the user.
+     * @example [{ id: '6uP8yIBni7G_SMObi1bUw', name: 'Admin' }]
+     */
     @ValidateNested({ each: true })
     @IsArray()
     public roles: RoleDto[] = [];
