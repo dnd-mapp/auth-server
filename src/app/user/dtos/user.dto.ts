@@ -1,5 +1,6 @@
 import { User } from '@/auth-domain';
-import { IsDate, IsNotEmpty, IsString, MinLength } from 'class-validator';
+import { IsArray, IsDate, IsNotEmpty, IsString, MinLength, ValidateNested } from 'class-validator';
+import { RoleDto } from '../../role';
 
 export class UserDto implements User {
     /**
@@ -18,6 +19,10 @@ export class UserDto implements User {
     @IsNotEmpty()
     @IsString()
     public username!: string;
+
+    @ValidateNested({ each: true })
+    @IsArray()
+    public roles: RoleDto[] = [];
 
     /**
      * The timestamp when the user record was first created.

@@ -1,5 +1,12 @@
 import { CreateUserData } from '@/auth-domain';
 import { PickType } from '@nestjs/swagger';
+import { ArrayMinSize, IsArray, IsNotEmpty, IsString } from 'class-validator';
 import { UserDto } from './user.dto';
 
-export class CreateUserDto extends PickType(UserDto, ['username']) implements CreateUserData {}
+export class CreateUserDto extends PickType(UserDto, ['username']) implements CreateUserData {
+    @IsNotEmpty({ each: true })
+    @IsString({ each: true })
+    @ArrayMinSize(1)
+    @IsArray()
+    public roles: string[] = [];
+}
