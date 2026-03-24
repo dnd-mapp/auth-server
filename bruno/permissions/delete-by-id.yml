@@ -1,0 +1,19 @@
+info:
+  name: delete-by-id
+  type: http
+  seq: 5
+
+http:
+  method: DELETE
+  url: "{{SERVER_URL}}/permissions/:permission_id"
+  params:
+    - name: permission_id
+      value: GYQrVW4TOQAFGjGmTtOrm
+      type: path
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
