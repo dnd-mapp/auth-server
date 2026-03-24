@@ -1,6 +1,6 @@
 import { ConflictException, Injectable, Logger, NotFoundException } from '@nestjs/common';
-import { CreateUserDto, GetUserQueryParams, UpdateUserDto } from './dtos';
-import { UserRepository } from './user.repository';
+import { CreateUserDto, GetUserQueryParams, UpdateUserDto } from '../dtos';
+import { UserRepository } from '../repositories';
 
 @Injectable()
 export class UserService {

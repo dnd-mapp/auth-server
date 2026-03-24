@@ -1,14 +1,14 @@
 info:
-  name: soft-remove-by-id
+  name: get-by-id
   type: http
-  seq: 6
+  seq: 2
 
 http:
-  method: DELETE
-  url: "{{SERVER_URL}}/users/:user_id"
+  method: GET
+  url: "{{SERVER_URL}}/permissions/:permission_id"
   params:
-    - name: user_id
-      value: WhBuArgL5YrhLtCq5PQXu
+    - name: permission_id
+      value: GYQrVW4TOQAFGjGmTtOrm
       type: path
   auth: inherit
 

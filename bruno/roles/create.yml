@@ -1,16 +1,16 @@
 info:
   name: create
   type: http
-  seq: 5
+  seq: 4
 
 http:
   method: POST
-  url: "{{SERVER_URL}}/users"
+  url: "{{SERVER_URL}}/roles"
   body:
     type: json
     data: |
       {
-        "username": "TheLegend27"
+        "name": "Test role"
       }
   auth: inherit
 

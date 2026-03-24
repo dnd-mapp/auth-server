@@ -1,16 +1,20 @@
 info:
-  name: create
+  name: update-by-id
   type: http
-  seq: 5
+  seq: 3
 
 http:
-  method: POST
-  url: "{{SERVER_URL}}/users"
+  method: PUT
+  url: "{{SERVER_URL}}/roles/:role_id"
+  params:
+    - name: role_id
+      value: ""
+      type: path
   body:
     type: json
     data: |
       {
-        "username": "TheLegend27"
+        "name": "Test role"
       }
   auth: inherit
 

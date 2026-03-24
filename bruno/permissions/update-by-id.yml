@@ -1,20 +1,20 @@
 info:
   name: update-by-id
   type: http
-  seq: 4
+  seq: 3
 
 http:
   method: PUT
-  url: "{{SERVER_URL}}/users/:userId"
+  url: "{{SERVER_URL}}/permissions/:permission_id"
   params:
-    - name: userId
-      value: WkKvABMjrZQZzL5IMqcD8
+    - name: permission_id
+      value: GYQrVW4TOQAFGjGmTtOrm
       type: path
   body:
     type: json
     data: |
       {
-        "username": "TheLegend27"
+        "name": "Test role"
       }
   auth: inherit
 

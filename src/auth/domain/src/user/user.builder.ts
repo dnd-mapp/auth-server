@@ -1,4 +1,5 @@
 import { nanoid } from 'nanoid';
+import { Role } from '../role';
 import { User } from './user.model';
 
 export class UserBuilder {
@@ -11,6 +12,7 @@ export class UserBuilder {
         this.user = {
             id: id,
             username: `user-${id}`,
+            roles: [],
             createdAt: timestamp,
             updatedAt: timestamp,
             removedAt: null,
@@ -28,6 +30,11 @@ export class UserBuilder {
 
     public withUsername(username: string) {
         this.user.username = username;
+        return this;
+    }
+
+    public withRoles(roles: Role[]) {
+        this.user.roles = roles;
         return this;
     }
 

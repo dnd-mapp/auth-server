@@ -1,4 +1,4 @@
 export * from './dtos';
+export { recordToRoleDto, recordsToRoleDtos, selectedRoleAttributes } from './repositories';
 export * from './role.module';
-export { recordToRoleDto, recordsToRoleDtos, selectedRoleAttributes } from './role.repository';
-export * from './role.service';
+export * from './services';

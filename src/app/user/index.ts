@@ -1,4 +1,4 @@
 export * from './dtos';
+export { recordToUserDto, recordsToUserDtos, selectedUserAttributes } from './repositories';
+export * from './services';
 export * from './user.module';
-export { recordToUserDto, recordsToUserDtos, selectedUserAttributes } from './user.repository';
-export * from './user.service';

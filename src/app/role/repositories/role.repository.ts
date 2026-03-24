@@ -1,29 +1,9 @@
-import { Prisma, PrismaClient, Role as PrismaRole } from '@/prisma/client';
+import { PrismaClient } from '@/prisma/client';
 import { tryCatch } from '@dnd-mapp/shared-utils';
 import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
-import { DatabaseService } from '../database';
-import { CreateRoleDto, RoleDto, UpdateRoleDto } from './dtos';
-
-export function recordToRoleDto(record: PrismaRole) {
-    const dto = new RoleDto();
-
-    dto.id = record.id;
-    dto.name = record.name;
-    dto.createdAt = record.createdAt;
-    dto.updatedAt = record.updatedAt;
-    return dto;
-}
-
-export function recordsToRoleDtos(records: PrismaRole[]) {
-    return records.map((record) => recordToRoleDto(record));
-}
-
-export const selectedRoleAttributes: Prisma.RoleSelect = {
-    id: true,
-    name: true,
-    createdAt: true,
-    updatedAt: true,
-};
+import { DatabaseService } from '../../database';
+import { CreateRoleDto, UpdateRoleDto } from '../dtos';
+import { recordsToRoleDtos, recordToRoleDto, selectedRoleAttributes } from './functions';
 
 @Injectable()
 export class RoleRepository {

@@ -2,14 +2,14 @@ import { MockConfigService, MockPrisma } from '@/test';
 import { Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Test } from '@nestjs/testing';
-import { DatabaseModule, DatabaseService } from '../database';
-import { RoleModule } from './role.module';
-import { RoleRepository } from './role.repository';
+import { DatabaseModule, DatabaseService } from '../../database';
+import { UserModule } from '../user.module';
+import { UserRoleRepository } from './user-role.repository';
 
-describe('RoleRepository', () => {
+describe('UserRoleRepository', () => {
     async function setupTest() {
         const module = await Test.createTestingModule({
-            imports: [DatabaseModule.forRoot(MockPrisma), RoleModule],
+            imports: [DatabaseModule.forRoot(MockPrisma), UserModule],
         })
             .overrideProvider(ConfigService)
             .useFactory({
@@ -22,7 +22,7 @@ describe('RoleRepository', () => {
         await module.init();
 
         return {
-            repository: module.get(RoleRepository),
+            repository: module.get(UserRoleRepository),
             databaseService: module.get(DatabaseService<MockPrisma>),
         };
     }

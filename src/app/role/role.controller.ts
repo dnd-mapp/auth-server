@@ -14,7 +14,7 @@ import {
 } from '@nestjs/common';
 import { type FastifyReply } from 'fastify';
 import { CreateRoleDto, RoleDto, UpdateRoleDto } from './dtos';
-import { RoleService } from './role.service';
+import { RoleService } from './services';
 
 @Controller('/roles')
 export class RoleController {

@@ -1,6 +1,6 @@
 import { ConflictException, Injectable, Logger, NotFoundException } from '@nestjs/common';
-import { CreateRoleDto, UpdateRoleDto } from './dtos';
-import { RoleRepository } from './role.repository';
+import { CreateRoleDto, UpdateRoleDto } from '../dtos';
+import { RoleRepository } from '../repositories';
 
 @Injectable()
 export class RoleService {

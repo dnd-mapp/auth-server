@@ -1,31 +1,9 @@
-import { Prisma, PrismaClient, User as PrismaUser } from '@/prisma/client';
+import { PrismaClient } from '@/prisma/client';
 import { tryCatch } from '@dnd-mapp/shared-utils';
 import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
-import { DatabaseService } from '../database';
-import { CreateUserDto, GetUserQueryParams, UpdateUserDto, UserDto } from './dtos';
-
-export function recordToUserDto(record: PrismaUser) {
-    const dto = new UserDto();
-
-    dto.id = record.id;
-    dto.username = record.username;
-    dto.createdAt = record.createdAt;
-    dto.updatedAt = record.updatedAt;
-    dto.removedAt = record.deletedAt;
-    return dto;
-}
-
-export function recordsToUserDtos(records: PrismaUser[]) {
-    return records.map((record) => recordToUserDto(record));
-}
-
-export const selectedUserAttributes: Prisma.UserSelect = {
-    id: true,
-    username: true,
-    createdAt: true,
-    updatedAt: true,
-    deletedAt: true,
-};
+import { DatabaseService } from '../../database';
+import { CreateUserDto, GetUserQueryParams, UpdateUserDto } from '../dtos';
+import { recordsToUserDtos, recordToUserDto, selectedUserAttributes } from './functions';
 
 @Injectable()
 export class UserRepository {

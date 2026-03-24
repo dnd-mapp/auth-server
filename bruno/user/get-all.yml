@@ -1,5 +1,5 @@
 info:
-  name: get-all-users
+  name: get-all
   type: http
   seq: 1
 

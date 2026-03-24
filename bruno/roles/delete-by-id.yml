@@ -1,14 +1,14 @@
 info:
-  name: soft-remove-by-id
+  name: delete-by-id
   type: http
-  seq: 6
+  seq: 5
 
 http:
   method: DELETE
-  url: "{{SERVER_URL}}/users/:user_id"
+  url: "{{SERVER_URL}}/roles/:role_id"
   params:
-    - name: user_id
-      value: WhBuArgL5YrhLtCq5PQXu
+    - name: role_id
+      value: 0LjTgU6BRi0XH5ywrfupq
       type: path
   auth: inherit
 
