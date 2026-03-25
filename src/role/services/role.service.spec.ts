@@ -1,30 +1,86 @@
-import { DatabaseModule } from '@/database';
-import { MockConfigService, MockPrisma } from '@/test';
-import { ConfigService } from '@nestjs/config';
-import { Test } from '@nestjs/testing';
-import { RoleModule } from '../role.module';
-import { RoleService } from './role.service';
+import { ConflictException, NotFoundException } from '@nestjs/common';
+import { nanoid } from 'nanoid';
+import { RoleDto } from '../dtos';
+import { seedRole, setupRoleTest } from '../test';
 
 describe('RoleService', () => {
-    async function setupTest() {
-        const module = await Test.createTestingModule({
-            imports: [DatabaseModule.forRoot(MockPrisma), RoleModule],
-        })
-            .overrideProvider(ConfigService)
-            .useFactory({
-                factory: () => new MockConfigService(),
-            })
-            .compile();
+    describe('getAll', () => {
+        it('should return all roles', async () => {
+            const { service } = await setupRoleTest();
+            expect(await service.getAll()).toHaveLength(1);
+        });
+    });
 
-        await module.init();
+    describe('getById', () => {
+        it('should return a RoleDto', async () => {
+            const { service } = await setupRoleTest();
+            expect(await service.getById(seedRole.id)).toBeInstanceOf(RoleDto);
+        });
 
-        return {
-            service: module.get(RoleService),
-        };
-    }
+        it('should return null for unknown ID', async () => {
+            const { service } = await setupRoleTest();
+            expect(await service.getById(nanoid())).toBeNull();
+        });
+    });
 
-    it('should create', async () => {
-        const { service } = await setupTest();
-        expect(service).toBeDefined();
+    describe('create', () => {
+        it('should return the created RoleDto', async () => {
+            const { service } = await setupRoleTest();
+            const result = await service.create({ name: 'moderator' });
+            expect(result).toBeInstanceOf(RoleDto);
+            expect(result.name).toBe('moderator');
+        });
+
+        it('should throw a ConflictException when name is taken', async () => {
+            const { service } = await setupRoleTest();
+            await expect(service.create({ name: seedRole.name })).rejects.toBeInstanceOf(ConflictException);
+        });
+    });
+
+    describe('update', () => {
+        it('should return the updated RoleDto', async () => {
+            const { service } = await setupRoleTest();
+            const result = await service.update(seedRole.id, { name: 'superadmin' });
+            expect(result).toBeInstanceOf(RoleDto);
+            expect(result.name).toBe('superadmin');
+        });
+
+        it('should throw a NotFoundException when not found', async () => {
+            const { service } = await setupRoleTest();
+            await expect(service.update(nanoid(), { name: 'superadmin' })).rejects.toBeInstanceOf(NotFoundException);
+        });
+
+        it('should throw a ConflictException when name is taken', async () => {
+            const { service } = await setupRoleTest();
+            await service.create({ name: 'other-role' });
+            await expect(service.update(seedRole.id, { name: 'other-role' })).rejects.toBeInstanceOf(ConflictException);
+        });
+    });
+
+    describe('removeById', () => {
+        it('should resolve', async () => {
+            const { service } = await setupRoleTest();
+            await expect(service.removeById(seedRole.id)).resolves.toBeUndefined();
+        });
+
+        it('should throw a NotFoundException when not found', async () => {
+            const { service } = await setupRoleTest();
+            await expect(service.removeById(nanoid())).rejects.toBeInstanceOf(NotFoundException);
+        });
+
+        it('should throw a ConflictException when role is assigned to users', async () => {
+            const { service, databaseService } = await setupRoleTest();
+            vi.spyOn(databaseService.prisma.user, 'findMany').mockResolvedValueOnce([
+                {
+                    id: 'some-user-id',
+                    username: 'SomeUser',
+                    roles: [],
+                    createdAt: new Date(),
+                    updatedAt: new Date(),
+                    deletedAt: null,
+                },
+            ] as unknown as Awaited<ReturnType<typeof databaseService.prisma.user.findMany>>);
+            await expect(service.removeById(seedRole.id)).rejects.toBeInstanceOf(ConflictException);
+        });
     });
 });

@@ -1,32 +1,73 @@
-import { DatabaseModule } from '@/database';
-import { MockConfigService, MockPrisma } from '@/test';
-import { ConfigService } from '@nestjs/config';
-import { Test } from '@nestjs/testing';
-import { PermissionController } from './permission.controller';
-import { PermissionModule } from './permission.module';
+import { ConflictException, NotFoundException } from '@nestjs/common';
+import { type FastifyReply } from 'fastify';
+import { nanoid } from 'nanoid';
+import { PermissionDto } from './dtos';
+import { seedPermission, setupPermissionTest } from './test';
+
+const mockResponse = { headers: vi.fn() } as unknown as FastifyReply;
 
 describe('PermissionController', () => {
-    async function setupTest() {
-        const module = await Test.createTestingModule({
-            imports: [DatabaseModule.forRoot(MockPrisma), PermissionModule],
-        })
-            .overrideProvider(ConfigService)
-            .useFactory({
-                factory: () => new MockConfigService(),
-            })
-            .compile();
+    describe('getAll', () => {
+        it('should return all permissions', async () => {
+            const { controller } = await setupPermissionTest();
+            expect(await controller.getAll()).toHaveLength(1);
+        });
+    });
 
-        module.useLogger(false);
+    describe('getById', () => {
+        it('should return a PermissionDto', async () => {
+            const { controller } = await setupPermissionTest();
+            expect(await controller.getById(seedPermission.id)).toBeInstanceOf(PermissionDto);
+        });
 
-        await module.init();
+        it('should throw a NotFoundException', async () => {
+            const { controller } = await setupPermissionTest();
+            await expect(controller.getById(nanoid())).rejects.toBeInstanceOf(NotFoundException);
+        });
+    });
 
-        return {
-            controller: module.get(PermissionController),
-        };
-    }
+    describe('create', () => {
+        it('should return the created PermissionDto', async () => {
+            const { controller } = await setupPermissionTest();
+            const result = await controller.create({ name: 'permission:write' }, mockResponse);
+            expect(result).toBeInstanceOf(PermissionDto);
+            expect(result.name).toBe('permission:write');
+        });
+    });
 
-    it('should create', async () => {
-        const { controller } = await setupTest();
-        expect(controller).toBeDefined();
+    describe('updateById', () => {
+        it('should return the updated PermissionDto', async () => {
+            const { controller } = await setupPermissionTest();
+            const result = await controller.updateById(seedPermission.id, { name: 'permission:updated' });
+            expect(result).toBeInstanceOf(PermissionDto);
+            expect(result.name).toBe('permission:updated');
+        });
+
+        it('should throw a NotFoundException', async () => {
+            const { controller } = await setupPermissionTest();
+            await expect(controller.updateById(nanoid(), { name: 'permission:updated' })).rejects.toBeInstanceOf(
+                NotFoundException
+            );
+        });
+
+        it('should throw a ConflictException', async () => {
+            const { controller } = await setupPermissionTest();
+            await controller.create({ name: 'permission:other' }, mockResponse);
+            await expect(controller.updateById(seedPermission.id, { name: 'permission:other' })).rejects.toBeInstanceOf(
+                ConflictException
+            );
+        });
+    });
+
+    describe('removeById', () => {
+        it('should resolve', async () => {
+            const { controller } = await setupPermissionTest();
+            await expect(controller.removeById(seedPermission.id)).resolves.toBeUndefined();
+        });
+
+        it('should throw a NotFoundException', async () => {
+            const { controller } = await setupPermissionTest();
+            await expect(controller.removeById(nanoid())).rejects.toBeInstanceOf(NotFoundException);
+        });
     });
 });
