@@ -1,5 +1,5 @@
-import { nanoid } from 'nanoid';
 import { Role } from '@/role/domain';
+import { nanoid } from 'nanoid';
 import { User } from './domain/user.model';
 
 export class UserBuilder {

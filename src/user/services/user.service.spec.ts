@@ -1,6 +1,6 @@
-import { theLegend27 } from '@/user/test';
 import { DatabaseModule } from '@/database';
 import { MockConfigService, MockPrisma } from '@/test';
+import { theLegend27 } from '@/user/test';
 import { ConfigService } from '@nestjs/config';
 import { Test } from '@nestjs/testing';
 import { UserDto } from '../dtos';
