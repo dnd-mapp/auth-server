@@ -1,4 +1,5 @@
 import { ConflictException, Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { UserRoleService } from '../../user';
 import { CreateRoleDto, UpdateRoleDto } from '../dtos';
 import { RoleRepository } from '../repositories';
 
@@ -6,34 +7,36 @@ import { RoleRepository } from '../repositories';
 export class RoleService {
     private readonly logger = new Logger(RoleService.name);
     private readonly roleRepository: RoleRepository;
+    private readonly userRoleService: UserRoleService;
 
-    constructor(roleRepository: RoleRepository) {
+    constructor(roleRepository: RoleRepository, userRoleService: UserRoleService) {
         this.roleRepository = roleRepository;
+        this.userRoleService = userRoleService;
     }
 
     public async getAll() {
         return await this.roleRepository.findAll();
     }
 
-    public async getById(id: string) {
-        return await this.roleRepository.findById(id);
+    public async getById(roleId: string) {
+        return await this.roleRepository.findById(roleId);
     }
 
-    public async update(id: string, data: UpdateRoleDto) {
-        const byId = await this.getById(id);
+    public async update(roleId: string, data: UpdateRoleDto) {
+        const byId = await this.getById(roleId);
         const { name } = data;
 
         if (byId === null) {
-            this.logger.warn(`Update failed: Role with ID "${id}" not found`);
-            throw new NotFoundException(`Role with ID "${id}" not found`);
+            this.logger.warn(`Update failed: Role with ID "${roleId}" not found`);
+            throw new NotFoundException(`Role with ID "${roleId}" not found`);
         }
-        if (await this.isNameTaken(name, id)) {
+        if (await this.isNameTaken(name, roleId)) {
             this.logger.warn(`Update failed: Role "${name}" is already taken`);
             throw new ConflictException(`Role "${name}" is already in use`);
         }
-        this.logger.log(`Updating role ID "${id}" with new data`);
+        this.logger.log(`Updating role ID "${roleId}" with new data`);
 
-        return await this.roleRepository.update(id, data);
+        return await this.roleRepository.update(roleId, data);
     }
 
     public async create(data: CreateRoleDto) {
@@ -48,14 +51,20 @@ export class RoleService {
         return await this.roleRepository.create(data);
     }
 
-    public async removeById(id: string) {
-        const byId = await this.getById(id);
+    public async removeById(roleId: string) {
+        const byId = await this.getById(roleId);
 
         if (byId == null) {
-            this.logger.warn(`Failed to delete role: No role found with ID "${id}"`);
-            throw new NotFoundException(`Role with ID "${id}" not found`);
+            this.logger.warn(`Failed to delete role: No role found with ID "${roleId}"`);
+            throw new NotFoundException(`Role with ID "${roleId}" not found`);
         }
-        await this.roleRepository.deleteById(id);
+        if (await this.userRoleService.isRoleAssignedToAnyUser(roleId)) {
+            this.logger.warn(`Failed to delete role: Role with ID "${roleId}" is still assigned to one or more users`);
+            throw new ConflictException(
+                `Role with ID "${roleId}" cannot be deleted because it is currently assigned to a user`
+            );
+        }
+        await this.roleRepository.deleteById(roleId);
     }
 
     private async getByName(name: string) {

@@ -3,7 +3,12 @@ import { tryCatch } from '@dnd-mapp/shared-utils';
 import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
 import { DatabaseService } from '../../database';
 import { recordToRoleDto } from '../../role';
-import { recordToUserRoleDto, selectedUserRoleAttributes } from './functions';
+import {
+    recordsToUserDtos,
+    recordToUserRoleDto,
+    selectedUserAttributes,
+    selectedUserRoleAttributes,
+} from './functions';
 
 @Injectable()
 export class UserRoleRepository {
@@ -52,6 +57,32 @@ export class UserRoleRepository {
             });
         }
         return queryResult.map(({ role }) => recordToRoleDto(role));
+    }
+
+    public async findAllUsersByRole(roleId: string) {
+        const { data: queryResult, error } = await tryCatch(
+            this.databaseService.prisma.user.findMany({
+                select: { ...selectedUserAttributes },
+                where: {
+                    roles: {
+                        some: {
+                            roleId: roleId,
+                        },
+                    },
+                },
+            })
+        );
+
+        if (error) {
+            this.logger.error(`Failed to fetch users for role ID "${roleId}"`, error.stack);
+            throw new InternalServerErrorException(
+                'An unexpected error occurred while retrieving users for role ID "${roleId}"',
+                {
+                    cause: error,
+                }
+            );
+        }
+        return recordsToUserDtos(queryResult);
     }
 
     public async assignRoleToUser(roleId: string, userId: string) {

@@ -1,4 +1,5 @@
-import { ConflictException, Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { isArrayEmpty } from '@dnd-mapp/shared-utils';
+import { ConflictException, forwardRef, Inject, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { RoleService } from '../../role';
 import { UserRoleRepository } from '../repositories';
 import { UserService } from './user.service';
@@ -10,7 +11,11 @@ export class UserRoleService {
     private readonly userService: UserService;
     private readonly roleService: RoleService;
 
-    constructor(userRoleRepository: UserRoleRepository, userService: UserService, roleService: RoleService) {
+    constructor(
+        userRoleRepository: UserRoleRepository,
+        userService: UserService,
+        @Inject(forwardRef(() => RoleService)) roleService: RoleService
+    ) {
         this.userRoleRepository = userRoleRepository;
         this.userService = userService;
         this.roleService = roleService;
@@ -44,6 +49,11 @@ export class UserRoleService {
             throw new ConflictException(`User already has the role "${roleId}" assigned.`);
         }
         return await this.userRoleRepository.assignRoleToUser(roleId, userId);
+    }
+
+    public async isRoleAssignedToAnyUser(roleId: string) {
+        const users = await this.userRoleRepository.findAllUsersByRole(roleId);
+        return !isArrayEmpty(users);
     }
 
     private async getRoleForUser(roleId: string, userId: string) {
