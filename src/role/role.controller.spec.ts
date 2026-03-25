@@ -1,32 +1,74 @@
-import { DatabaseModule } from '@/database';
-import { MockConfigService, MockPrisma } from '@/test';
-import { ConfigService } from '@nestjs/config';
-import { Test } from '@nestjs/testing';
-import { RoleController } from './role.controller';
-import { RoleModule } from './role.module';
+import { ConflictException, NotFoundException } from '@nestjs/common';
+import { type FastifyReply } from 'fastify';
+import { nanoid } from 'nanoid';
+import { RoleDto } from './dtos';
+import { seedRole, setupRoleTest } from './test';
+
+const mockResponse = { headers: vi.fn() } as unknown as FastifyReply;
 
 describe('RoleController', () => {
-    async function setupTest() {
-        const module = await Test.createTestingModule({
-            imports: [DatabaseModule.forRoot(MockPrisma), RoleModule],
-        })
-            .overrideProvider(ConfigService)
-            .useFactory({
-                factory: () => new MockConfigService(),
-            })
-            .compile();
+    describe('getAll', () => {
+        it('should return all roles', async () => {
+            const { controller } = await setupRoleTest();
+            expect(await controller.getAll()).toHaveLength(1);
+        });
+    });
 
-        module.useLogger(false);
+    describe('getById', () => {
+        it('should return a RoleDto', async () => {
+            const { controller } = await setupRoleTest();
+            expect(await controller.getById(seedRole.id)).toBeInstanceOf(RoleDto);
+        });
 
-        await module.init();
+        it('should throw a NotFoundException', async () => {
+            const { controller } = await setupRoleTest();
+            await expect(controller.getById(nanoid())).rejects.toBeInstanceOf(NotFoundException);
+        });
+    });
 
-        return {
-            controller: module.get(RoleController),
-        };
-    }
+    describe('create', () => {
+        it('should return the created RoleDto', async () => {
+            const { controller } = await setupRoleTest();
+            const result = await controller.create({ name: 'moderator' }, mockResponse);
+            expect(result).toBeInstanceOf(RoleDto);
+            expect(result.name).toBe('moderator');
+        });
+    });
 
-    it('should create', async () => {
-        const { controller } = await setupTest();
-        expect(controller).toBeDefined();
+    describe('updateById', () => {
+        it('should return the updated RoleDto', async () => {
+            const { controller } = await setupRoleTest();
+            const result = await controller.updateById(seedRole.id, { name: 'superadmin' });
+            expect(result).toBeInstanceOf(RoleDto);
+            expect(result.name).toBe('superadmin');
+        });
+
+        it('should throw a NotFoundException', async () => {
+            const { controller } = await setupRoleTest();
+            await expect(controller.updateById(nanoid(), { name: 'superadmin' })).rejects.toBeInstanceOf(
+                NotFoundException
+            );
+        });
+
+        it('should throw a ConflictException', async () => {
+            const { controller, roleDb } = await setupRoleTest();
+            roleDb.add('other-role');
+            await expect(controller.updateById(seedRole.id, { name: 'other-role' })).rejects.toBeInstanceOf(
+                ConflictException
+            );
+        });
+    });
+
+    describe('removeById', () => {
+        it('should resolve', async () => {
+            const { controller, roleDb } = await setupRoleTest();
+            const newRole = roleDb.add('some-role');
+            await expect(controller.removeById(newRole.id)).resolves.toBeUndefined();
+        });
+
+        it('should throw a NotFoundException', async () => {
+            const { controller } = await setupRoleTest();
+            await expect(controller.removeById(nanoid())).rejects.toBeInstanceOf(NotFoundException);
+        });
     });
 });

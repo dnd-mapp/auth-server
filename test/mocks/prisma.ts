@@ -1,12 +1,25 @@
 import { PrismaLikeClient } from '@/common';
+import { MockPermissionDB } from '@/permission/test';
+import { MockRoleDB } from '@/role/test';
+import { MockUserDB, MockUserRoleDB } from '@/user/test';
+import { MockPrismaPermissionDB } from './db/mock-prisma-permission.db';
+import { MockPrismaRoleDB } from './db/mock-prisma-role.db';
+import { MockPrismaUserRoleDB } from './db/mock-prisma-user-role.db';
 import { MockPrismaUserDB } from './db/mock-prisma-user.db';
 
 export class MockPrisma implements PrismaLikeClient {
     public connected = false;
-
     public options: Record<string, unknown>;
 
-    public user = new MockPrismaUserDB();
+    public readonly permissionDb = new MockPermissionDB();
+    public readonly roleDb = new MockRoleDB();
+    public readonly userRoleDb = new MockUserRoleDB();
+    public readonly userDb = new MockUserDB();
+
+    public permission = new MockPrismaPermissionDB(this.permissionDb);
+    public role = new MockPrismaRoleDB(this.roleDb);
+    public userRole = new MockPrismaUserRoleDB(this.userRoleDb, this.roleDb);
+    public user = new MockPrismaUserDB(this.userDb, this.userRoleDb);
 
     constructor(options: Record<string, unknown>) {
         this.options = options;

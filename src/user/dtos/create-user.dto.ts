@@ -12,5 +12,5 @@ export class CreateUserDto extends PickType(UserDto, ['username']) implements Cr
     @IsString({ each: true })
     @ArrayMinSize(1)
     @IsArray()
-    public roleIds: string[] = [];
+    public roleIds!: string[];
 }
