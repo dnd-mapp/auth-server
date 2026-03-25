@@ -180,7 +180,7 @@ We use **Vitest** for unit and integration testing.
 - **Run tests (CI):**
 
   ```bash
-  pnpm test:ci
+  pnpm test
   ```
 
 - **Development mode (UI/Watch):**
