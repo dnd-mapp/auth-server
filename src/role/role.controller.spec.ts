@@ -51,8 +51,8 @@ describe('RoleController', () => {
         });
 
         it('should throw a ConflictException', async () => {
-            const { controller } = await setupRoleTest();
-            await controller.create({ name: 'other-role' }, mockResponse);
+            const { controller, roleDb } = await setupRoleTest();
+            roleDb.add('other-role');
             await expect(controller.updateById(seedRole.id, { name: 'other-role' })).rejects.toBeInstanceOf(
                 ConflictException
             );
@@ -61,8 +61,9 @@ describe('RoleController', () => {
 
     describe('removeById', () => {
         it('should resolve', async () => {
-            const { controller } = await setupRoleTest();
-            await expect(controller.removeById(seedRole.id)).resolves.toBeUndefined();
+            const { controller, roleDb } = await setupRoleTest();
+            const newRole = roleDb.add('some-role');
+            await expect(controller.removeById(newRole.id)).resolves.toBeUndefined();
         });
 
         it('should throw a NotFoundException', async () => {

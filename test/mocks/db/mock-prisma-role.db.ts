@@ -11,6 +11,7 @@ export class MockPrismaRoleDB {
     public async findUnique(params: { where: { id?: string; name?: string } }) {
         const { where } = params;
         let result = null;
+
         if (where.id !== undefined) {
             result = this.db.getById(where.id);
         } else if (where.name !== undefined) {

@@ -38,15 +38,18 @@ export class MockPermissionDB {
     public add(name: string): PermissionRecord {
         const now = new Date();
         const record: PermissionRecord = { id: nanoid(), name, createdAt: now, updatedAt: now };
+
         this.permissions[record.id] = record;
         return record;
     }
 
     public update(id: string, name: string): PermissionRecord | null {
         const record = this.permissions[id];
+
         if (!record) return null;
         record.name = name;
         record.updatedAt = new Date();
+
         return record;
     }
 

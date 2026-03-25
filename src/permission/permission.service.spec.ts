@@ -53,8 +53,8 @@ describe('PermissionService', () => {
         });
 
         it('should throw a ConflictException when new name is taken', async () => {
-            const { service } = await setupPermissionTest();
-            await service.create({ name: 'permission:other' });
+            const { service, permissionDb } = await setupPermissionTest();
+            permissionDb.add('permission:other');
             await expect(service.update(seedPermission.id, { name: 'permission:other' })).rejects.toBeInstanceOf(
                 ConflictException
             );

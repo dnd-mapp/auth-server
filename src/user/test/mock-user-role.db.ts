@@ -1,10 +1,13 @@
+import { seedRole } from '../../role/test/mock-role.db';
+import { LEGEND_USER_ID } from './mock-user.db';
+
 interface UserRoleRecord {
     userId: string;
     roleId: string;
 }
 
 export class MockUserRoleDB {
-    private records: UserRoleRecord[] = [];
+    private records: UserRoleRecord[] = [{ userId: LEGEND_USER_ID, roleId: seedRole.id }];
 
     public getForUser(userId: string): UserRoleRecord[] {
         return this.records.filter((r) => r.userId === userId);
@@ -20,6 +23,7 @@ export class MockUserRoleDB {
 
     public add(userId: string, roleId: string): UserRoleRecord {
         const record: UserRoleRecord = { userId, roleId };
+
         this.records.push(record);
         return record;
     }

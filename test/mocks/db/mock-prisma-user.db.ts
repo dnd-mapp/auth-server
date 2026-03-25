@@ -37,6 +37,7 @@ export class MockPrismaUserDB {
             users = users.filter((u) => u.deletedAt === null);
         }
         const roleId = params?.where?.roles?.some?.roleId;
+
         if (roleId !== undefined) {
             const userIds = new Set(this.userRoleDb.getForRole(roleId).map((r) => r.userId));
             users = users.filter((u) => userIds.has(u.id));
@@ -50,6 +51,7 @@ export class MockPrismaUserDB {
 
         if (where.id !== undefined) {
             record = this.db.getById(where.id);
+
             if (record && where.deletedAt === null && record.deletedAt !== null) {
                 record = null;
             }
@@ -66,12 +68,14 @@ export class MockPrismaUserDB {
 
     public async update(params: { where: { id: string }; data: { username?: string; deletedAt?: Date } }) {
         const { where, data } = params;
+
         if (data.deletedAt !== undefined) {
             this.db.softDelete(where.id);
         } else if (data.username !== undefined) {
             this.db.update(where.id, data.username);
         }
         const record = this.db.getById(where.id);
+
         return await Promise.resolve(record ? this.toPayload(record) : null);
     }
 

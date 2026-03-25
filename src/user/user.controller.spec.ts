@@ -58,8 +58,8 @@ describe('UserController', () => {
         });
 
         it('should throw a ConflictException when username is taken', async () => {
-            const { controller } = await setupUserTest();
-            await controller.create({ username: 'AnotherUser', roleIds: [seedRole.id] }, mockResponse);
+            const { controller, userDb } = await setupUserTest();
+            userDb.add('AnotherUser');
             await expect(controller.updateById(theLegend27.id, { username: 'AnotherUser' })).rejects.toBeInstanceOf(
                 ConflictException
             );
@@ -92,9 +92,9 @@ describe('UserController', () => {
     });
 
     describe('getRolesForUser', () => {
-        it('should return an empty RoleDto array initially', async () => {
+        it('should return 1 role initially (pre-seeded)', async () => {
             const { controller } = await setupUserTest();
-            expect(await controller.getRolesForUser(theLegend27.id)).toHaveLength(0);
+            expect(await controller.getRolesForUser(theLegend27.id)).toHaveLength(1);
         });
 
         it('should throw a NotFoundException when user not found', async () => {
@@ -105,8 +105,9 @@ describe('UserController', () => {
 
     describe('assignRoleToUser', () => {
         it('should return a UserRoleDto', async () => {
-            const { controller } = await setupUserTest();
-            const result = await controller.assignRoleToUser(theLegend27.id, seedRole.id);
+            const { controller, roleDb } = await setupUserTest();
+            const newRole = roleDb.add('editor');
+            const result = await controller.assignRoleToUser(theLegend27.id, newRole.id);
             expect(result).toBeInstanceOf(UserRoleDto);
         });
 
@@ -115,9 +116,15 @@ describe('UserController', () => {
             await expect(controller.assignRoleToUser(nanoid(), seedRole.id)).rejects.toBeInstanceOf(NotFoundException);
         });
 
+        it('should throw a NotFoundException when role not found', async () => {
+            const { controller } = await setupUserTest();
+            await expect(controller.assignRoleToUser(theLegend27.id, nanoid())).rejects.toBeInstanceOf(
+                NotFoundException
+            );
+        });
+
         it('should throw a ConflictException when role already assigned', async () => {
             const { controller } = await setupUserTest();
-            await controller.assignRoleToUser(theLegend27.id, seedRole.id);
             await expect(controller.assignRoleToUser(theLegend27.id, seedRole.id)).rejects.toBeInstanceOf(
                 ConflictException
             );

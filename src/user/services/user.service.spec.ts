@@ -54,8 +54,8 @@ describe('UserService', () => {
         });
 
         it('should throw a ConflictException when username is taken', async () => {
-            const { service } = await setupUserTest();
-            await service.create({ username: 'AnotherUser', roleIds: [seedRole.id] });
+            const { service, userDb } = await setupUserTest();
+            userDb.add('AnotherUser');
             await expect(service.update(theLegend27.id, { username: 'AnotherUser' })).rejects.toBeInstanceOf(
                 ConflictException
             );

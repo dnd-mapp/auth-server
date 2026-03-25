@@ -11,15 +11,15 @@ export class MockPrisma implements PrismaLikeClient {
     public connected = false;
     public options: Record<string, unknown>;
 
-    private readonly mockPermissionDB = new MockPermissionDB();
-    private readonly mockRoleDB = new MockRoleDB();
-    private readonly mockUserRoleDB = new MockUserRoleDB();
-    private readonly mockUserDB = new MockUserDB();
+    public readonly permissionDb = new MockPermissionDB();
+    public readonly roleDb = new MockRoleDB();
+    public readonly userRoleDb = new MockUserRoleDB();
+    public readonly userDb = new MockUserDB();
 
-    public permission = new MockPrismaPermissionDB(this.mockPermissionDB);
-    public role = new MockPrismaRoleDB(this.mockRoleDB);
-    public userRole = new MockPrismaUserRoleDB(this.mockUserRoleDB, this.mockRoleDB);
-    public user = new MockPrismaUserDB(this.mockUserDB, this.mockUserRoleDB);
+    public permission = new MockPrismaPermissionDB(this.permissionDb);
+    public role = new MockPrismaRoleDB(this.roleDb);
+    public userRole = new MockPrismaUserRoleDB(this.userRoleDb, this.roleDb);
+    public user = new MockPrismaUserDB(this.userDb, this.userRoleDb);
 
     constructor(options: Record<string, unknown>) {
         this.options = options;

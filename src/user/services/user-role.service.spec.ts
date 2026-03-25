@@ -6,9 +6,9 @@ import { setupUserTest, theLegend27 } from '../test';
 
 describe('UserRoleService', () => {
     describe('getAllRolesForUser', () => {
-        it('should return roles for user (empty initially)', async () => {
+        it('should return 1 role initially (pre-seeded)', async () => {
             const { userRoleService } = await setupUserTest();
-            expect(await userRoleService.getAllRolesForUser(theLegend27.id)).toHaveLength(0);
+            expect(await userRoleService.getAllRolesForUser(theLegend27.id)).toHaveLength(1);
         });
 
         it('should throw a NotFoundException when user not found', async () => {
@@ -19,11 +19,12 @@ describe('UserRoleService', () => {
 
     describe('assignRoleToUser', () => {
         it('should return a UserRoleDto', async () => {
-            const { userRoleService } = await setupUserTest();
-            const result = await userRoleService.assignRoleToUser(seedRole.id, theLegend27.id);
+            const { userRoleService, roleDb } = await setupUserTest();
+            const newRole = roleDb.add('editor');
+            const result = await userRoleService.assignRoleToUser(newRole.id, theLegend27.id);
             expect(result).toBeInstanceOf(UserRoleDto);
             expect(result.userId).toBe(theLegend27.id);
-            expect(result.roleId).toBe(seedRole.id);
+            expect(result.roleId).toBe(newRole.id);
         });
 
         it('should throw a NotFoundException when user not found', async () => {
@@ -42,7 +43,6 @@ describe('UserRoleService', () => {
 
         it('should throw a ConflictException when role already assigned', async () => {
             const { userRoleService } = await setupUserTest();
-            await userRoleService.assignRoleToUser(seedRole.id, theLegend27.id);
             await expect(userRoleService.assignRoleToUser(seedRole.id, theLegend27.id)).rejects.toBeInstanceOf(
                 ConflictException
             );
@@ -50,14 +50,14 @@ describe('UserRoleService', () => {
     });
 
     describe('isRoleAssignedToAnyUser', () => {
-        it('should return false initially', async () => {
-            const { userRoleService } = await setupUserTest();
-            expect(await userRoleService.isRoleAssignedToAnyUser(seedRole.id)).toBe(false);
+        it('should return false for a role not assigned to any user', async () => {
+            const { userRoleService, roleDb } = await setupUserTest();
+            const otherRole = roleDb.add('other');
+            expect(await userRoleService.isRoleAssignedToAnyUser(otherRole.id)).toBe(false);
         });
 
-        it('should return true after assigning', async () => {
+        it('should return true for the pre-seeded role assignment', async () => {
             const { userRoleService } = await setupUserTest();
-            await userRoleService.assignRoleToUser(seedRole.id, theLegend27.id);
             expect(await userRoleService.isRoleAssignedToAnyUser(seedRole.id)).toBe(true);
         });
     });

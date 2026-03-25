@@ -51,16 +51,17 @@ describe('RoleService', () => {
         });
 
         it('should throw a ConflictException when name is taken', async () => {
-            const { service } = await setupRoleTest();
-            await service.create({ name: 'other-role' });
+            const { service, roleDb } = await setupRoleTest();
+            roleDb.add('other-role');
             await expect(service.update(seedRole.id, { name: 'other-role' })).rejects.toBeInstanceOf(ConflictException);
         });
     });
 
     describe('removeById', () => {
         it('should resolve', async () => {
-            const { service } = await setupRoleTest();
-            await expect(service.removeById(seedRole.id)).resolves.toBeUndefined();
+            const { service, roleDb } = await setupRoleTest();
+            const newRole = roleDb.add('some-role');
+            await expect(service.removeById(newRole.id)).resolves.toBeUndefined();
         });
 
         it('should throw a NotFoundException when not found', async () => {
@@ -69,17 +70,7 @@ describe('RoleService', () => {
         });
 
         it('should throw a ConflictException when role is assigned to users', async () => {
-            const { service, databaseService } = await setupRoleTest();
-            vi.spyOn(databaseService.prisma.user, 'findMany').mockResolvedValueOnce([
-                {
-                    id: 'some-user-id',
-                    username: 'SomeUser',
-                    roles: [],
-                    createdAt: new Date(),
-                    updatedAt: new Date(),
-                    deletedAt: null,
-                },
-            ] as unknown as Awaited<ReturnType<typeof databaseService.prisma.user.findMany>>);
+            const { service } = await setupRoleTest();
             await expect(service.removeById(seedRole.id)).rejects.toBeInstanceOf(ConflictException);
         });
     });

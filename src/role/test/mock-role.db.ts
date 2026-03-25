@@ -38,15 +38,18 @@ export class MockRoleDB {
     public add(name: string): RoleRecord {
         const now = new Date();
         const record: RoleRecord = { id: nanoid(), name, createdAt: now, updatedAt: now };
+
         this.roles[record.id] = record;
         return record;
     }
 
     public update(id: string, name: string): RoleRecord | null {
         const record = this.roles[id];
+
         if (!record) return null;
         record.name = name;
         record.updatedAt = new Date();
+
         return record;
     }
 

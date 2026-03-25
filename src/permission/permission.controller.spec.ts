@@ -51,8 +51,8 @@ describe('PermissionController', () => {
         });
 
         it('should throw a ConflictException', async () => {
-            const { controller } = await setupPermissionTest();
-            await controller.create({ name: 'permission:other' }, mockResponse);
+            const { controller, permissionDb } = await setupPermissionTest();
+            permissionDb.add('permission:other');
             await expect(controller.updateById(seedPermission.id, { name: 'permission:other' })).rejects.toBeInstanceOf(
                 ConflictException
             );
