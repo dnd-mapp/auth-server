@@ -1,4 +1,4 @@
-import { UpdateUserData } from '@/auth-domain';
+import { UpdateUserData } from '@/user/domain';
 import { PickType } from '@nestjs/swagger';
 import { UserDto } from './user.dto';
 

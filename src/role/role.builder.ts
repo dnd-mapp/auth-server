@@ -1,42 +1,42 @@
 import { nanoid } from 'nanoid';
-import { Permission } from './permission.model';
+import { Role } from './domain/role.model';
 
-export class PermissionBuilder {
-    private readonly permission: Permission;
+export class RoleBuilder {
+    private readonly role: Role;
 
     constructor() {
         const id = nanoid();
         const timestamp = new Date();
 
-        this.permission = {
+        this.role = {
             id: id,
-            name: `permission-${id}:create`,
+            name: `role-${id}`,
             createdAt: timestamp,
             updatedAt: timestamp,
         };
     }
 
     public build() {
-        return this.permission;
+        return this.role;
     }
 
     public withId(id: string) {
-        this.permission.id = id;
+        this.role.id = id;
         return this;
     }
 
     public withName(name: string) {
-        this.permission.name = name;
+        this.role.name = name;
         return this;
     }
 
     public withCreatedAt(timestamp: Date) {
-        this.permission.createdAt = timestamp;
+        this.role.createdAt = timestamp;
         return this;
     }
 
     public withUpdatedAt(timestamp: Date) {
-        this.permission.updatedAt = timestamp;
+        this.role.updatedAt = timestamp;
         return this;
     }
 }

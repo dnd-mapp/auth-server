@@ -1,4 +1,4 @@
-import { CreateUserData } from '@/auth-domain';
+import { CreateUserData } from '@/user/domain';
 import { PickType } from '@nestjs/swagger';
 import { ArrayMinSize, IsArray, IsNotEmpty, IsString } from 'class-validator';
 import { UserDto } from './user.dto';

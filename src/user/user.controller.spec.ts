@@ -1,6 +1,6 @@
-import { theLegend27 } from '@/auth-domain/test';
 import { DatabaseModule } from '@/database';
 import { MockConfigService, MockPrisma } from '@/test';
+import { theLegend27 } from '@/user/test';
 import { NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Test } from '@nestjs/testing';

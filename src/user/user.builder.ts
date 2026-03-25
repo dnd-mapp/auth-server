@@ -1,6 +1,6 @@
+import { Role } from '@/role/domain';
 import { nanoid } from 'nanoid';
-import { Role } from '../role';
-import { User } from './user.model';
+import { User } from './domain/user.model';
 
 export class UserBuilder {
     private readonly user: User;

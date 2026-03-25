@@ -1,4 +1,4 @@
-import { Role } from '@/auth-domain';
+import { Role } from '@/role/domain';
 import { IsDate, IsNotEmpty, IsString, MinLength } from 'class-validator';
 
 export class RoleDto implements Role {

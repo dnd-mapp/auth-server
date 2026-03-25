@@ -1,4 +1,4 @@
-import { UpdatePermissionData } from '@/auth-domain';
+import { UpdatePermissionData } from '@/permission/domain';
 import { PickType } from '@nestjs/swagger';
 import { PermissionDto } from './permission.dto';
 

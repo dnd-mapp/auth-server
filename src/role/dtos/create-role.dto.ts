@@ -1,4 +1,4 @@
-import { CreateRoleData } from '@/auth-domain';
+import { CreateRoleData } from '@/role/domain';
 import { PickType } from '@nestjs/swagger';
 import { RoleDto } from './role.dto';
 

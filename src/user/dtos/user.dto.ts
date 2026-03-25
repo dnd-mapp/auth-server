@@ -1,5 +1,5 @@
-import { User } from '@/auth-domain';
 import { RoleDto } from '@/role/dtos';
+import { User } from '@/user/domain';
 import { IsArray, IsDate, IsNotEmpty, IsString, MinLength, ValidateNested } from 'class-validator';
 
 export class UserDto implements User {

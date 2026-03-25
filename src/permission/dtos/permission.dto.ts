@@ -1,4 +1,4 @@
-import { Permission } from '@/auth-domain';
+import { Permission } from '@/permission/domain';
 import { IsDate, IsNotEmpty, IsString, MinLength } from 'class-validator';
 
 export class PermissionDto implements Permission {
