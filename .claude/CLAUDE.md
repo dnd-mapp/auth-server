@@ -71,7 +71,7 @@ All commits must follow the [Conventional Commits](https://www.conventionalcommi
 
 ### Format
 
-```
+```text
 <type>(<scope>): <description>
 
 [optional body]
@@ -122,7 +122,7 @@ NestJS 11 + Fastify 5 auth server acting as a custom Identity Provider (IdP) imp
 
 ### Module Structure
 
-```
+```text
 AppModule
 ├── ConfigModule          — environment validation via class-validator schemas
 ├── ThrottlerModule       — 3-tier rate limiting (1s/3, 10s/20, 60s/100)
