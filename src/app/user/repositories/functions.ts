@@ -1,14 +1,19 @@
 import { Prisma } from '@/prisma/client';
 import { recordToRoleDto, selectedRoleAttributes } from '../../role';
 import { UserDto } from '../dtos';
+import { UserRoleDto } from '../dtos/user-role.dto';
 
 export const selectedUserRoleAttributes = {
+    userId: true,
+    roleId: true,
     role: {
         select: {
             ...selectedRoleAttributes,
         },
     },
 } satisfies Prisma.UserRoleSelect;
+
+type PrismaUserRole = Prisma.UserRoleGetPayload<{ select: typeof selectedUserRoleAttributes }>;
 
 export const selectedUserAttributes = {
     id: true,
@@ -40,4 +45,12 @@ export function recordToUserDto(record: PrismaUser) {
 
 export function recordsToUserDtos(records: PrismaUser[]) {
     return records.map((record) => recordToUserDto(record));
+}
+
+export function recordToUserRoleDto(record: PrismaUserRole) {
+    const dto = new UserRoleDto();
+
+    dto.roleId = record.roleId;
+    dto.userId = record.userId;
+    return dto;
 }

@@ -1,7 +1,7 @@
 # 🛡️ D&D Mapp | Auth Server
 
 ![Node Version](https://img.shields.io/badge/Node-v24+-339933?logo=node.js&logoColor=white)
-![Package Manager](https://img.shields.io/badge/pnpm-v10.31.0-F69220?logo=pnpm&logoColor=white)
+![Package Manager](https://img.shields.io/badge/pnpm-v10.33.0-F69220?logo=pnpm&logoColor=white)
 ![Framework](https://img.shields.io/badge/NestJS-E0234E?logo=nestjs&logoColor=white)
 ![Database](https://img.shields.io/badge/MariaDB-003545?logo=mariadb&logoColor=white)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
@@ -60,7 +60,7 @@ To prevent brute-force attacks and API abuse, the server implements a triple-win
 - **Framework:** NestJS (TypeScript)
 - **Engine:** Fastify
 - **Runtime:** Node.js v24
-- **Package Manager:** pnpm v10.31.0
+- **Package Manager:** pnpm v10.33.0
 - **ORM:** Prisma
 - **Database:** MariaDB
 - **Testing:** Vitest
@@ -84,7 +84,7 @@ Interactive documentation is automatically generated via Swagger.
 ### Prerequisites
 
 - **Node.js:** v24+
-- **pnpm:** v10.31.0+
+- **pnpm:** v10.33.0+
 - **mise:** To automatically manage Node.js and pnpm versions. [Install instructions](https://mise.jdx.dev/getting-started.html).
 - **Docker & Docker Compose**
 - **mkcert:** For generating local SSL certificates. [Install instructions](https://github.com/FiloSottile/mkcert#installation).

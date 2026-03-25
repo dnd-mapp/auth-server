@@ -3,7 +3,7 @@ import { tryCatch } from '@dnd-mapp/shared-utils';
 import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
 import { DatabaseService } from '../../database';
 import { recordToRoleDto } from '../../role';
-import { selectedUserRoleAttributes } from './functions';
+import { recordToUserRoleDto, selectedUserRoleAttributes } from './functions';
 
 @Injectable()
 export class UserRoleRepository {
@@ -12,6 +12,29 @@ export class UserRoleRepository {
 
     constructor(databaseService: DatabaseService<PrismaClient>) {
         this.databaseService = databaseService;
+    }
+
+    public async findRoleForUser(roleId: string, userId: string) {
+        const { data: queryResult, error } = await tryCatch(
+            this.databaseService.prisma.userRole.findUnique({
+                select: { ...selectedUserRoleAttributes },
+                where: {
+                    userId_roleId: {
+                        userId: userId,
+                        roleId: roleId,
+                    },
+                },
+            })
+        );
+
+        if (error) {
+            this.logger.error(`Database error searching for user-role: ${error.message}`, error.stack);
+            throw new InternalServerErrorException('Error checking role assignment', {
+                cause: error,
+            });
+        }
+        if (queryResult) return recordToUserRoleDto(queryResult);
+        return null;
     }
 
     public async findAllRolesForUser(userId: string) {
@@ -29,5 +52,25 @@ export class UserRoleRepository {
             });
         }
         return queryResult.map(({ role }) => recordToRoleDto(role));
+    }
+
+    public async assignRoleToUser(roleId: string, userId: string) {
+        const { data: queryResult, error } = await tryCatch(
+            this.databaseService.prisma.userRole.create({
+                select: { ...selectedUserRoleAttributes },
+                data: {
+                    userId: userId,
+                    roleId: roleId,
+                },
+            })
+        );
+
+        if (error) {
+            this.logger.error(`Database error creating user-role link: ${error.message}`, error.stack);
+            throw new InternalServerErrorException('Failed to assign role in database', {
+                cause: error,
+            });
+        }
+        return recordToUserRoleDto(queryResult);
     }
 }
