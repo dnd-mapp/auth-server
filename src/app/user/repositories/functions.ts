@@ -3,6 +3,8 @@ import { recordToRoleDto, selectedRoleAttributes } from '../../role';
 import { UserDto } from '../dtos';
 
 export const selectedUserRoleAttributes = {
+    userId: true,
+    roleId: true,
     role: {
         select: {
             ...selectedRoleAttributes,
