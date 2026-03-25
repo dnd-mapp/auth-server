@@ -1,7 +1,7 @@
+import { DatabaseService } from '@/database';
 import { PrismaClient } from '@/prisma/client';
 import { tryCatch } from '@dnd-mapp/shared-utils';
 import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
-import { DatabaseService } from '@/database';
 import { CreateUserDto, GetUserQueryParams, UpdateUserDto } from '../dtos';
 import { recordsToUserDtos, recordToUserDto, selectedUserAttributes } from './functions';
 

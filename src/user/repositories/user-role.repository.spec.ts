@@ -1,8 +1,8 @@
+import { DatabaseModule, DatabaseService } from '@/database';
 import { MockConfigService, MockPrisma } from '@/test';
 import { Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Test } from '@nestjs/testing';
-import { DatabaseModule, DatabaseService } from '@/database';
 import { UserModule } from '../user.module';
 import { UserRoleRepository } from './user-role.repository';
 

@@ -1,7 +1,7 @@
+import { DatabaseModule } from '@/database';
 import { MockConfigService, MockPrisma } from '@/test';
 import { ConfigService } from '@nestjs/config';
 import { Test } from '@nestjs/testing';
-import { DatabaseModule } from '@/database';
 import { PermissionController } from './permission.controller';
 import { PermissionModule } from './permission.module';
 

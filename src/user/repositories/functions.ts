@@ -1,5 +1,5 @@
-import { recordToRoleDto, selectedRoleAttributes } from '@/role/repositories';
 import { Prisma } from '@/prisma/client';
+import { recordToRoleDto, selectedRoleAttributes } from '@/role/repositories';
 import { UserDto, UserRoleDto } from '../dtos';
 
 export const selectedUserRoleAttributes = {

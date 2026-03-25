@@ -1,10 +1,10 @@
 import { theLegend27 } from '@/auth-domain/test';
+import { DatabaseModule } from '@/database';
 import { MockConfigService, MockPrisma } from '@/test';
 import { NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Test } from '@nestjs/testing';
 import { nanoid } from 'nanoid';
-import { DatabaseModule } from '@/database';
 import { UserDto } from './dtos';
 import { UserController } from './user.controller';
 import { UserModule } from './user.module';

@@ -1,7 +1,7 @@
+import { DatabaseService } from '@/database';
 import { Prisma, PrismaClient, Permission as PrismaPermission } from '@/prisma/client';
 import { tryCatch } from '@dnd-mapp/shared-utils';
 import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
-import { DatabaseService } from '@/database';
 import { CreatePermissionDto, PermissionDto, UpdatePermissionDto } from './dtos';
 
 export function recordToPermissionDto(record: PrismaPermission) {

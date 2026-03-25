@@ -1,8 +1,8 @@
-import { recordToRoleDto } from '@/role/repositories';
+import { DatabaseService } from '@/database';
 import { PrismaClient } from '@/prisma/client';
+import { recordToRoleDto } from '@/role/repositories';
 import { tryCatch } from '@dnd-mapp/shared-utils';
 import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
-import { DatabaseService } from '@/database';
 import {
     recordsToUserDtos,
     recordToUserRoleDto,
