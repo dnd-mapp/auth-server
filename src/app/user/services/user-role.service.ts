@@ -1,6 +1,6 @@
+import { RoleService } from '@/app/role/services';
 import { isArrayEmpty } from '@dnd-mapp/shared-utils';
 import { ConflictException, forwardRef, Inject, Injectable, Logger, NotFoundException } from '@nestjs/common';
-import { RoleService } from '../../role';
 import { UserRoleRepository } from '../repositories';
 import { UserService } from './user.service';
 

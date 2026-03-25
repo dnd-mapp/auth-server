@@ -1,5 +1,5 @@
-import { ConflictException, Injectable, Logger, NotFoundException } from '@nestjs/common';
-import { UserRoleService } from '../../user';
+import { UserRoleService } from '@/app/user/services';
+import { ConflictException, forwardRef, Inject, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { CreateRoleDto, UpdateRoleDto } from '../dtos';
 import { RoleRepository } from '../repositories';
 
@@ -9,7 +9,10 @@ export class RoleService {
     private readonly roleRepository: RoleRepository;
     private readonly userRoleService: UserRoleService;
 
-    constructor(roleRepository: RoleRepository, userRoleService: UserRoleService) {
+    constructor(
+        roleRepository: RoleRepository,
+        @Inject(forwardRef(() => UserRoleService)) userRoleService: UserRoleService
+    ) {
         this.roleRepository = roleRepository;
         this.userRoleService = userRoleService;
     }

@@ -1,7 +1,6 @@
+import { recordToRoleDto, selectedRoleAttributes } from '@/app/role/repositories';
 import { Prisma } from '@/prisma/client';
-import { recordToRoleDto, selectedRoleAttributes } from '../../role';
-import { UserDto } from '../dtos';
-import { UserRoleDto } from '../dtos/user-role.dto';
+import { UserDto, UserRoleDto } from '../dtos';
 
 export const selectedUserRoleAttributes = {
     userId: true,

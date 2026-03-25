@@ -5,7 +5,7 @@ import { DatabaseModule } from '../database';
 import { RoleController } from './role.controller';
 import { RoleModule } from './role.module';
 
-describe('RoleController', () => {
+describe.only('RoleController', () => {
     async function setupTest() {
         const module = await Test.createTestingModule({
             imports: [DatabaseModule.forRoot(MockPrisma), RoleModule],

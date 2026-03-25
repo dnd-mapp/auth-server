@@ -1,6 +1,6 @@
+import { RoleModule } from '@/app/role/role.module';
 import { forwardRef, Module } from '@nestjs/common';
 import { DatabaseModule } from '../database';
-import { RoleModule } from '../role';
 import { UserRepository, UserRoleRepository } from './repositories';
 import { UserRoleService, UserService } from './services';
 import { UserController } from './user.controller';

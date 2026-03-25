@@ -1,6 +1,6 @@
+import { RoleDto } from '@/app/role/dtos';
 import { User } from '@/auth-domain';
 import { IsArray, IsDate, IsNotEmpty, IsString, MinLength, ValidateNested } from 'class-validator';
-import { RoleDto } from '../../role';
 
 export class UserDto implements User {
     /**
