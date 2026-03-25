@@ -1,7 +1,7 @@
 import { PrismaClient } from '@/prisma/client';
 import { Controller, Get } from '@nestjs/common';
 import { HealthCheck, HealthCheckService, PrismaHealthIndicator } from '@nestjs/terminus';
-import { DatabaseService } from '../database';
+import { DatabaseService } from '@/database';
 
 @Controller('/health')
 export class HealthController {
