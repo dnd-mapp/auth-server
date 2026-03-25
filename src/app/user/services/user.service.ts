@@ -1,4 +1,6 @@
+import { isArrayEmpty } from '@dnd-mapp/shared-utils';
 import { ConflictException, Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { RoleService } from '../../role';
 import { CreateUserDto, GetUserQueryParams, UpdateUserDto } from '../dtos';
 import { UserRepository } from '../repositories';
 
@@ -6,9 +8,11 @@ import { UserRepository } from '../repositories';
 export class UserService {
     private readonly logger = new Logger(UserService.name);
     private readonly userRepository: UserRepository;
+    private readonly roleService: RoleService;
 
-    constructor(userRepository: UserRepository) {
+    constructor(userRepository: UserRepository, roleService: RoleService) {
         this.userRepository = userRepository;
+        this.roleService = roleService;
     }
 
     public async getAll(queryParams?: GetUserQueryParams) {
@@ -37,11 +41,28 @@ export class UserService {
     }
 
     public async create(data: CreateUserDto) {
-        const { username } = data;
+        const { username, roleIds } = data;
 
         if (await this.isUsernameTaken(username)) {
             this.logger.warn(`User creation failed: Username "${username}" is already taken`);
             throw new ConflictException(`Username "${username}" is already in use`);
+        }
+        let roles = await Promise.all(
+            roleIds.map(async (roleId) => {
+                return {
+                    roleId: roleId,
+                    role: await this.roleService.getById(roleId),
+                };
+            })
+        );
+
+        roles = roles.filter(({ role }) => role === null);
+
+        if (!isArrayEmpty(roles)) {
+            const missingRole = roles[0]!.roleId;
+
+            this.logger.warn(`User creation failed: Role with ID "${missingRole}" does not exist`);
+            throw new NotFoundException(`Role with ID "${missingRole}" was not found`);
         }
         this.logger.log(`Creating new user record for username: "${username}"`);
 
