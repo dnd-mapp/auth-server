@@ -30,7 +30,7 @@ async function bootstrap() {
     await app.listen(port, host, () => {
         const url = `${ssl ? 'https' : 'http'}://${host}:${port}`;
 
-        Logger.log(`Nest application available at: ${url}`, 'NestApplication');
+        Logger.log(`Documentation available at: ${url}/docs`, 'NestApplication');
     });
 }
 
