@@ -1,4 +1,4 @@
-import { User } from '@/auth-domain';
+import { User } from '@/user/domain';
 import { RoleDto } from '@/role/dtos';
 import { IsArray, IsDate, IsNotEmpty, IsString, MinLength, ValidateNested } from 'class-validator';
 

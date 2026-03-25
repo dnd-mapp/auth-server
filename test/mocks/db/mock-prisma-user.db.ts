@@ -1,4 +1,4 @@
-import { MockUserDB } from '@/auth-domain/test';
+import { MockUserDB } from '@/user/test';
 
 export class MockPrismaUserDB {
     private db = new MockUserDB();

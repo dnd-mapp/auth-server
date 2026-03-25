@@ -1,4 +1,4 @@
-import { UserRole } from '@/auth-domain';
+import { UserRole } from '@/user/domain';
 import { IsNotEmpty, IsString } from 'class-validator';
 
 export class UserRoleDto implements UserRole {

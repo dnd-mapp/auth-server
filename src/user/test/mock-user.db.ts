@@ -1,4 +1,5 @@
-import { User, UserBuilder } from '@/auth-domain';
+import { User } from '../domain';
+import { UserBuilder } from '../user.builder';
 
 export const theLegend27 = new UserBuilder().withId('mb9NzZCnMCCrWoETc2_DT').withUsername('TheLegend27').build();
 

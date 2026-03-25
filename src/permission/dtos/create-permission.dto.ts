@@ -1,4 +1,4 @@
-import { CreatePermissionData } from '@/auth-domain';
+import { CreatePermissionData } from '@/permission/domain';
 import { PickType } from '@nestjs/swagger';
 import { PermissionDto } from './permission.dto';
 
