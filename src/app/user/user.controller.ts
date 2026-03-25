@@ -16,6 +16,7 @@ import {
 import { type FastifyReply } from 'fastify';
 import { RoleDto } from '../role';
 import { CreateUserDto, GetUserQueryParams, UpdateUserDto, UserDto } from './dtos';
+import { UserRoleDto } from './dtos/user-role.dto';
 import { UserRoleService, UserService } from './services';
 
 @Controller('/users')
@@ -170,5 +171,25 @@ export class UserController {
         this.logger.log(`Fetching all roles assigned to user ID "${userId}"`);
 
         return await this.userRoleService.getAllRolesForUser(userId);
+    }
+
+    /**
+     * Assigns a specific role to a user.
+     *
+     * @param userId The unique identifier of the user.
+     * @param roleId The unique identifier of the role to assign.
+     * @returns The newly created user-role assignment object.
+     * @throws {404} If the user or role does not exist.
+     * @throws {409} If the role is already assigned to the user.
+     * @throws {500} If the database insertion fails.
+     */
+    @Post('/:userId/roles/:roleId')
+    public async assignRoleToUser(
+        @Param('userId') userId: string,
+        @Param('roleId') roleId: string
+    ): Promise<UserRoleDto> {
+        this.logger.log(`Attempting to assign role ${roleId} to user ${userId}`);
+
+        return await this.userRoleService.assignRoleToUser(roleId, userId);
     }
 }
