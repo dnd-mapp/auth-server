@@ -3,6 +3,8 @@ services:
     auth-server:
         image: dndmapp/auth-server:latest
         container_name: auth-server
+        profiles:
+            - all
         restart: unless-stopped
         entrypoint: ''
         depends_on:
@@ -11,20 +13,26 @@ services:
             mariadb-server:
                 condition: service_healthy
         env_file:
-            - ../.env
+            - ./.env
         ports:
             - '4350:4350/tcp'
     db-migration:
+        profiles:
+            - all
+            - db
         image: dndmapp/auth-server:latest
         container_name: db-migration
         restart: on-failure
         entrypoint: ['/bin/sh', '-c', 'npx prisma migrate deploy && npx prisma db seed']
         env_file:
-            - ../.env
+            - ./.env
         depends_on:
             mariadb-server:
                 condition: service_healthy
     mariadb-server:
+        profiles:
+            - all
+            - db
         image: mariadb:latest
         container_name: mariadb
         restart: unless-stopped
@@ -44,6 +52,9 @@ services:
             timeout: 5s
             retries: 3
     dbeaver:
+        profiles:
+            - all
+            - db
         image: dbeaver/cloudbeaver:latest
         container_name: dbeaver
         restart: unless-stopped

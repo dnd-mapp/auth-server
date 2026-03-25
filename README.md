@@ -180,7 +180,7 @@ We use **Vitest** for unit and integration testing.
 - **Run tests (CI):**
 
   ```bash
-  pnpm test:ci
+  pnpm test
   ```
 
 - **Development mode (UI/Watch):**
@@ -230,11 +230,78 @@ To maintain high code quality and consistent documentation standards:
 > [!NOTE]
 > The Docker configuration is intended for production-like environments or CI. **Containers are served over HTTP** as they are designed to sit behind a reverse proxy (e.g., Nginx, Traefik) which handles SSL termination.
 
-To spin up the auth server infrastructure:
+This project uses Docker Compose to orchestrate the authentication server, MariaDB database, and management tools. Follow the steps below to set up your local environment.
+
+### 1. Prerequisites
+
+Ensure you have Docker and Docker Compose (v2.0+) installed on your machine.
+
+### 2. Configuration Setup
+
+Before starting the containers, you must create and configure the necessary environment and initialization files from their respective templates.
+
+#### Environment Variables
+
+Copy the template `.env` file and adjust the values (especially credentials and database names) to match your environment:
 
 ```bash
-docker-compose up -d
+cp .docker/.env.template .docker/.env
 ```
+
+#### MariaDB Initialization
+
+Create the SQL initialization script. This script handles user creation and database provisioning:
+
+```bash
+cp .docker/mariadb-init-template.sql .docker/mariadb-init.sql
+```
+
+#### Secrets
+
+The MariaDB root password is managed via a Docker secret. Create the directory and the secret file:
+
+```bash
+echo "your_secure_root_password" > ./secrets/mariadb/root.txt
+```
+
+### 3. Running the Services
+
+You can use Docker [profiles](https://docs.docker.com/compose/profiles/) to start either the entire stack or just the database-related infrastructure.
+
+#### Start Entire Stack
+
+To start the authentication server, database migrations, MariaDB, and DBeaver:
+
+```bash
+docker compose --profile all up -d
+```
+
+#### Start Database Services Only
+
+If you are running the application code locally and only need the database infrastructure (MariaDB, Prisma migrations, and CloudBeaver):
+
+```bash
+docker compose --profile db up -d
+```
+
+### 4. Service Access
+
+Once the containers are healthy, you can access the services at the following endpoints:
+
+- **Auth Server:** `http://localhost:4350`
+- **CloudBeaver (Database GUI):** `http://localhost:8978`
+- **MariaDB:** `localhost:3306`
+
+### 5. Troubleshooting
+
+If the migration fails, check the logs for the `db-migration` container:
+
+```bash
+docker logs db-migration
+```
+
+> [!NOTE]
+> that the `db-migration` service is configured to run `prisma migrate deploy` and `prisma db seed` automatically upon startup, provided the database is healthy.
 
 ---
 
