@@ -11,7 +11,7 @@ services:
             mariadb-server:
                 condition: service_healthy
         env_file:
-            - ../.env
+            - ./.env
         ports:
             - '4350:4350/tcp'
     db-migration:
@@ -20,7 +20,7 @@ services:
         restart: on-failure
         entrypoint: ['/bin/sh', '-c', 'npx prisma migrate deploy && npx prisma db seed']
         env_file:
-            - ../.env
+            - ./.env
         depends_on:
             mariadb-server:
                 condition: service_healthy
