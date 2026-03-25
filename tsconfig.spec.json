@@ -1,6 +1,6 @@
 {
     "extends": "./tsconfig.json",
-    "include": ["**/test/**/*.ts", "src/**/*.spec.ts"],
+    "include": ["vitest.config.mts", "**/test/**/*.ts", "src/**/*.spec.ts"],
     "compilerOptions": {
         "module": "CommonJS",
         "types": ["node", "vitest/globals"]

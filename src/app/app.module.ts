@@ -1,3 +1,6 @@
+import { PermissionModule } from '@/app/permission/permission.module';
+import { RoleModule } from '@/app/role/role.module';
+import { UserModule } from '@/app/user/user.module';
 import { PrismaClient } from '@/prisma/client';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
@@ -5,9 +8,6 @@ import { ThrottlerModule } from '@nestjs/throttler';
 import { configModuleOptions, provideAppThrottler, provideGlobalSerialization, throttlerModuleOptions } from './config';
 import { DatabaseModule } from './database';
 import { HealthModule } from './health/health.module';
-import { PermissionModule } from './permission';
-import { RoleModule } from './role';
-import { UserModule } from './user';
 
 @Module({
     imports: [

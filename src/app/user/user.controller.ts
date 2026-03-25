@@ -1,3 +1,4 @@
+import { RoleDto } from '@/app/role/dtos';
 import {
     Body,
     Controller,
@@ -14,7 +15,6 @@ import {
     Res,
 } from '@nestjs/common';
 import { type FastifyReply } from 'fastify';
-import { RoleDto } from '../role';
 import { CreateUserDto, GetUserQueryParams, UpdateUserDto, UserDto } from './dtos';
 import { UserRoleDto } from './dtos/user-role.dto';
 import { UserRoleService, UserService } from './services';
