@@ -12,38 +12,106 @@ The **dndmapp/auth-server** is a high-performance, containerized Identity Provid
 
 ## 🚀 Quick Start
 
-Launch a stable instance of the Auth Server with a single command. By default, the server listens on port `4350`.
+Launch a standalone instance. This requires an existing MariaDB/MySQL instance.
 
 ```bash
 docker run -d \
   --name auth-server \
   -p 4350:4350 \
   -e NODE_ENV=production \
-  -e DATABASE_URL="mysql://user:password@host:3306/db" \
+  -e DB_URL="mysql://user:password@host:3306/auth_db" \
   dndmapp/auth-server:latest
 ```
 
-Once running, the service is accessible at `http://localhost:4350`.
+---
+
+## 🏗️ Full Stack Deployment
+
+For a complete environment including the database, migrations, and management tools, use the provided Docker Compose configuration.
+
+### 1. Configuration Setup
+
+Prepare your environment by creating the following files based on these examples:
+
+#### **Environment Variables (`.env`)**
+
+Create a `.env` file in your root directory. This configuration links the NestJS application to the MariaDB container.
+
+```text
+# CORS Configuration
+AUTH_SERVER_CORS_ORIGINS="https://localhost.www.dndmapp.dev:4200"
+
+# Database Configuration
+AUTH_SERVER_DB_HOST="mariadb-server"
+AUTH_SERVER_DB_PORT="3306"
+AUTH_SERVER_DB_USER="admin"
+AUTH_SERVER_DB_PASSWORD="password123"
+AUTH_SERVER_DB_SCHEMA="auth_db"
+
+PRISMA_DB_HOST="mariadb-server"
+PRISMA_DB_USER="prisma"
+PRISMA_DB_PASSWORD="prisma-password"
+
+# Connection String used by Prisma
+DB_URL="mysql://${PRISMA_DB_USER}:${PRISMA_DB_PASSWORD}@${PRISMA_DB_HOST}:${AUTH_SERVER_DB_PORT}/${AUTH_SERVER_DB_SCHEMA}"
+```
+
+#### **Database Initialization (`mariadb-init.sql`)**
+
+This script sets up the necessary users and databases during the first boot of the MariaDB container.
+
+```sql
+-- 1. Create database users
+CREATE USER IF NOT EXISTS 'prisma'@'%' IDENTIFIED BY 'prisma-password';
+CREATE USER IF NOT EXISTS 'admin'@'%' IDENTIFIED BY 'password123';
+
+-- 2. Create application database and grant privileges
+CREATE DATABASE IF NOT EXISTS `auth_db`
+    CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+GRANT ALL PRIVILEGES ON `auth_db`.* TO 'prisma'@'%';
+GRANT SELECT, INSERT, UPDATE, DELETE ON `auth_db`.* TO 'admin'@'%';
+
+-- 3. Create shadow database for Prisma migrations (Only required for non-production environments)
+CREATE DATABASE IF NOT EXISTS `auth_db_shadow`
+    CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+GRANT ALL PRIVILEGES ON `auth_db_shadow`.* TO 'prisma'@'%';
+
+-- 4. Apply privileges
+FLUSH PRIVILEGES;
+```
+
+#### **Secrets**
+
+Create the root password file for MariaDB:
+
+```bash
+mkdir -p secrets/mariadb
+echo "your_root_password" > ./secrets/mariadb/root.txt
+```
+
+### 2. Orchestration Details
+
+The stack includes:
+
+- **auth-server:** The NestJS application.
+- **db-migration:** A short-lived container that runs `prisma migrate deploy` and `prisma db seed` before the server starts.
+- **mariadb-server:** The primary data store with health checks.
+- **dbeaver:** A web-based database management GUI (CloudBeaver) available on port `8978`.
 
 ---
 
-## 🏗️ Deployment
+## 🛡️ Image Details
 
-### Docker Compose
+This image follows DevSecOps best practices to ensure a minimal attack surface and verifiable supply chain integrity.
 
-For production-like environments or local orchestration, we recommend using Docker Compose. Note that this service is designed to sit behind a reverse proxy (e.g., Nginx, Traefik) for SSL termination.
-
-```yaml
-services:
-    auth-server:
-        image: dndmapp/auth-server:latest
-        container_name: auth-server
-        restart: unless-stopped
-        ports:
-            - '4350:4350/tcp'
-        environment:
-            - DATABASE_URL=${DATABASE_URL}
-```
+- **Base Image:** `node:24.14.0-alpine3.23` (Lightweight & security hardened).
+- **Exposed Ports:** `4350` (API/Docs).
+- **Security Attestations:**
+  - **SBOM:** Software Bill of Materials included.
+  - **Provenance:** Build metadata (`mode=max`) for CI/CD transparency.
+- **User:** Runs as a non-root user to adhere to the principle of least privilege.
 
 ### Supported Platforms
 
@@ -54,27 +122,22 @@ This image is built using **Docker Buildx** to support multi-arch deployments:
 
 ---
 
-## 🛡️ Image Details
-
-This image follows DevSecOps best practices to ensure a minimal attack surface and verifiable supply chain integrity.
-
-- **Base Image:** `node:24.14.0-alpine3.23` (Lightweight footprint & security hardened).
-- **Exposed Ports:** `4350` (Primary API/Docs port).
-- **Configuration:** Managed via Environment Variables (see `.env.template` in source).
-- **Security Attestations:**
-    - **SBOM:** Software Bill of Materials included for vulnerability scanning.
-    - **Provenance:** Build metadata (`mode=max`) for CI/CD transparency and authenticity.
-- **User:** Runs as a non-root user where possible to adhere to the principle of least privilege.
-
----
-
 ## 🏷️ Tagging Policy
 
-| Tag          | Description                                                           | Stability            |
-|:-------------|:----------------------------------------------------------------------|:---------------------|
-| `latest`     | The most recent stable release from the `main` branch.                | **Stable**           |
-| `dev`        | Bleeding-edge builds from the development pipeline.                   | **Unstable**         |
-| `sha-<hash>` | Immutable builds pinned to a specific Git commit for reproducibility. | **Production Ready** |
+| Tag                 | Description                                                                                   | Stability            |
+|:--------------------|:----------------------------------------------------------------------------------------------|:---------------------|
+| `latest`            | The most recent stable release from the `main` branch.                                        | **Stable**           |
+| `1`, `1.2`, `1.2.3` | Semantic Versioning (SemVer) tags. `1` and `1.2` act as rolling aliases for the latest patch. | **Stable**           |
+| `1.2.3-alpha.4`     | Prerelease builds. Supported IDs: `alpha`, `beta`, or `rc` (Release Candidate).               | **Testing**          |
+| `dev`               | Bleeding-edge builds from the development pipeline.                                           | **Unstable**         |
+| `sha-<hash>`        | Immutable builds pinned to a specific Git commit for reproducibility.                         | **Production Ready** |
+
+### Versioning Examples
+
+- **Major (`1`):** Always points to the latest stable release of version 1.
+- **Minor (`1.2`):** Points to the latest patch within the 1.2 minor branch.
+- **Patch (`1.2.3`):** An immutable tag for a specific production release.
+- **Prerelease (`1.2.3-rc.1`):** Used for integration testing before a final release.
 
 ---
 
