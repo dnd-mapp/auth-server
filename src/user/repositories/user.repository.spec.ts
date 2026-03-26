@@ -61,7 +61,11 @@ describe('UserRepository', () => {
     describe('create', () => {
         it('should return the created UserDto', async () => {
             const { repository } = await setupUserTest();
-            const result = await repository.create({ username: 'NewUser', roleIds: [] });
+            const result = await repository.create({
+                username: 'NewUser',
+                roleIds: [],
+                password: '$argon2id$v=19$...(mock hash)',
+            });
             expect(result).toBeInstanceOf(UserDto);
             expect(result.username).toBe('NewUser');
         });
@@ -71,7 +75,9 @@ describe('UserRepository', () => {
             vi.spyOn(databaseService.prisma.user, 'create').mockImplementationOnce(() =>
                 Promise.reject(new Error('not connected'))
             );
-            await expect(repository.create({ username: 'NewUser', roleIds: [] })).rejects.toThrow();
+            await expect(
+                repository.create({ username: 'NewUser', roleIds: [], password: '$argon2id$v=19$...(mock hash)' })
+            ).rejects.toThrow();
         });
     });
 

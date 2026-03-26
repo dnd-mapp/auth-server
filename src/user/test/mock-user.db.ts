@@ -5,6 +5,7 @@ import { UserBuilder } from '../user.builder';
 interface UserRecord {
     id: string;
     username: string;
+    password: string;
     createdAt: Date;
     updatedAt: Date;
     deletedAt: Date | null;
@@ -14,6 +15,7 @@ const SEED_DATE = new Date('2024-01-01T00:00:00.000Z');
 
 export const LEGEND_USER_ID = 'mb9NzZCnMCCrWoETc2_DT';
 export const LEGEND_USERNAME = 'TheLegend27';
+export const LEGEND_PASSWORD_HASH = '$argon2id$v=19$...(seed hash)';
 
 export const theLegend27 = new UserBuilder()
     .withId(LEGEND_USER_ID)
@@ -29,6 +31,7 @@ export class MockUserDB {
             [LEGEND_USER_ID]: {
                 id: LEGEND_USER_ID,
                 username: LEGEND_USERNAME,
+                password: LEGEND_PASSWORD_HASH,
                 createdAt: SEED_DATE,
                 updatedAt: SEED_DATE,
                 deletedAt: null,
@@ -48,9 +51,16 @@ export class MockUserDB {
         return Object.values(this.users).find((u) => u.username === username) ?? null;
     }
 
-    public add(username: string): UserRecord {
+    public add(username: string, password: string): UserRecord {
         const now = new Date();
-        const record: UserRecord = { id: nanoid(), username, createdAt: now, updatedAt: now, deletedAt: null };
+        const record: UserRecord = {
+            id: nanoid(),
+            username,
+            password,
+            createdAt: now,
+            updatedAt: now,
+            deletedAt: null,
+        };
 
         this.users[record.id] = record;
         return record;

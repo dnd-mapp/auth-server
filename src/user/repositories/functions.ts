@@ -17,6 +17,7 @@ type PrismaUserRole = Prisma.UserRoleGetPayload<{ select: typeof selectedUserRol
 export const selectedUserAttributes = {
     id: true,
     username: true,
+    password: true,
     roles: {
         select: {
             ...selectedUserRoleAttributes,
@@ -34,6 +35,7 @@ export function recordToUserDto(record: PrismaUser) {
 
     dto.id = record.id;
     dto.username = record.username;
+    dto.password = record.password;
     dto.roles = record.roles.map(({ role }) => recordToRoleDto(role));
 
     dto.createdAt = record.createdAt;

@@ -16,6 +16,9 @@ export const defaultMockConfig: AppConfig = {
         user: 'dma',
         password: 'password',
     },
+    security: {
+        passwordPepper: 'test-pepper',
+    },
 };
 
 export class MockConfigService {
@@ -30,6 +33,10 @@ export class MockConfigService {
             database: {
                 ...defaultMockConfig.database,
                 ...config?.database,
+            },
+            security: {
+                ...defaultMockConfig.security,
+                ...config?.security,
             },
         };
     }

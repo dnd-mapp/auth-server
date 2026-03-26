@@ -1,6 +1,6 @@
 import { CreateUserData } from '@/user/domain';
 import { PickType } from '@nestjs/swagger';
-import { ArrayMinSize, IsArray, IsNotEmpty, IsString } from 'class-validator';
+import { ArrayMinSize, IsArray, IsNotEmpty, IsString, MinLength } from 'class-validator';
 import { UserDto } from './user.dto';
 
 export class CreateUserDto extends PickType(UserDto, ['username']) implements CreateUserData {
@@ -13,4 +13,13 @@ export class CreateUserDto extends PickType(UserDto, ['username']) implements Cr
     @ArrayMinSize(1)
     @IsArray()
     public roleIds!: string[];
+
+    /**
+     * The user's password. Must be at least 12 characters long.
+     * @example 'correct-horse-battery-staple'
+     */
+    @MinLength(12)
+    @IsNotEmpty()
+    @IsString()
+    public password!: string;
 }

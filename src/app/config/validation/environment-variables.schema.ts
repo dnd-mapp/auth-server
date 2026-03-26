@@ -25,6 +25,7 @@ export const EnvironmentVariableNames = {
     DB_SCHEMA: 'AUTH_SERVER_DB_SCHEMA',
     DB_USER: 'AUTH_SERVER_DB_USER',
     DB_PASSWORD: 'AUTH_SERVER_DB_PASSWORD',
+    PASSWORD_PEPPER: 'AUTH_SERVER_PASSWORD_PEPPER',
 } as const;
 
 export class EnvironmentVariablesSchema {
@@ -79,4 +80,8 @@ export class EnvironmentVariablesSchema {
     @IsNotEmpty()
     @IsString()
     public [EnvironmentVariableNames.DB_PASSWORD]!: string;
+
+    @IsNotEmpty()
+    @IsString()
+    public [EnvironmentVariableNames.PASSWORD_PEPPER]!: string;
 }

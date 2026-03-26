@@ -135,7 +135,7 @@ export async function main() {
         const user = await prisma.user.upsert({
             where: { username },
             update: {},
-            create: { id: nanoid(), username },
+            create: { id: nanoid(), username, password: 'CHANGE_ME' },
         });
 
         userIds[username] = user.id;
