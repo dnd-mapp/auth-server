@@ -1,8 +1,9 @@
 import { PrismaLikeClient } from '@/common';
 import { MockPermissionDB } from '@/permission/test';
-import { MockRoleDB } from '@/role/test';
+import { MockRoleDB, MockRolePermissionDB } from '@/role/test';
 import { MockUserDB, MockUserRoleDB } from '@/user/test';
 import { MockPrismaPermissionDB } from './db/mock-prisma-permission.db';
+import { MockPrismaRolePermissionDB } from './db/mock-prisma-role-permission.db';
 import { MockPrismaRoleDB } from './db/mock-prisma-role.db';
 import { MockPrismaUserRoleDB } from './db/mock-prisma-user-role.db';
 import { MockPrismaUserDB } from './db/mock-prisma-user.db';
@@ -13,11 +14,13 @@ export class MockPrisma implements PrismaLikeClient {
 
     public readonly permissionDb = new MockPermissionDB();
     public readonly roleDb = new MockRoleDB();
+    public readonly rolePermissionDb = new MockRolePermissionDB();
     public readonly userRoleDb = new MockUserRoleDB();
     public readonly userDb = new MockUserDB();
 
     public permission = new MockPrismaPermissionDB(this.permissionDb);
     public role = new MockPrismaRoleDB(this.roleDb);
+    public rolePermission = new MockPrismaRolePermissionDB(this.rolePermissionDb, this.permissionDb);
     public userRole = new MockPrismaUserRoleDB(this.userRoleDb, this.roleDb);
     public user = new MockPrismaUserDB(this.userDb, this.userRoleDb);
 
