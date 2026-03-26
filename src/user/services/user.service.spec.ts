@@ -18,23 +18,43 @@ describe('UserService', () => {
     describe('create', () => {
         it('should return the created UserDto', async () => {
             const { service } = await setupUserTest();
-            const result = await service.create({ username: 'NewUser', roleIds: [seedRole.id] });
+            const result = await service.create({
+                username: 'NewUser',
+                roleIds: [seedRole.id],
+                password: 'correct-horse-battery-staple',
+            });
             expect(result).toBeInstanceOf(UserDto);
             expect(result.username).toBe('NewUser');
+        });
+
+        it('should store the hashed password, not the plain password', async () => {
+            const { service, userDb } = await setupUserTest();
+            await service.create({
+                username: 'NewUser',
+                roleIds: [seedRole.id],
+                password: 'correct-horse-battery-staple',
+            });
+            const record = userDb.getByUsername('NewUser');
+            expect(record?.password).not.toBe('correct-horse-battery-staple');
+            expect(record?.password).toMatch(/^\$argon2id\$mock:/);
         });
 
         it('should throw a ConflictException when username is taken', async () => {
             const { service } = await setupUserTest();
             await expect(
-                service.create({ username: theLegend27.username, roleIds: [seedRole.id] })
+                service.create({
+                    username: theLegend27.username,
+                    roleIds: [seedRole.id],
+                    password: 'correct-horse-battery-staple',
+                })
             ).rejects.toBeInstanceOf(ConflictException);
         });
 
         it('should throw a NotFoundException when a roleId does not exist', async () => {
             const { service } = await setupUserTest();
-            await expect(service.create({ username: 'NewUser', roleIds: [nanoid()] })).rejects.toBeInstanceOf(
-                NotFoundException
-            );
+            await expect(
+                service.create({ username: 'NewUser', roleIds: [nanoid()], password: 'correct-horse-battery-staple' })
+            ).rejects.toBeInstanceOf(NotFoundException);
         });
     });
 
@@ -55,7 +75,7 @@ describe('UserService', () => {
 
         it('should throw a ConflictException when username is taken', async () => {
             const { service, userDb } = await setupUserTest();
-            userDb.add('AnotherUser');
+            userDb.add('AnotherUser', '$argon2id$v=19$...(mock hash)');
             await expect(service.update(theLegend27.id, { username: 'AnotherUser' })).rejects.toBeInstanceOf(
                 ConflictException
             );

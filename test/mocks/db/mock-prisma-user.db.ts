@@ -3,6 +3,7 @@ import { MockUserDB, MockUserRoleDB } from '@/user/test';
 interface UserPayload {
     id: string;
     username: string;
+    password: string;
     roles: { userId: string; roleId: string; role: { id: string; name: string; createdAt: Date; updatedAt: Date } }[];
     createdAt: Date;
     updatedAt: Date;
@@ -18,6 +19,7 @@ export class MockPrismaUserDB {
     private toPayload(record: {
         id: string;
         username: string;
+        password: string;
         createdAt: Date;
         updatedAt: Date;
         deletedAt: Date | null;
@@ -61,8 +63,8 @@ export class MockPrismaUserDB {
         return await Promise.resolve(record ? this.toPayload(record) : null);
     }
 
-    public async create(params: { data: { username: string; roles?: unknown } }) {
-        const record = this.db.add(params.data.username);
+    public async create(params: { data: { username: string; password: string; roles?: unknown } }) {
+        const record = this.db.add(params.data.username, params.data.password);
         return await Promise.resolve(this.toPayload(record));
     }
 

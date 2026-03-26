@@ -1,3 +1,4 @@
+import { PasswordService } from '@/password';
 import { RoleService } from '@/role/services';
 import { isArrayEmpty } from '@dnd-mapp/shared-utils';
 import { ConflictException, forwardRef, Inject, Injectable, Logger, NotFoundException } from '@nestjs/common';
@@ -9,10 +10,16 @@ export class UserService {
     private readonly logger = new Logger(UserService.name);
     private readonly userRepository: UserRepository;
     private readonly roleService: RoleService;
+    private readonly passwordService: PasswordService;
 
-    constructor(userRepository: UserRepository, @Inject(forwardRef(() => RoleService)) roleService: RoleService) {
+    constructor(
+        userRepository: UserRepository,
+        @Inject(forwardRef(() => RoleService)) roleService: RoleService,
+        passwordService: PasswordService
+    ) {
         this.userRepository = userRepository;
         this.roleService = roleService;
+        this.passwordService = passwordService;
     }
 
     public async getAll(queryParams?: GetUserQueryParams) {
@@ -66,7 +73,8 @@ export class UserService {
         }
         this.logger.log(`Creating new user record for username: "${username}"`);
 
-        return await this.userRepository.create(data);
+        const hashedPassword = await this.passwordService.hash(data.password);
+        return await this.userRepository.create({ ...data, password: hashedPassword });
     }
 
     public async removeById(id: string) {

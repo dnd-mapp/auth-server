@@ -95,13 +95,14 @@ export class UserRepository {
     }
 
     public async create(data: CreateUserDto) {
-        const { username, roleIds } = data;
+        const { username, roleIds, password } = data;
 
         const { data: created, error } = await tryCatch(
             this.databaseService.prisma.user.create({
                 select: { ...selectedUserAttributes },
                 data: {
                     username: username,
+                    password: password,
                     roles: {
                         createMany: {
                             data: roleIds.map((roleId) => ({ roleId: roleId })),

@@ -1,5 +1,6 @@
 import { RoleDto } from '@/role/dtos';
 import { User } from '@/user/domain';
+import { Exclude } from 'class-transformer';
 import { IsArray, IsDate, IsNotEmpty, IsString, MinLength, ValidateNested } from 'class-validator';
 
 export class UserDto implements User {
@@ -19,6 +20,9 @@ export class UserDto implements User {
     @IsNotEmpty()
     @IsString()
     public username!: string;
+
+    @Exclude()
+    public password!: string;
 
     /**
      * The roles currently assigned to the user.

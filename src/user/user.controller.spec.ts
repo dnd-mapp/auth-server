@@ -30,14 +30,24 @@ describe('UserController', () => {
     describe('create', () => {
         it('should return the created UserDto', async () => {
             const { controller } = await setupUserTest();
-            const result = await controller.create({ username: 'NewUser', roleIds: [seedRole.id] }, mockResponse);
+            const result = await controller.create(
+                { username: 'NewUser', roleIds: [seedRole.id], password: 'correct-horse-battery-staple' },
+                mockResponse
+            );
             expect(result).toBeInstanceOf(UserDto);
         });
 
         it('should throw a ConflictException when username is taken', async () => {
             const { controller } = await setupUserTest();
             await expect(
-                controller.create({ username: theLegend27.username, roleIds: [seedRole.id] }, mockResponse)
+                controller.create(
+                    {
+                        username: theLegend27.username,
+                        roleIds: [seedRole.id],
+                        password: 'correct-horse-battery-staple',
+                    },
+                    mockResponse
+                )
             ).rejects.toBeInstanceOf(ConflictException);
         });
     });
@@ -59,7 +69,7 @@ describe('UserController', () => {
 
         it('should throw a ConflictException when username is taken', async () => {
             const { controller, userDb } = await setupUserTest();
-            userDb.add('AnotherUser');
+            userDb.add('AnotherUser', '$argon2id$v=19$...(mock hash)');
             await expect(controller.updateById(theLegend27.id, { username: 'AnotherUser' })).rejects.toBeInstanceOf(
                 ConflictException
             );

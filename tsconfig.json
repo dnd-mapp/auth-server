@@ -40,6 +40,7 @@
             "@/user/domain": ["src/user/domain/index.ts"],
             "@/user/test": ["src/user/test/index.ts"],
             "@/shared-utils": ["src/shared/utils/index.ts"],
+            "@/password": ["src/password/index.ts"],
             "@/test": ["test/index.ts"],
             "@/user/*": ["src/user/*"]
         },

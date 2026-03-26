@@ -12,6 +12,7 @@ export interface User {
 
 export interface CreateUserData extends Pick<User, 'username'> {
     roleIds: string[];
+    password: string;
 }
 
 export type UpdateUserData = Pick<User, 'username'>;
