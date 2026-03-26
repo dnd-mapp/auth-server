@@ -8,7 +8,7 @@ http:
   url: "{{SERVER_URL}}/users/:user_id/purge"
   params:
     - name: user_id
-      value: LKVw0z--cRw3hibx4eA_e
+      value: c7EsLp2zk56hawa95b--q
       type: path
   auth: inherit
 

@@ -85,6 +85,23 @@ export class UserRoleRepository {
         return recordsToUserDtos(queryResult);
     }
 
+    public async removeRoleFromUser(roleId: string, userId: string) {
+        const { error } = await tryCatch(
+            this.databaseService.prisma.userRole.delete({
+                where: {
+                    userId_roleId: { userId, roleId },
+                },
+            })
+        );
+
+        if (error) {
+            this.logger.error(`Database error removing user-role: ${error.message}`, error.stack);
+            throw new InternalServerErrorException('Failed to remove role from user in database', {
+                cause: error,
+            });
+        }
+    }
+
     public async assignRoleToUser(roleId: string, userId: string) {
         const { data: queryResult, error } = await tryCatch(
             this.databaseService.prisma.userRole.create({

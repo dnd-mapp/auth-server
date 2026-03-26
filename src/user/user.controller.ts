@@ -214,4 +214,22 @@ export class UserController {
 
         return await this.userRoleService.assignRoleToUser(roleId, userId);
     }
+
+    /**
+     * Removes a specific role from a user.
+     *
+     * @param userId The unique nanoid of the user.
+     * @param roleId The unique nanoid of the role to remove.
+     * @throws {404} If the user or role does not exist, or the role is not assigned.
+     * @throws {500} If the database deletion fails.
+     */
+    @Delete('/:userId/roles/:roleId')
+    @HttpCode(HttpStatus.NO_CONTENT)
+    public async removeRoleFromUser(@Param('userId') userId: string, @Param('roleId') roleId: string): Promise<void> {
+        this.logger.log(`Attempting to remove role ${roleId} from user ${userId}`);
+
+        await this.userRoleService.removeRoleFromUser(roleId, userId);
+
+        this.logger.log(`Role ${roleId} successfully removed from user ${userId}`);
+    }
 }

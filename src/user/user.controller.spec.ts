@@ -156,4 +156,33 @@ describe('UserController', () => {
             );
         });
     });
+
+    describe('removeRoleFromUser', () => {
+        it('should resolve', async () => {
+            const { controller } = await setupUserTest();
+            await expect(controller.removeRoleFromUser(theLegend27.id, seedRole.id)).resolves.toBeUndefined();
+        });
+
+        it('should throw a NotFoundException when user not found', async () => {
+            const { controller } = await setupUserTest();
+            await expect(controller.removeRoleFromUser(nanoid(), seedRole.id)).rejects.toBeInstanceOf(
+                NotFoundException
+            );
+        });
+
+        it('should throw a NotFoundException when role not found', async () => {
+            const { controller } = await setupUserTest();
+            await expect(controller.removeRoleFromUser(theLegend27.id, nanoid())).rejects.toBeInstanceOf(
+                NotFoundException
+            );
+        });
+
+        it('should throw a NotFoundException when role is not assigned', async () => {
+            const { controller, roleDb } = await setupUserTest();
+            const unassignedRole = roleDb.add('editor');
+            await expect(controller.removeRoleFromUser(theLegend27.id, unassignedRole.id)).rejects.toBeInstanceOf(
+                NotFoundException
+            );
+        });
+    });
 });
