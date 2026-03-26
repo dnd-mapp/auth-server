@@ -91,6 +91,35 @@ describe('UserRoleService', () => {
         });
     });
 
+    describe('removeRolesFromUser', () => {
+        it('should resolve for existing assignments', async () => {
+            const { userRoleService } = await setupUserTest();
+            await expect(userRoleService.removeRolesFromUser(theLegend27.id, [seedRole.id])).resolves.toBeUndefined();
+        });
+
+        it('should throw a NotFoundException when user not found', async () => {
+            const { userRoleService } = await setupUserTest();
+            await expect(userRoleService.removeRolesFromUser(nanoid(), [seedRole.id])).rejects.toBeInstanceOf(
+                NotFoundException
+            );
+        });
+
+        it('should throw a NotFoundException when a role is not found', async () => {
+            const { userRoleService } = await setupUserTest();
+            await expect(userRoleService.removeRolesFromUser(theLegend27.id, [nanoid()])).rejects.toBeInstanceOf(
+                NotFoundException
+            );
+        });
+
+        it('should throw a NotFoundException when a role is not assigned to user', async () => {
+            const { userRoleService, roleDb } = await setupUserTest();
+            const unassignedRole = roleDb.add('editor');
+            await expect(
+                userRoleService.removeRolesFromUser(theLegend27.id, [unassignedRole.id])
+            ).rejects.toBeInstanceOf(NotFoundException);
+        });
+    });
+
     describe('assignRolesToUser', () => {
         it('should return an array of UserRoleDtos', async () => {
             const { userRoleService, roleDb } = await setupUserTest();

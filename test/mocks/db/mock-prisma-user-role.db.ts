@@ -62,4 +62,20 @@ export class MockPrismaUserRoleDB {
         this.db.remove(userId, roleId);
         return await Promise.resolve({ userId, roleId });
     }
+
+    public async deleteMany(params: { where: { userId: string; roleId: { in: string[] } } }) {
+        const {
+            userId,
+            roleId: { in: roleIds },
+        } = params.where;
+        let count = 0;
+
+        for (const roleId of roleIds) {
+            if (this.db.getByComposite(userId, roleId)) {
+                this.db.remove(userId, roleId);
+                count++;
+            }
+        }
+        return await Promise.resolve({ count });
+    }
 }

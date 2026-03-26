@@ -15,7 +15,15 @@ import {
     Res,
 } from '@nestjs/common';
 import { type FastifyReply } from 'fastify';
-import { AssignRolesToUserDto, CreateUserDto, GetUserQueryParams, UpdateUserDto, UserDto, UserRoleDto } from './dtos';
+import {
+    AssignRolesToUserDto,
+    CreateUserDto,
+    GetUserQueryParams,
+    RemoveRolesFromUserDto,
+    UpdateUserDto,
+    UserDto,
+    UserRoleDto,
+} from './dtos';
 import { UserRoleService, UserService } from './services';
 
 @Controller('/users')
@@ -213,6 +221,30 @@ export class UserController {
         this.logger.log(`Attempting to assign role ${roleId} to user ${userId}`);
 
         return await this.userRoleService.assignRoleToUser(roleId, userId);
+    }
+
+    /**
+     * Removes multiple roles from a user.
+     *
+     * @remarks Bulk-removes roles from the specified user. Validates that the user
+     * and all specified roles exist, and that each role is currently assigned to the user.
+     *
+     * @param userId The unique identifier of the user.
+     * @param data The request body containing an array of role IDs to remove.
+     * @throws {404} If the user, any of the specified roles, or any role assignment does not exist.
+     * @throws {500} If the database deletion fails.
+     */
+    @Delete('/:userId/roles')
+    @HttpCode(HttpStatus.NO_CONTENT)
+    public async removeRolesFromUser(
+        @Param('userId') userId: string,
+        @Body() data: RemoveRolesFromUserDto
+    ): Promise<void> {
+        this.logger.log(`Attempting to bulk-remove ${data.roleIds.length} role(s) from user ${userId}`);
+
+        await this.userRoleService.removeRolesFromUser(userId, data.roleIds);
+
+        this.logger.log(`Successfully removed ${data.roleIds.length} role(s) from user ${userId}`);
     }
 
     /**
