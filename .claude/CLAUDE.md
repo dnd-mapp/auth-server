@@ -2,6 +2,14 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Before Making Changes
+
+Run the following before editing any file:
+
+```bash
+pnpm gen:prisma
+```
+
 ## Commands
 
 ```bash
@@ -64,6 +72,10 @@ Run the following checks after editing any file, in this order:
    ```
 
 > Always run `pnpm format:write` before committing. If `pnpm format:check` still fails after running it, check for files excluded from Prettier's config or conflicting ESLint rules.
+
+## Pull Request Descriptions
+
+Do not include a test plan section in pull request descriptions.
 
 ## Commit Messages
 
