@@ -15,7 +15,7 @@ import {
     Res,
 } from '@nestjs/common';
 import { type FastifyReply } from 'fastify';
-import { CreateUserDto, GetUserQueryParams, UpdateUserDto, UserDto, UserRoleDto } from './dtos';
+import { AssignRolesToUserDto, CreateUserDto, GetUserQueryParams, UpdateUserDto, UserDto, UserRoleDto } from './dtos';
 import { UserRoleService, UserService } from './services';
 
 @Controller('/users')
@@ -170,6 +170,29 @@ export class UserController {
         this.logger.log(`Fetching all roles assigned to user ID "${userId}"`);
 
         return await this.userRoleService.getAllRolesForUser(userId);
+    }
+
+    /**
+     * Assigns multiple roles to a user.
+     *
+     * @remarks Bulk-assigns roles to the specified user. Roles already assigned are silently
+     * skipped. Validates that the user and all specified roles exist before persisting.
+     *
+     * @param userId The unique identifier of the user.
+     * @param data The request body containing an array of role IDs to assign.
+     * @returns An array of user-role assignment objects that are now assigned.
+     * @throws {404} If the user or any of the specified roles does not exist.
+     * @throws {500} If the database insertion fails.
+     */
+    @Post('/:userId/roles')
+    @HttpCode(HttpStatus.CREATED)
+    public async assignRolesToUser(
+        @Param('userId') userId: string,
+        @Body() data: AssignRolesToUserDto
+    ): Promise<UserRoleDto[]> {
+        this.logger.log(`Attempting to bulk-assign ${data.roleIds.length} role(s) to user ${userId}`);
+
+        return await this.userRoleService.assignRolesToUser(userId, data.roleIds);
     }
 
     /**

@@ -61,4 +61,38 @@ describe('UserRoleService', () => {
             expect(await userRoleService.isRoleAssignedToAnyUser(seedRole.id)).toBe(true);
         });
     });
+
+    describe('assignRolesToUser', () => {
+        it('should return an array of UserRoleDtos', async () => {
+            const { userRoleService, roleDb } = await setupUserTest();
+            const role1 = roleDb.add('editor');
+            const role2 = roleDb.add('viewer');
+            await expect(userRoleService.assignRolesToUser(theLegend27.id, [role1.id, role2.id])).resolves.toHaveLength(
+                2
+            );
+        });
+
+        it('should throw a NotFoundException when user not found', async () => {
+            const { userRoleService, roleDb } = await setupUserTest();
+            const newRole = roleDb.add('editor');
+            await expect(userRoleService.assignRolesToUser(nanoid(), [newRole.id])).rejects.toBeInstanceOf(
+                NotFoundException
+            );
+        });
+
+        it('should throw a NotFoundException when a role is not found', async () => {
+            const { userRoleService } = await setupUserTest();
+            await expect(userRoleService.assignRolesToUser(theLegend27.id, [nanoid()])).rejects.toBeInstanceOf(
+                NotFoundException
+            );
+        });
+
+        it('should silently skip already-assigned roles', async () => {
+            const { userRoleService, roleDb } = await setupUserTest();
+            const newRole = roleDb.add('editor');
+            await expect(
+                userRoleService.assignRolesToUser(theLegend27.id, [seedRole.id, newRole.id])
+            ).resolves.toHaveLength(2);
+        });
+    });
 });

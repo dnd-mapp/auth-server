@@ -51,6 +51,33 @@ export class UserRoleService {
         return await this.userRoleRepository.assignRoleToUser(roleId, userId);
     }
 
+    public async assignRolesToUser(userId: string, roleIds: string[]) {
+        const user = await this.userService.getById(userId);
+
+        if (!user) {
+            this.logger.warn(`Failed to bulk-assign roles: User with ID "${userId}" not found`);
+            throw new NotFoundException(`User with ID "${userId}" was not found`);
+        }
+        let roles = await Promise.all(
+            roleIds.map(async (roleId) => {
+                return {
+                    roleId: roleId,
+                    role: await this.roleService.getById(roleId),
+                };
+            })
+        );
+
+        roles = roles.filter(({ role }) => role === null);
+
+        if (!isArrayEmpty(roles)) {
+            const missingRole = roles[0]!.roleId;
+
+            this.logger.warn(`Failed to bulk-assign roles: Role with ID "${missingRole}" does not exist`);
+            throw new NotFoundException(`Role with ID "${missingRole}" was not found`);
+        }
+        return await this.userRoleRepository.assignRolesToUser(userId, roleIds);
+    }
+
     public async isRoleAssignedToAnyUser(roleId: string) {
         const users = await this.userRoleRepository.findAllUsersByRole(roleId);
         return !isArrayEmpty(users);

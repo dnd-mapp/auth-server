@@ -95,4 +95,41 @@ describe('UserRoleRepository', () => {
             await expect(userRoleRepository.assignRoleToUser(newRole.id, theLegend27.id)).rejects.toThrow();
         });
     });
+
+    describe('assignRolesToUser', () => {
+        it('should return an array of UserRoleDtos for newly assigned roles', async () => {
+            const { userRoleRepository, roleDb } = await setupUserTest();
+            const role1 = roleDb.add('editor');
+            const role2 = roleDb.add('viewer');
+            const result = await userRoleRepository.assignRolesToUser(theLegend27.id, [role1.id, role2.id]);
+            expect(result).toHaveLength(2);
+            expect(result[0]).toBeInstanceOf(UserRoleDto);
+            expect(result[1]).toBeInstanceOf(UserRoleDto);
+        });
+
+        it('should skip duplicates and still succeed', async () => {
+            const { userRoleRepository, roleDb } = await setupUserTest();
+            const newRole = roleDb.add('editor');
+            const result = await userRoleRepository.assignRolesToUser(theLegend27.id, [seedRole.id, newRole.id]);
+            expect(result).toHaveLength(2);
+        });
+
+        it('should throw an InternalServerErrorException on createMany database error', async () => {
+            const { userRoleRepository, databaseService, roleDb } = await setupUserTest();
+            const newRole = roleDb.add('editor');
+            vi.spyOn(databaseService.prisma.userRole, 'createMany').mockImplementationOnce(() =>
+                Promise.reject(new Error('not connected'))
+            );
+            await expect(userRoleRepository.assignRolesToUser(theLegend27.id, [newRole.id])).rejects.toThrow();
+        });
+
+        it('should throw an InternalServerErrorException on findMany database error after createMany', async () => {
+            const { userRoleRepository, databaseService, roleDb } = await setupUserTest();
+            const newRole = roleDb.add('editor');
+            vi.spyOn(databaseService.prisma.userRole, 'findMany').mockImplementationOnce(() =>
+                Promise.reject(new Error('not connected'))
+            );
+            await expect(userRoleRepository.assignRolesToUser(theLegend27.id, [newRole.id])).rejects.toThrow();
+        });
+    });
 });
