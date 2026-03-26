@@ -1,14 +1,15 @@
 import { DatabaseModule } from '@/database';
+import { PermissionModule } from '@/permission/permission.module';
 import { UserModule } from '@/user/user.module';
 import { forwardRef, Module } from '@nestjs/common';
-import { RoleRepository } from './repositories';
+import { RolePermissionRepository, RoleRepository } from './repositories';
 import { RoleController } from './role.controller';
-import { RoleService } from './services';
+import { RolePermissionService, RoleService } from './services';
 
 @Module({
-    imports: [DatabaseModule, forwardRef(() => UserModule)],
+    imports: [DatabaseModule, PermissionModule, forwardRef(() => UserModule)],
     controllers: [RoleController],
-    providers: [RoleRepository, RoleService],
-    exports: [RoleService],
+    providers: [RoleRepository, RoleService, RolePermissionRepository, RolePermissionService],
+    exports: [RoleService, RolePermissionService],
 })
 export class RoleModule {}
