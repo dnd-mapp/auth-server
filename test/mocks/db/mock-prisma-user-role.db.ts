@@ -55,4 +55,11 @@ export class MockPrismaUserRoleDB {
         const role = this.roleDb.getById(roleId);
         return await Promise.resolve({ userId, roleId, role: role! });
     }
+
+    public async delete(params: { where: { userId_roleId: { userId: string; roleId: string } } }) {
+        const { userId, roleId } = params.where.userId_roleId;
+
+        this.db.remove(userId, roleId);
+        return await Promise.resolve({ userId, roleId });
+    }
 }

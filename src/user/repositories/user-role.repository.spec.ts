@@ -132,4 +132,19 @@ describe('UserRoleRepository', () => {
             await expect(userRoleRepository.assignRolesToUser(theLegend27.id, [newRole.id])).rejects.toThrow();
         });
     });
+
+    describe('removeRoleFromUser', () => {
+        it('should resolve for an existing assignment', async () => {
+            const { userRoleRepository } = await setupUserTest();
+            await expect(userRoleRepository.removeRoleFromUser(seedRole.id, theLegend27.id)).resolves.toBeUndefined();
+        });
+
+        it('should throw a database error', async () => {
+            const { userRoleRepository, databaseService } = await setupUserTest();
+            vi.spyOn(databaseService.prisma.userRole, 'delete').mockImplementationOnce(() =>
+                Promise.reject(new Error('not connected'))
+            );
+            await expect(userRoleRepository.removeRoleFromUser(seedRole.id, theLegend27.id)).rejects.toThrow();
+        });
+    });
 });

@@ -78,6 +78,25 @@ export class UserRoleService {
         return await this.userRoleRepository.assignRolesToUser(userId, roleIds);
     }
 
+    public async removeRoleFromUser(roleId: string, userId: string) {
+        const user = await this.userService.getById(userId);
+        const role = await this.roleService.getById(roleId);
+
+        if (!user) {
+            this.logger.warn(`Failed to remove role: User with ID ${userId} not found`);
+            throw new NotFoundException(`User with ID "${userId}" was not found.`);
+        }
+        if (!role) {
+            this.logger.warn(`Failed to remove role: Role with ID ${roleId} not found`);
+            throw new NotFoundException(`Role with ID "${roleId}" was not found.`);
+        }
+        if (!(await this.isRoleAssignedToUser(roleId, userId))) {
+            this.logger.warn(`Cannot remove: Role ${roleId} is not assigned to user ${userId}`);
+            throw new NotFoundException(`User does not have the role "${roleId}" assigned.`);
+        }
+        await this.userRoleRepository.removeRoleFromUser(roleId, userId);
+    }
+
     public async isRoleAssignedToAnyUser(roleId: string) {
         const users = await this.userRoleRepository.findAllUsersByRole(roleId);
         return !isArrayEmpty(users);
