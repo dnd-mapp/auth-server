@@ -1,3 +1,4 @@
+import { ClientModule } from '@/client/client.module';
 import { DatabaseModule } from '@/database';
 import { PermissionModule } from '@/permission/permission.module';
 import { PrismaClient } from '@/prisma/client';
@@ -18,6 +19,7 @@ import { HealthModule } from './health/health.module';
         UserModule,
         PermissionModule,
         RoleModule,
+        ClientModule,
     ],
     providers: [provideAppThrottler(), provideGlobalSerialization()],
 })
