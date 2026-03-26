@@ -31,4 +31,8 @@ export class MockUserRoleDB {
     public remove(userId: string, roleId: string): void {
         this.records = this.records.filter((r) => !(r.userId === userId && r.roleId === roleId));
     }
+
+    public removeMany(userId: string, roleIds: string[]): void {
+        this.records = this.records.filter((r) => !(r.userId === userId && roleIds.includes(r.roleId)));
+    }
 }

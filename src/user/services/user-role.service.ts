@@ -97,6 +97,49 @@ export class UserRoleService {
         await this.userRoleRepository.removeRoleFromUser(roleId, userId);
     }
 
+    public async removeRolesFromUser(userId: string, roleIds: string[]) {
+        const user = await this.userService.getById(userId);
+
+        if (!user) {
+            this.logger.warn(`Failed to bulk-remove roles: User with ID "${userId}" not found`);
+            throw new NotFoundException(`User with ID "${userId}" was not found`);
+        }
+
+        let roles = await Promise.all(
+            roleIds.map(async (roleId) => ({
+                roleId,
+                role: await this.roleService.getById(roleId),
+            }))
+        );
+
+        roles = roles.filter(({ role }) => role === null);
+
+        if (!isArrayEmpty(roles)) {
+            const missingRole = roles[0]!.roleId;
+
+            this.logger.warn(`Failed to bulk-remove roles: Role with ID "${missingRole}" does not exist`);
+            throw new NotFoundException(`Role with ID "${missingRole}" was not found`);
+        }
+
+        const unassigned = await Promise.all(
+            roleIds.map(async (roleId) => ({
+                roleId,
+                assigned: await this.isRoleAssignedToUser(roleId, userId),
+            }))
+        );
+
+        const notAssigned = unassigned.filter(({ assigned }) => !assigned);
+
+        if (!isArrayEmpty(notAssigned)) {
+            const roleId = notAssigned[0]!.roleId;
+
+            this.logger.warn(`Cannot bulk-remove: Role "${roleId}" is not assigned to user "${userId}"`);
+            throw new NotFoundException(`User does not have the role "${roleId}" assigned.`);
+        }
+
+        await this.userRoleRepository.removeRolesFromUser(userId, roleIds);
+    }
+
     public async isRoleAssignedToAnyUser(roleId: string) {
         const users = await this.userRoleRepository.findAllUsersByRole(roleId);
         return !isArrayEmpty(users);
