@@ -64,10 +64,10 @@ model Permission {
 
 model RolePermission {
     roleId String @map(name: "role_id")
-    role   Role   @relation(fields: [roleId], references: [id], map: "fk_role_permission_role", onDelete: Cascade)
+    role   Role   @relation(fields: [roleId], references: [id], map: "fk_role_permission", onDelete: Cascade)
 
     permissionId String     @map(name: "permission_id")
-    permission   Permission @relation(fields: [permissionId], references: [id], map: "fk_role_permission_permission", onDelete: Restrict)
+    permission   Permission @relation(fields: [permissionId], references: [id], map: "fk_permission_role", onDelete: Restrict)
 
     @@id(fields: [roleId, permissionId])
     @@map(name: "role_permissions")
