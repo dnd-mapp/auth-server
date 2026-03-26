@@ -104,4 +104,41 @@ export class UserRoleRepository {
         }
         return recordToUserRoleDto(queryResult);
     }
+
+    public async assignRolesToUser(userId: string, roleIds: string[]) {
+        const { error: createError } = await tryCatch(
+            this.databaseService.prisma.userRole.createMany({
+                data: roleIds.map((roleId) => ({ userId: userId, roleId: roleId })),
+                skipDuplicates: true,
+            })
+        );
+
+        if (createError) {
+            this.logger.error(
+                `Database error bulk-assigning roles to user "${userId}": ${createError.message}`,
+                createError.stack
+            );
+            throw new InternalServerErrorException('Failed to bulk-assign roles in database', {
+                cause: createError,
+            });
+        }
+
+        const { data: queryResult, error: fetchError } = await tryCatch(
+            this.databaseService.prisma.userRole.findMany({
+                select: { ...selectedUserRoleAttributes },
+                where: { userId: userId, roleId: { in: roleIds } },
+            })
+        );
+
+        if (fetchError) {
+            this.logger.error(
+                `Database error fetching assigned roles for user "${userId}": ${fetchError.message}`,
+                fetchError.stack
+            );
+            throw new InternalServerErrorException('Failed to retrieve bulk-assigned roles from database', {
+                cause: fetchError,
+            });
+        }
+        return queryResult.map((record) => recordToUserRoleDto(record));
+    }
 }

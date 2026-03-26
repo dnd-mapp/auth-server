@@ -17,9 +17,14 @@ export class MockPrismaUserRoleDB {
         return await Promise.resolve(role ? { userId, roleId, role } : null);
     }
 
-    public async findMany(params: { where?: { userId?: string } }) {
+    public async findMany(params: { where?: { userId?: string; roleId?: { in?: string[] } } }) {
         const userId = params?.where?.userId;
-        const records = userId ? this.db.getForUser(userId) : [];
+        const roleIdIn = params?.where?.roleId?.in;
+        let records = userId ? this.db.getForUser(userId) : [];
+
+        if (roleIdIn) {
+            records = records.filter((r) => roleIdIn.includes(r.roleId));
+        }
 
         const result = records
             .map((r) => {
@@ -29,6 +34,17 @@ export class MockPrismaUserRoleDB {
             .filter(Boolean);
 
         return await Promise.resolve(result);
+    }
+
+    public async createMany(params: { data: { userId: string; roleId: string }[]; skipDuplicates?: boolean }) {
+        let count = 0;
+
+        for (const { userId, roleId } of params.data) {
+            if (params.skipDuplicates && this.db.getByComposite(userId, roleId)) continue;
+            this.db.add(userId, roleId);
+            count++;
+        }
+        return await Promise.resolve({ count });
     }
 
     public async create(params: { data: { userId: string; roleId: string } }) {

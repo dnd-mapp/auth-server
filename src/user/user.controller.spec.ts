@@ -130,4 +130,30 @@ describe('UserController', () => {
             );
         });
     });
+
+    describe('assignRolesToUser (bulk)', () => {
+        it('should return an array of UserRoleDtos', async () => {
+            const { controller, roleDb } = await setupUserTest();
+            const role1 = roleDb.add('editor');
+            const role2 = roleDb.add('viewer');
+            const result = await controller.assignRolesToUser(theLegend27.id, { roleIds: [role1.id, role2.id] });
+            expect(result).toHaveLength(2);
+            expect(result[0]).toBeInstanceOf(UserRoleDto);
+        });
+
+        it('should throw a NotFoundException when user not found', async () => {
+            const { controller, roleDb } = await setupUserTest();
+            const newRole = roleDb.add('editor');
+            await expect(controller.assignRolesToUser(nanoid(), { roleIds: [newRole.id] })).rejects.toBeInstanceOf(
+                NotFoundException
+            );
+        });
+
+        it('should throw a NotFoundException when a role is not found', async () => {
+            const { controller } = await setupUserTest();
+            await expect(controller.assignRolesToUser(theLegend27.id, { roleIds: [nanoid()] })).rejects.toBeInstanceOf(
+                NotFoundException
+            );
+        });
+    });
 });
