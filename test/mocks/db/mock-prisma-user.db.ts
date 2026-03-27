@@ -3,6 +3,7 @@ import { MockUserDB, MockUserRoleDB } from '@/user/test';
 interface UserPayload {
     id: string;
     username: string;
+    email: string;
     password: string;
     roles: { userId: string; roleId: string; role: { id: string; name: string; createdAt: Date; updatedAt: Date } }[];
     createdAt: Date;
@@ -19,6 +20,7 @@ export class MockPrismaUserDB {
     private toPayload(record: {
         id: string;
         username: string;
+        email: string;
         password: string;
         createdAt: Date;
         updatedAt: Date;
@@ -47,7 +49,7 @@ export class MockPrismaUserDB {
         return await Promise.resolve(users.map((u) => this.toPayload(u)));
     }
 
-    public async findUnique(params: { where: { id?: string; username?: string; deletedAt?: null } }) {
+    public async findUnique(params: { where: { id?: string; username?: string; email?: string; deletedAt?: null } }) {
         const { where } = params;
         let record = null;
 
@@ -59,12 +61,14 @@ export class MockPrismaUserDB {
             }
         } else if (where.username !== undefined) {
             record = this.db.getByUsername(where.username);
+        } else if (where.email !== undefined) {
+            record = this.db.getByEmail(where.email);
         }
         return await Promise.resolve(record ? this.toPayload(record) : null);
     }
 
-    public async create(params: { data: { username: string; password: string; roles?: unknown } }) {
-        const record = this.db.add(params.data.username, params.data.password);
+    public async create(params: { data: { username: string; email: string; password: string; roles?: unknown } }) {
+        const record = this.db.add(params.data.username, params.data.email, params.data.password);
         return await Promise.resolve(this.toPayload(record));
     }
 
