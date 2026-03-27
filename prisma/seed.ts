@@ -40,12 +40,12 @@ const permissionNames = [
     'client:delete',
 ] as const;
 
-const roleNames = ['player', 'admin', 'super admin'] as const;
+const roleNames = ['Player', 'Admin', 'Super Admin'] as const;
 
 /** Permissions assigned to each role (zero overlap between roles). */
 const rolePermissions: Record<string, string[]> = {
-    'player': ['user:read', 'user:update', 'user:delete', 'user:manage-roles'],
-    'admin': [
+    'Player': ['user:read', 'user:update', 'user:delete', 'user:manage-roles'],
+    'Admin': [
         'user:create',
         'role:read',
         'permission:read',
@@ -54,7 +54,7 @@ const rolePermissions: Record<string, string[]> = {
         'client:update',
         'client:delete',
     ],
-    'super admin': [
+    'Super Admin': [
         'user:purge',
         'role:create',
         'role:update',
@@ -68,8 +68,8 @@ const rolePermissions: Record<string, string[]> = {
 
 /** Roles assigned to each user. */
 const userRoles: Record<string, string[]> = {
-    admin: ['player', 'admin', 'super admin'],
-    player: ['player'],
+    admin: ['Player', 'Admin', 'Super Admin'],
+    player: ['Player'],
 };
 
 // ---------------------------------------------------------------------------
