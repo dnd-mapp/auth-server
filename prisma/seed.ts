@@ -1,7 +1,5 @@
 import { config } from '@dotenvx/dotenvx';
 import { PrismaMariaDb } from '@prisma/adapter-mariadb';
-import { nanoid } from 'nanoid';
-
 import { PrismaClient } from './client/client';
 
 config({ path: '.env', quiet: true, ignore: ['MISSING_ENV_FILE'] });
@@ -88,7 +86,7 @@ export async function main() {
         const permission = await prisma.permission.upsert({
             where: { name },
             update: {},
-            create: { id: nanoid(), name },
+            create: { name },
         });
 
         permissionIds[name] = permission.id;
@@ -103,7 +101,7 @@ export async function main() {
         const role = await prisma.role.upsert({
             where: { name },
             update: {},
-            create: { id: nanoid(), name },
+            create: { name },
         });
 
         roleIds[name] = role.id;
@@ -135,7 +133,7 @@ export async function main() {
         const user = await prisma.user.upsert({
             where: { username },
             update: {},
-            create: { id: nanoid(), username, password: 'CHANGE_ME' },
+            create: { username, password: 'CHANGE_ME' },
         });
 
         userIds[username] = user.id;
