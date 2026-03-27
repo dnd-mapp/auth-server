@@ -48,11 +48,15 @@ export class UserService {
     }
 
     public async create(data: CreateUserDto) {
-        const { username, roleIds } = data;
+        const { username, email, roleIds } = data;
 
         if (await this.isUsernameTaken(username)) {
             this.logger.warn(`User creation failed: Username "${username}" is already taken`);
             throw new ConflictException(`Username "${username}" is already in use`);
+        }
+        if (await this.isEmailTaken(email)) {
+            this.logger.warn(`User creation failed: Email "${email}" is already taken`);
+            throw new ConflictException(`Email "${email}" is already in use`);
         }
         let roles = await Promise.all(
             roleIds.map(async (roleId) => {
@@ -104,5 +108,13 @@ export class UserService {
     private async isUsernameTaken(username: string, userId?: string) {
         const byUsername = await this.getByUsername(username);
         return byUsername && (!userId || byUsername.id !== userId);
+    }
+
+    private async getByEmail(email: string) {
+        return await this.userRepository.findByEmail(email);
+    }
+
+    private async isEmailTaken(email: string) {
+        return !!(await this.getByEmail(email));
     }
 }

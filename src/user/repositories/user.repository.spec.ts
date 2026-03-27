@@ -1,6 +1,6 @@
 import { nanoid } from 'nanoid';
 import { UserDto } from '../dtos';
-import { setupUserTest, theLegend27 } from '../test';
+import { LEGEND_EMAIL, setupUserTest, theLegend27 } from '../test';
 
 describe('UserRepository', () => {
     describe('findAll', () => {
@@ -58,16 +58,38 @@ describe('UserRepository', () => {
         });
     });
 
+    describe('findByEmail', () => {
+        it('should return a UserDto', async () => {
+            const { repository } = await setupUserTest();
+            expect(await repository.findByEmail(LEGEND_EMAIL)).toBeInstanceOf(UserDto);
+        });
+
+        it('should return null for unknown email', async () => {
+            const { repository } = await setupUserTest();
+            expect(await repository.findByEmail('unknown@example.com')).toBeNull();
+        });
+
+        it('should throw a database error', async () => {
+            const { repository, databaseService } = await setupUserTest();
+            vi.spyOn(databaseService.prisma.user, 'findUnique').mockImplementationOnce(() =>
+                Promise.reject(new Error('not connected'))
+            );
+            await expect(repository.findByEmail(LEGEND_EMAIL)).rejects.toThrow();
+        });
+    });
+
     describe('create', () => {
         it('should return the created UserDto', async () => {
             const { repository } = await setupUserTest();
             const result = await repository.create({
                 username: 'NewUser',
+                email: 'newuser@example.com',
                 roleIds: [],
                 password: '$argon2id$v=19$...(mock hash)',
             });
             expect(result).toBeInstanceOf(UserDto);
             expect(result.username).toBe('NewUser');
+            expect(result.email).toBe('newuser@example.com');
         });
 
         it('should throw a database error', async () => {
@@ -76,7 +98,12 @@ describe('UserRepository', () => {
                 Promise.reject(new Error('not connected'))
             );
             await expect(
-                repository.create({ username: 'NewUser', roleIds: [], password: '$argon2id$v=19$...(mock hash)' })
+                repository.create({
+                    username: 'NewUser',
+                    email: 'newuser@example.com',
+                    roleIds: [],
+                    password: '$argon2id$v=19$...(mock hash)',
+                })
             ).rejects.toThrow();
         });
     });
