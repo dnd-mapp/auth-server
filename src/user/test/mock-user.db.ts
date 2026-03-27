@@ -5,6 +5,7 @@ import { UserBuilder } from '../user.builder';
 interface UserRecord {
     id: string;
     username: string;
+    email: string;
     password: string;
     createdAt: Date;
     updatedAt: Date;
@@ -15,11 +16,13 @@ const SEED_DATE = new Date('2024-01-01T00:00:00.000Z');
 
 export const LEGEND_USER_ID = 'mb9NzZCnMCCrWoETc2_DT';
 export const LEGEND_USERNAME = 'TheLegend27';
+export const LEGEND_EMAIL = 'thelegend27@example.com';
 export const LEGEND_PASSWORD_HASH = '$argon2id$v=19$...(seed hash)';
 
 export const theLegend27 = new UserBuilder()
     .withId(LEGEND_USER_ID)
     .withUsername(LEGEND_USERNAME)
+    .withEmail(LEGEND_EMAIL)
     .withRoles([seedRole])
     .build();
 
@@ -31,6 +34,7 @@ export class MockUserDB {
             [LEGEND_USER_ID]: {
                 id: LEGEND_USER_ID,
                 username: LEGEND_USERNAME,
+                email: LEGEND_EMAIL,
                 password: LEGEND_PASSWORD_HASH,
                 createdAt: SEED_DATE,
                 updatedAt: SEED_DATE,
@@ -51,11 +55,16 @@ export class MockUserDB {
         return Object.values(this.users).find((u) => u.username === username) ?? null;
     }
 
-    public add(username: string, password: string): UserRecord {
+    public getByEmail(email: string): UserRecord | null {
+        return Object.values(this.users).find((u) => u.email === email) ?? null;
+    }
+
+    public add(username: string, email: string, password: string): UserRecord {
         const now = new Date();
         const record: UserRecord = {
             id: nanoid(),
             username,
+            email,
             password,
             createdAt: now,
             updatedAt: now,

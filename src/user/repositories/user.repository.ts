@@ -72,6 +72,26 @@ export class UserRepository {
         return recordToUserDto(queryResult);
     }
 
+    public async findByEmail(email: string) {
+        const { data: queryResult, error } = await tryCatch(
+            this.databaseService.prisma.user.findUnique({
+                select: { ...selectedUserAttributes },
+                where: { email: email },
+            })
+        );
+
+        if (error) {
+            this.logger.error(`Failed to fetch user with email "${email}"`, error.stack);
+            throw new InternalServerErrorException('An unexpected error occurred while retrieving the user record', {
+                cause: error,
+            });
+        }
+        if (!queryResult) {
+            return null;
+        }
+        return recordToUserDto(queryResult);
+    }
+
     public async update(id: string, data: UpdateUserDto) {
         const { username } = data;
 
@@ -95,13 +115,14 @@ export class UserRepository {
     }
 
     public async create(data: CreateUserDto) {
-        const { username, roleIds, password } = data;
+        const { username, email, roleIds, password } = data;
 
         const { data: created, error } = await tryCatch(
             this.databaseService.prisma.user.create({
                 select: { ...selectedUserAttributes },
                 data: {
                     username: username,
+                    email: email,
                     password: password,
                     roles: {
                         createMany: {

@@ -12,6 +12,7 @@ export class UserBuilder {
         this.user = {
             id: id,
             username: `user-${id}`,
+            email: `user-${id}@example.com`,
             roles: [],
             createdAt: timestamp,
             updatedAt: timestamp,
@@ -30,6 +31,11 @@ export class UserBuilder {
 
     public withUsername(username: string) {
         this.user.username = username;
+        return this;
+    }
+
+    public withEmail(email: string) {
+        this.user.email = email;
         return this;
     }
 

@@ -1,7 +1,7 @@
 import { RoleDto } from '@/role/dtos';
 import { User } from '@/user/domain';
 import { Exclude } from 'class-transformer';
-import { IsArray, IsDate, IsNotEmpty, IsString, MinLength, ValidateNested } from 'class-validator';
+import { IsArray, IsDate, IsEmail, IsNotEmpty, IsString, MinLength, ValidateNested } from 'class-validator';
 
 export class UserDto implements User {
     /**
@@ -20,6 +20,15 @@ export class UserDto implements User {
     @IsNotEmpty()
     @IsString()
     public username!: string;
+
+    /**
+     * The email address of the account
+     * @example 'dragonslayer88@example.com'
+     */
+    @IsEmail()
+    @IsNotEmpty()
+    @IsString()
+    public email!: string;
 
     @Exclude()
     public password!: string;
