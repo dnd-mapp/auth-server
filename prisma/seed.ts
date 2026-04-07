@@ -5,11 +5,11 @@ import { PrismaClient } from './client/client';
 config({ path: '.env', quiet: true, ignore: ['MISSING_ENV_FILE'] });
 
 const adapter = new PrismaMariaDb({
-    host: process.env['PRISMA_DB_HOST'],
+    host: process.env['AUTH_SERVER_DB_HOST'],
     port: Number.parseInt(process.env['AUTH_SERVER_DB_PORT']!),
     database: process.env['AUTH_SERVER_DB_SCHEMA'],
-    user: process.env['PRISMA_DB_USER'],
-    password: process.env['PRISMA_DB_PASSWORD'],
+    user: process.env['AUTH_SERVER_DB_USER'],
+    password: process.env['AUTH_SERVER_DB_PASSWORD'],
 });
 
 const prisma = new PrismaClient({ adapter: adapter });

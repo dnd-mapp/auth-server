@@ -19,86 +19,16 @@ docker run -d \
   --name auth-server \
   -p 4350:4350 \
   -e NODE_ENV=production \
-  -e DB_URL="mysql://user:password@host:3306/auth_db" \
+  -e AUTH_SERVER_DB_HOST=host \
+  -e AUTH_SERVER_DB_PORT=3306 \
+  -e AUTH_SERVER_DB_USER=user \
+  -e AUTH_SERVER_DB_PASSWORD=password \
+  -e AUTH_SERVER_DB_SCHEMA=auth_db \
   dndmapp/auth-server:latest
 ```
 
----
-
-## 🏗️ Full Stack Deployment
-
-For a complete environment including the database, migrations, and management tools, use the provided Docker Compose configuration.
-
-### 1. Configuration Setup
-
-Prepare your environment by creating the following files based on these examples:
-
-#### **Environment Variables (`.env`)**
-
-Create a `.env` file in your root directory. This configuration links the NestJS application to the MariaDB container.
-
-```text
-# CORS Configuration
-AUTH_SERVER_CORS_ORIGINS="https://localhost.www.dndmapp.dev:4200"
-
-# Database Configuration
-AUTH_SERVER_DB_HOST="mariadb-server"
-AUTH_SERVER_DB_PORT="3306"
-AUTH_SERVER_DB_USER="admin"
-AUTH_SERVER_DB_PASSWORD="password123"
-AUTH_SERVER_DB_SCHEMA="auth_db"
-
-PRISMA_DB_HOST="mariadb-server"
-PRISMA_DB_USER="prisma"
-PRISMA_DB_PASSWORD="prisma-password"
-
-# Connection String used by Prisma
-DB_URL="mysql://${PRISMA_DB_USER}:${PRISMA_DB_PASSWORD}@${PRISMA_DB_HOST}:${AUTH_SERVER_DB_PORT}/${AUTH_SERVER_DB_SCHEMA}"
-```
-
-#### **Database Initialization (`mariadb-init.sql`)**
-
-This script sets up the necessary users and databases during the first boot of the MariaDB container.
-
-```sql
--- 1. Create database users
-CREATE USER IF NOT EXISTS 'prisma'@'%' IDENTIFIED BY 'prisma-password';
-CREATE USER IF NOT EXISTS 'admin'@'%' IDENTIFIED BY 'password123';
-
--- 2. Create application database and grant privileges
-CREATE DATABASE IF NOT EXISTS `auth_db`
-    CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
-GRANT ALL PRIVILEGES ON `auth_db`.* TO 'prisma'@'%';
-GRANT SELECT, INSERT, UPDATE, DELETE ON `auth_db`.* TO 'admin'@'%';
-
--- 3. Create shadow database for Prisma migrations (Only required for non-production environments)
-CREATE DATABASE IF NOT EXISTS `auth_db_shadow`
-    CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
-GRANT ALL PRIVILEGES ON `auth_db_shadow`.* TO 'prisma'@'%';
-
--- 4. Apply privileges
-FLUSH PRIVILEGES;
-```
-
-#### **Secrets**
-
-Create the root password file for MariaDB:
-
-```bash
-mkdir -p secrets/mariadb
-echo "your_root_password" > ./secrets/mariadb/root.txt
-```
-
-### 2. Orchestration Details
-
-The stack includes:
-
-- **auth-server:** The NestJS application.
-- **db-migration:** A short-lived container that runs `prisma migrate deploy` and `prisma db seed` before the server starts.
-- **mariadb-server:** The primary data store with health checks.
-- **dbeaver:** A web-based database management GUI (CloudBeaver) available on port `8978`.
+> [!NOTE]
+> For a full local development stack (MariaDB, migrations, DBeaver), use [dnd-mapp/dnd-mapp-stack](https://github.com/dnd-mapp/dnd-mapp-stack).
 
 ---
 
@@ -149,4 +79,4 @@ This image is built using **Docker Buildx** to support multi-arch deployments:
 
 ---
 
-*“Critical hit on security. Roll for initiative!”*
+*"Critical hit on security. Roll for initiative!"*
