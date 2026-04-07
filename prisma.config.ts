@@ -3,7 +3,9 @@ import { defineConfig } from 'prisma/config';
 
 config({ path: '.env', quiet: true, ignore: ['MISSING_ENV_FILE'] });
 
-const dbUrl = process.env['DB_URL'];
+const { AUTH_SERVER_DB_USER, AUTH_SERVER_DB_PASSWORD, AUTH_SERVER_DB_HOST, AUTH_SERVER_DB_PORT, AUTH_SERVER_DB_SCHEMA } =
+    process.env;
+const dbUrl = `mysql://${AUTH_SERVER_DB_USER}:${AUTH_SERVER_DB_PASSWORD}@${AUTH_SERVER_DB_HOST}:${AUTH_SERVER_DB_PORT}/${AUTH_SERVER_DB_SCHEMA}`;
 
 export default defineConfig({
     schema: 'prisma/schema.prisma',
