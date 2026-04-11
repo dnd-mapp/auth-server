@@ -84,20 +84,13 @@ Interactive documentation is automatically generated via Swagger.
 
 - **Node.js:** v24+
 - **pnpm:** v10.33.0+
-- **mise:** To automatically manage Node.js and pnpm versions. [Install instructions](https://mise.jdx.dev/getting-started.html).
-- **mkcert:** For generating local SSL certificates. [Install instructions](https://github.com/FiloSottile/mkcert#installation).
+- **mise:** To automatically manage Node.js and pnpm versions. See the [Mise Configuration Guide](https://github.com/dnd-mapp/.github/blob/main/docs/mise-configuration.md) for setup instructions.
+- **mkcert:** For generating local SSL certificates. See the [Self-Signed Certificates](https://github.com/dnd-mapp/.github/blob/main/docs/self-signed-certificates.md) guide for setup instructions.
 - **Database:** A running MariaDB instance. Use [dnd-mapp/dnd-mapp-stack](https://github.com/dnd-mapp/dnd-mapp-stack) to spin one up locally.
 
 ### Local Networking Setup
 
-During development, the server is configured to be served via a custom local hostname to support secure cookie sharing across subdomains.
-
-You must map `localhost.auth.dndmapp.dev` to your local loopback address. Edit your hosts file:
-
-- **Windows:** `C:\Windows\System32\drivers\etc\hosts`
-- **Linux/macOS:** `/etc/hosts`
-
-Add the following line:
+During development, the server is configured to be served via a custom local hostname to support secure cookie sharing across subdomains. Follow the [Local DNS Setup](https://github.com/dnd-mapp/.github/blob/main/docs/local-dns-setup.md) guide, then add the following entry for this service:
 
 ```text
 127.0.0.1 localhost.auth.dndmapp.dev
@@ -108,19 +101,11 @@ Add the following line:
 
 ### Local HTTPS Setup
 
-To support secure cookies and PKCE flows locally, the server must run over HTTPS during development. We use `mkcert` to manage locally trusted certificates.
+To support secure cookies and PKCE flows locally, the server must run over HTTPS during development. Follow the [Self-Signed Certificates](https://github.com/dnd-mapp/.github/blob/main/docs/self-signed-certificates.md) guide to install `mkcert` and set up the local CA, then generate the certificates for this service:
 
-1. **Install the local CA:**
-
-   ```bash
-   mkcert -install
-   ```
-
-2. **Generate certificates:**
-
-   ```bash
-   pnpm gen:ssl-certs
-   ```
+```bash
+pnpm gen:ssl-certs
+```
 
 ### Installation & Run
 
