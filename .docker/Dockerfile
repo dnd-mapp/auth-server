@@ -1,4 +1,4 @@
-FROM --platform=$BUILDPLATFORM node:24.14.0 AS base
+FROM --platform=$BUILDPLATFORM node:24.15.0 AS base
 
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
@@ -23,8 +23,8 @@ RUN pnpm gen:prisma && \
     pnpm build
 
 
-FROM node:24.14.0 AS packager
-     
+FROM node:24.15.0 AS packager
+
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 
@@ -46,7 +46,7 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
     pnpm install
 
 
-FROM node:24.14.0-alpine3.23
+FROM node:24.15.0-alpine3.23
 
 ENV NODE_ENV="production"
 
