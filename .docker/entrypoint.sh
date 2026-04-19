@@ -5,7 +5,7 @@ set -e
 # Resolve Docker secrets using the _FILE suffix convention.
 # For each supported secret, if the _FILE variant is set and the base variable is not,
 # the file content is read and exported as the base variable.
-for secret in AUTH_SERVER_DB_PASSWORD AUTH_SERVER_PASSWORD_PEPPER; do
+for secret in AUTH_SERVER_DB_PASSWORD AUTH_SERVER_PASSWORD_PEPPER PRISMA_DB_PASSWORD; do
     file_var="${secret}_FILE"
     file_path="$(printenv "$file_var" 2>/dev/null || true)"
 
