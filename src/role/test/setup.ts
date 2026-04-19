@@ -1,5 +1,5 @@
-import { DatabaseService } from '@/database';
 import { MockPrisma, createTestModule } from '@/test';
+import { DatabaseService } from '@dnd-mapp/shared-backend';
 import { RolePermissionRepository } from '../repositories/role-permission.repository';
 import { RoleRepository } from '../repositories/role.repository';
 import { RoleController } from '../role.controller';

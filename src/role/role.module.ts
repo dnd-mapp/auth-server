@@ -1,6 +1,6 @@
-import { DatabaseModule } from '@/database';
 import { PermissionModule } from '@/permission/permission.module';
 import { UserModule } from '@/user/user.module';
+import { DatabaseModule } from '@dnd-mapp/shared-backend';
 import { forwardRef, Module } from '@nestjs/common';
 import { RolePermissionRepository, RoleRepository } from './repositories';
 import { RoleController } from './role.controller';

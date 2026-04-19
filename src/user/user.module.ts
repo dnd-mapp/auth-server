@@ -1,6 +1,6 @@
-import { DatabaseModule } from '@/database';
 import { PasswordModule } from '@/password';
 import { RoleModule } from '@/role/role.module';
+import { DatabaseModule } from '@dnd-mapp/shared-backend';
 import { forwardRef, Module } from '@nestjs/common';
 import { UserRepository, UserRoleRepository } from './repositories';
 import { UserRoleService, UserService } from './services';

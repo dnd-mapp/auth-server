@@ -1,5 +1,5 @@
-import { DatabaseService } from '@/database';
 import { MockPrisma, createTestModule } from '@/test';
+import { DatabaseService } from '@dnd-mapp/shared-backend';
 import { PermissionController } from '../permission.controller';
 import { PermissionModule } from '../permission.module';
 import { PermissionRepository } from '../permission.repository';

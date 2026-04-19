@@ -1,4 +1,4 @@
-import { AppConfig, ConfigurationNamespaces, SecurityConfig } from '@/common';
+import { AppConfig, AppConfigurationNamespaces, SecurityConfig } from '@/common';
 import { Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ARGON2 } from './tokens';
@@ -14,12 +14,12 @@ export class PasswordService {
     }
 
     async hash(password: string): Promise<string> {
-        const config: SecurityConfig = this.configService.get(ConfigurationNamespaces.SECURITY, { infer: true });
+        const config: SecurityConfig = this.configService.get(AppConfigurationNamespaces.SECURITY, { infer: true });
         return this.argon2.hash(password, { secret: Buffer.from(config.passwordPepper) });
     }
 
     async verify(hash: string, password: string): Promise<boolean> {
-        const config: SecurityConfig = this.configService.get(ConfigurationNamespaces.SECURITY, { infer: true });
+        const config: SecurityConfig = this.configService.get(AppConfigurationNamespaces.SECURITY, { infer: true });
         return this.argon2.verify(hash, password, { secret: Buffer.from(config.passwordPepper) });
     }
 }

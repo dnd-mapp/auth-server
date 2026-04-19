@@ -1,9 +1,9 @@
-import { DatabaseService } from '@/database';
 import { MockPrisma, createTestModule } from '@/test';
+import { DatabaseService } from '@dnd-mapp/shared-backend';
 import { ClientController } from '../client.controller';
 import { ClientModule } from '../client.module';
-import { ClientRepository } from '../repositories/client.repository';
-import { ClientService } from '../services/client.service';
+import { ClientRepository } from '../repositories';
+import { ClientService } from '../services';
 
 export async function setupClientTest() {
     const module = await createTestModule(ClientModule);

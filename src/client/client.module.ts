@@ -1,4 +1,4 @@
-import { DatabaseModule } from '@/database';
+import { DatabaseModule } from '@dnd-mapp/shared-backend';
 import { Module } from '@nestjs/common';
 import { ClientController } from './client.controller';
 import { ClientRepository } from './repositories';

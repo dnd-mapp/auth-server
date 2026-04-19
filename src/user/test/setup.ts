@@ -1,12 +1,10 @@
-import { DatabaseModule, DatabaseService } from '@/database';
 import { ARGON2 } from '@/password';
 import { MockArgon2, MockConfigService, MockPrisma } from '@/test';
+import { DatabaseModule, DatabaseService } from '@dnd-mapp/shared-backend';
 import { ConfigService } from '@nestjs/config';
 import { Test } from '@nestjs/testing';
-import { UserRoleRepository } from '../repositories/user-role.repository';
-import { UserRepository } from '../repositories/user.repository';
-import { UserRoleService } from '../services/user-role.service';
-import { UserService } from '../services/user.service';
+import { UserRepository, UserRoleRepository } from '../repositories';
+import { UserRoleService, UserService } from '../services';
 import { UserController } from '../user.controller';
 import { UserModule } from '../user.module';
 
