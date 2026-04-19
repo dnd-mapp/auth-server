@@ -1,14 +1,13 @@
 import { MockConfigService, MockPrisma } from '@/test';
-import { DatabaseModule } from '@dnd-mapp/shared-backend';
+import { DatabaseModule, HealthModule } from '@dnd-mapp/shared-backend';
 import { ConfigService } from '@nestjs/config';
 import { Test } from '@nestjs/testing';
 import { HealthController } from './health.controller';
-import { HealthModule } from './health.module';
 
 describe('HealthController', () => {
     async function setupTest() {
         const module = await Test.createTestingModule({
-            imports: [DatabaseModule.forRoot(MockPrisma), HealthModule],
+            imports: [DatabaseModule.forRoot(MockPrisma), HealthModule.forRoot(HealthController)],
         })
             .overrideProvider(ConfigService)
             .useFactory({
