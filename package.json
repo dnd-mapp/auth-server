@@ -47,7 +47,7 @@
     "@dnd-mapp/shared-utils": "~1.2.0",
     "@dotenvx/dotenvx": "~1.61.0",
     "@fastify/helmet": "~13.0.2",
-    "@fastify/static": "~9.1.0",
+    "@fastify/static": "~9.1.1",
     "@nestjs/common": "~11.1.19",
     "@nestjs/config": "~4.0.4",
     "@nestjs/core": "~11.1.19",
