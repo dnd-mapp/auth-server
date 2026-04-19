@@ -1,11 +1,12 @@
-import { ConfigurationNamespaces, ServerConfig, SslConfig } from '@/common';
-import { parseArrayFromString, parseInteger } from '@/shared-utils';
+import { AppConfigurationNamespaces } from '@/common';
+import { DEFAULT_SERVER_HOST, ServerConfig, SslConfig } from '@dnd-mapp/shared-backend';
+import { parseArrayFromString, parseInteger } from '@dnd-mapp/shared-utils';
 import { registerAs } from '@nestjs/config';
 import { readFile } from 'fs/promises';
-import { DEFAULT_CORS_ORIGINS, DEFAULT_SERVER_HOST, DEFAULT_SERVER_PORT } from '../constants';
+import { DEFAULT_CORS_ORIGINS, DEFAULT_SERVER_PORT } from '../constants';
 import { EnvironmentVariableNames } from '../validation/environment-variables.schema';
 
-export const serverConfig = registerAs<ServerConfig>(ConfigurationNamespaces.SERVER, async () => {
+export const serverConfig = registerAs<ServerConfig>(AppConfigurationNamespaces.SERVER, async () => {
     const sslCertPath = process.env[EnvironmentVariableNames.SSL_CERT_PATH];
     const sslKeyPath = process.env[EnvironmentVariableNames.SSL_KEY_PATH];
 
@@ -17,7 +18,7 @@ export const serverConfig = registerAs<ServerConfig>(ConfigurationNamespaces.SER
     }
     return {
         host: process.env[EnvironmentVariableNames.SERVER_HOST] ?? DEFAULT_SERVER_HOST,
-        port: parseInteger(DEFAULT_SERVER_PORT, process.env[EnvironmentVariableNames.SERVER_PORT]),
+        port: parseInteger(process.env[EnvironmentVariableNames.SERVER_PORT] ?? null, DEFAULT_SERVER_PORT),
         cors: {
             origins: parseArrayFromString(DEFAULT_CORS_ORIGINS, process.env[EnvironmentVariableNames.CORS_ORIGINS]),
         },

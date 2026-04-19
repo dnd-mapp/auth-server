@@ -26,7 +26,6 @@
         "paths": {
             "@/app": ["src/app/index.ts"],
             "@/common": ["src/common/index.ts"],
-            "@/database": ["src/database/index.ts"],
             "@/permission/domain": ["src/permission/domain/index.ts"],
             "@/permission/test": ["src/permission/test/index.ts"],
             "@/permission/*": ["src/permission/*"],

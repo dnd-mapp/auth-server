@@ -1,5 +1,5 @@
-import { DatabaseModule } from '@/database';
 import { MockConfigService, MockPrisma } from '@/test';
+import { DatabaseModule } from '@dnd-mapp/shared-backend';
 import { Type } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';

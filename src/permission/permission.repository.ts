@@ -1,5 +1,5 @@
-import { DatabaseService } from '@/database';
 import { Prisma, PrismaClient, Permission as PrismaPermission } from '@/prisma/client';
+import { DatabaseService } from '@dnd-mapp/shared-backend';
 import { tryCatch } from '@dnd-mapp/shared-utils';
 import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
 import { CreatePermissionDto, PermissionDto, UpdatePermissionDto } from './dtos';
