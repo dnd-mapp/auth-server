@@ -18,17 +18,71 @@ Launch a standalone instance. This requires an existing MariaDB/MySQL instance.
 docker run -d \
   --name auth-server \
   -p 4350:4350 \
-  -e NODE_ENV=production \
   -e AUTH_SERVER_DB_HOST=host \
   -e AUTH_SERVER_DB_PORT=3306 \
   -e AUTH_SERVER_DB_USER=user \
   -e AUTH_SERVER_DB_PASSWORD=password \
   -e AUTH_SERVER_DB_SCHEMA=auth_db \
+  -e AUTH_SERVER_PASSWORD_PEPPER=pepper \
   dndmapp/auth-server:latest
 ```
 
 > [!NOTE]
 > For a full local development stack (MariaDB, migrations, DBeaver), use [dnd-mapp/dnd-mapp-stack](https://github.com/dnd-mapp/dnd-mapp-stack).
+
+---
+
+## 🔑 Run Modes
+
+The container entrypoint accepts a single command argument that selects the run mode.
+
+| Command               | Behaviour                                                                                               |
+|:----------------------|:--------------------------------------------------------------------------------------------------------|
+| `serve` *(default)*   | Runs database migrations, seeds the database, then starts the application.                              |
+| `migrate`             | Runs database migrations and seeds the database, then exits.                                            |
+| *(any other command)* | Passes the command through directly without running migrations (e.g. `node /app/main.js` for app-only). |
+
+```bash
+# Default: migrate + app (equivalent to passing "serve")
+docker run dndmapp/auth-server:latest
+
+# Migrations only (e.g. in an init container)
+docker run dndmapp/auth-server:latest migrate
+
+# App only, no migrations
+docker run dndmapp/auth-server:latest node /app/main.js
+```
+
+---
+
+## 🔒 Docker Secrets
+
+Sensitive environment variables support the `_FILE` suffix convention for use with [Docker secrets](https://docs.docker.com/engine/swarm/secrets/) or any secret mounted as a file. When a `_FILE` variant is set and the base variable is **not** yet set, the entrypoint reads the file and exports its content as the base variable.
+
+| Secret variable               | `_FILE` variant                      |
+|:------------------------------|:-------------------------------------|
+| `AUTH_SERVER_DB_PASSWORD`     | `AUTH_SERVER_DB_PASSWORD_FILE`       |
+| `AUTH_SERVER_PASSWORD_PEPPER` | `AUTH_SERVER_PASSWORD_PEPPER_FILE`   |
+
+### Example with Docker Compose secrets
+
+```yaml
+services:
+  auth-server:
+    image: dndmapp/auth-server:latest
+    environment:
+      AUTH_SERVER_DB_PASSWORD_FILE: /run/secrets/db_password
+      AUTH_SERVER_PASSWORD_PEPPER_FILE: /run/secrets/password_pepper
+    secrets:
+      - db_password
+      - password_pepper
+
+secrets:
+  db_password:
+    external: true
+  password_pepper:
+    external: true
+```
 
 ---
 
@@ -79,4 +133,4 @@ This image is built using **Docker Buildx** to support multi-arch deployments:
 
 ---
 
-*"Critical hit on security. Roll for initiative!"*
+_"Critical hit on security. Roll for initiative!"_
