@@ -76,8 +76,10 @@ model RolePermission {
 }
 
 model Client {
-    id   String @id @default(nanoid())
-    name String @unique(map: "uq_client_name")
+    id           String  @id @default(nanoid())
+    name         String  @unique(map: "uq_client_name")
+    clientType   String  @default("public") @map(name: "client_type")
+    clientSecret String? @map(name: "client_secret")
 
     createdAt DateTime @default(now()) @map(name: "created_at")
     updatedAt DateTime @updatedAt @map(name: "updated_at")
