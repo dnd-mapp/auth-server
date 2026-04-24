@@ -1,5 +1,4 @@
 import { AppConfig, AppConfigurationNamespaces, SecurityConfig } from '@/common';
-import { tryCatch } from '@dnd-mapp/shared-utils';
 import { Injectable, Logger, OnApplicationBootstrap } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { createCipheriv, createDecipheriv, randomBytes } from 'crypto';
@@ -75,13 +74,17 @@ export class KeyService implements OnApplicationBootstrap {
 
     private decryptPrivateKey(encrypted: string): string {
         const secret = this.getEncryptionSecret();
+
         const [ivHex, authTagHex, ciphertextHex] = encrypted.split(':');
-        const iv = Buffer.from(ivHex, 'hex');
-        const authTag = Buffer.from(authTagHex, 'hex');
-        const ciphertext = Buffer.from(ciphertextHex, 'hex');
+        const iv = Buffer.from(ivHex!, 'hex');
+        const authTag = Buffer.from(authTagHex!, 'hex');
+        const ciphertext = Buffer.from(ciphertextHex!, 'hex');
+
         const decipher = createDecipheriv(ENCRYPTION_ALGORITHM, secret, iv);
+
         decipher.setAuthTag(authTag);
-        return decipher.update(ciphertext) + decipher.final('utf-8');
+
+        return decipher.update(ciphertext).toString('utf-8') + decipher.final('utf-8');
     }
 
     private getEncryptionSecret(): Buffer {

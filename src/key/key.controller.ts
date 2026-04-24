@@ -23,9 +23,7 @@ export class KeyController {
     @Get('/openid-configuration')
     public getOpenIdConfiguration() {
         this.logger.log('Fetching OIDC discovery document');
-        const { issuer } = this.configService.get<SecurityConfig>(AppConfigurationNamespaces.SECURITY, {
-            infer: true,
-        });
+        const { issuer } = this.configService.get<SecurityConfig>(AppConfigurationNamespaces.SECURITY);
 
         return {
             issuer,
