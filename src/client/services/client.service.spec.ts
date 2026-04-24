@@ -26,16 +26,20 @@ describe('ClientService', () => {
     describe('create', () => {
         it('should return the created ClientDto', async () => {
             const { service } = await setupClientTest();
-            const result = await service.create({ name: 'new-client', allowedUris: ['https://example.com'], clientType: 'public' });
+            const result = await service.create({
+                name: 'new-client',
+                allowedUris: ['https://example.com'],
+                clientType: 'public',
+            });
             expect(result).toBeInstanceOf(ClientDto);
             expect(result.name).toBe('new-client');
         });
 
         it('should throw a ConflictException when name is taken', async () => {
             const { service } = await setupClientTest();
-            await expect(service.create({ name: seedClient.name, allowedUris: [], clientType: 'public' })).rejects.toBeInstanceOf(
-                ConflictException
-            );
+            await expect(
+                service.create({ name: seedClient.name, allowedUris: [], clientType: 'public' })
+            ).rejects.toBeInstanceOf(ConflictException);
         });
 
         it('should throw a BadRequestException when creating a confidential client without a secret', async () => {
@@ -79,9 +83,9 @@ describe('ClientService', () => {
 
         it('should throw a NotFoundException when not found', async () => {
             const { service } = await setupClientTest();
-            await expect(service.update(nanoid(), { name: 'updated-client', allowedUris: [], clientType: 'public' })).rejects.toBeInstanceOf(
-                NotFoundException
-            );
+            await expect(
+                service.update(nanoid(), { name: 'updated-client', allowedUris: [], clientType: 'public' })
+            ).rejects.toBeInstanceOf(NotFoundException);
         });
 
         it('should throw a ConflictException when name is taken', async () => {
