@@ -12,7 +12,8 @@ AppModule
 ├── DatabaseModule        — Prisma client DI (dynamic module, real + mock)
 ├── UserModule            — User CRUD + soft delete + role assignment
 ├── RoleModule            — Role CRUD
-└── PermissionModule      — Permission CRUD
+├── PermissionModule      — Permission CRUD
+└── ClientModule          — OAuth client CRUD + type/secret enforcement
 ```
 
 ## Key Design Patterns
@@ -35,7 +36,7 @@ Coverage excludes `*.module.ts`, `main.ts`, `*/index.ts`, and `*/config/**/*.ts`
 
 MariaDB via Prisma 7 with `@prisma/adapter-mariadb`. Schema: `prisma/schema.prisma`.
 
-Models: `User` (soft delete via `deletedAt`), `Role`, `Permission`, `UserRole` (junction, composite PK). All IDs are nanoid strings (not auto-increment integers).
+Models: `User` (soft delete via `deletedAt`), `Role`, `Permission`, `UserRole` (junction, composite PK), `Client` (`clientType`: `public` | `confidential`, optional Argon2-hashed `clientSecret`), `ClientAllowedUri` (one-to-many on `Client`). All IDs are nanoid strings (not auto-increment integers).
 
 Migration files live in `prisma/migrations/` — always use `pnpm prisma:migrate-dev` to create new ones.
 
@@ -62,8 +63,9 @@ pnpm gen:ssl-certs            # Generate ssl-cert.pem + ssl-key.pem
 - Helmet with custom CSP (allows Swagger UI inline scripts)
 - CORS with dynamic origin validation and credentials
 - Three-tier throttling applied globally
-- Argon2 password hashing
+- Argon2 password hashing (users and confidential client secrets)
 - PKCE-enforced Authorization Code Flow
+- Client type enforcement: public clients must not have a secret; confidential clients must have one
 
 ## Docker
 
