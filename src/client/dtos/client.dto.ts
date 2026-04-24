@@ -1,5 +1,6 @@
 import { Client } from '@/client/domain';
-import { IsArray, IsDate, IsNotEmpty, IsString, IsUrl, MinLength } from 'class-validator';
+import { IsArray, IsDate, IsEnum, IsNotEmpty, IsString, IsUrl, MinLength } from 'class-validator';
+import { ClientType, ClientTypes } from '../client.constants';
 
 export class ClientDto implements Client {
     /**
@@ -18,6 +19,13 @@ export class ClientDto implements Client {
     @IsNotEmpty()
     @IsString()
     public name!: string;
+
+    /**
+     * The OAuth 2.0 client type.
+     * @example 'public'
+     */
+    @IsEnum(ClientTypes)
+    public clientType!: ClientType;
 
     /**
      * The list of allowed redirect URIs for the client.
