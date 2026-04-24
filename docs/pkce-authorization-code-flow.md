@@ -147,14 +147,15 @@ sequenceDiagram
 
 OAuth 2.0 clients are registered as either **public** or **confidential**.
 
-| | Public | Confidential |
-|---|---|---|
-| Example | Browser SPA, login frontend | Server-to-server backends |
-| `clientSecret` | Not allowed — must be `null` | Required — Argon2-hashed at rest |
-| Authentication | PKCE verifier alone | `Authorization: Basic <base64(client_id:secret)>` (`client_secret_basic` only) |
-| PKCE required | Yes | Yes |
+|                | Public                       | Confidential                                                                   |
+|----------------|------------------------------|--------------------------------------------------------------------------------|
+| Example        | Browser SPA, login frontend  | Server-to-server backends                                                      |
+| `clientSecret` | Not allowed — must be `null` | Required — Argon2-hashed at rest                                               |
+| Authentication | PKCE verifier alone          | `Authorization: Basic <base64(client_id:secret)>` (`client_secret_basic` only) |
+| PKCE required  | Yes                          | Yes                                                                            |
 
 Enforcement rules (applied in `ClientService`):
+
 - Creating or updating a **public** client with a secret returns `400`.
 - Creating or updating a **confidential** client without a secret returns `400`.
 - `client_secret_post` (secret in request body) is rejected; only `client_secret_basic` is accepted.
