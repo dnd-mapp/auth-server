@@ -13,7 +13,8 @@ AppModule
 ├── UserModule            — User CRUD + soft delete + role assignment
 ├── RoleModule            — Role CRUD
 ├── PermissionModule      — Permission CRUD
-└── ClientModule          — OAuth client CRUD + type/secret enforcement
+├── ClientModule          — OAuth client CRUD + type/secret enforcement
+└── KeyModule             — RS512 signing key lifecycle, JWKS + OIDC discovery endpoints
 ```
 
 ## Key Design Patterns
@@ -36,7 +37,7 @@ Coverage excludes `*.module.ts`, `main.ts`, `*/index.ts`, and `*/config/**/*.ts`
 
 MariaDB via Prisma 7 with `@prisma/adapter-mariadb`. Schema: `prisma/schema.prisma`.
 
-Models: `User` (soft delete via `deletedAt`), `Role`, `Permission`, `UserRole` (junction, composite PK), `Client` (`clientType`: `public` | `confidential`, optional Argon2-hashed `clientSecret`), `ClientAllowedUri` (one-to-many on `Client`). All IDs are nanoid strings (not auto-increment integers).
+Models: `User` (soft delete via `deletedAt`), `Role`, `Permission`, `UserRole` (junction, composite PK), `Client` (`clientType`: `public` | `confidential`, optional Argon2-hashed `clientSecret`), `ClientAllowedUri` (one-to-many on `Client`), `SigningKey` (RS512 keypair; `kid` nanoid PK, encrypted `privateKey`, PEM `publicKey`, nullable `revokedAt`). All IDs are nanoid strings (not auto-increment integers).
 
 Migration files live in `prisma/migrations/` — always use `pnpm prisma:migrate-dev` to create new ones.
 
@@ -49,7 +50,12 @@ pnpm gen:prisma               # Regenerate Prisma client
 
 ## Configuration
 
-Environment variables are validated at startup via `src/app/config/validation/environment-variables.schema.ts`. Config is split into typed namespaces (`serverConfig`, `databaseConfig`) registered in `ConfigModule`.
+Environment variables are validated at startup via `src/app/config/validation/environment-variables.schema.ts`. Config is split into typed namespaces (`serverConfig`, `databaseConfig`, `securityConfig`) registered in `ConfigModule`.
+
+| Variable | Namespace | Purpose |
+| --- | --- | --- |
+| `AUTH_SERVER_ISSUER` | `security` | Base URL used as the OIDC `issuer` claim and to build well-known endpoint URLs |
+| `AUTH_SERVER_KEY_ENCRYPTION_SECRET` | `security` | Secret used to AES-256-GCM encrypt private signing keys at rest |
 
 Requires a local `/etc/hosts` entry: `127.0.0.1 localhost.auth.dndmapp.dev` for HTTPS and cookie sharing.
 
@@ -66,6 +72,8 @@ pnpm gen:ssl-certs            # Generate ssl-cert.pem + ssl-key.pem
 - Argon2 password hashing (users and confidential client secrets)
 - PKCE-enforced Authorization Code Flow
 - Client type enforcement: public clients must not have a secret; confidential clients must have one
+- RS512 signing keys generated on bootstrap, private keys AES-256-GCM encrypted at rest; public keys served via `GET /.well-known/jwks.json`
+- OIDC discovery document at `GET /.well-known/openid-configuration`
 
 ## Docker
 
