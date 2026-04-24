@@ -62,6 +62,7 @@
     "class-transformer": "~0.5.1",
     "class-validator": "~0.15.1",
     "fastify": "~5.8.5",
+    "jose": "~6.2.2",
     "mariadb": "~3.5.2",
     "nanoid": "~5.1.9",
     "prisma": "~7.7.0",
