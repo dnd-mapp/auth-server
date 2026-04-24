@@ -1,6 +1,6 @@
+import { ClientTypes } from '@/client/domain';
 import { PasswordService } from '@/password';
 import { BadRequestException, ConflictException, Injectable, Logger, NotFoundException } from '@nestjs/common';
-import { ClientTypes } from '../client.constants';
 import { CreateClientDto, UpdateClientDto } from '../dtos';
 import { ClientRepository } from '../repositories';
 
@@ -93,7 +93,7 @@ export class ClientService {
         };
     }
 
-    private validateSecretConstraints(clientType: string, clientSecret?: string) {
+    private validateSecretConstraints(clientType: string, clientSecret: string | null) {
         if (clientType === ClientTypes.CONFIDENTIAL && !clientSecret) {
             throw new BadRequestException('Confidential clients must provide a client_secret');
         }
