@@ -4,106 +4,108 @@
 // Get a free hosted Postgres database in seconds: `npx create-db`
 
 generator client {
-  importFileExtension = ""
-  output              = "./client"
-  provider            = "prisma-client"
+    importFileExtension = ""
+    output              = "./client"
+    provider            = "prisma-client"
 }
 
 datasource db {
-  provider = "mysql"
+    provider = "mysql"
 }
 
 model User {
-  id       String @id @default(nanoid())
-  username String @unique(map: "uq_user_username")
-  email    String @unique(map: "uq_user_email") @map(name: "email")
-  password String @map(name: "password_hash")
+    id       String @id @default(nanoid())
+    username String @unique(map: "uq_user_username")
+    email    String @unique(map: "uq_user_email") @map(name: "email")
+    password String @map(name: "password_hash")
 
-  createdAt DateTime  @default(now()) @map(name: "created_at")
-  updatedAt DateTime  @updatedAt @map(name: "updated_at")
-  deletedAt DateTime? @map(name: "deleted_at")
+    createdAt DateTime  @default(now()) @map(name: "created_at")
+    updatedAt DateTime  @updatedAt @map(name: "updated_at")
+    deletedAt DateTime? @map(name: "deleted_at")
 
-  roles UserRole[]
+    roles UserRole[]
 
-  @@map(name: "users")
+    @@map(name: "users")
 }
 
 model Role {
-  id   String @id @default(nanoid())
-  name String @unique(map: "uq_role_name")
+    id   String @id @default(nanoid())
+    name String @unique(map: "uq_role_name")
 
-  createdAt DateTime @default(now()) @map(name: "created_at")
-  updatedAt DateTime @updatedAt @map(name: "updated_at")
+    createdAt DateTime @default(now()) @map(name: "created_at")
+    updatedAt DateTime @updatedAt @map(name: "updated_at")
 
-  users       UserRole[]
-  permissions RolePermission[]
+    users       UserRole[]
+    permissions RolePermission[]
 
-  @@map(name: "roles")
+    @@map(name: "roles")
 }
 
 model UserRole {
-  userId String @map(name: "user_id")
-  user   User   @relation(fields: [userId], references: [id], map: "fk_user_role", onDelete: Cascade)
+    userId String @map(name: "user_id")
+    user   User   @relation(fields: [userId], references: [id], map: "fk_user_role", onDelete: Cascade)
 
-  roleId String @map(name: "role_id")
-  role   Role   @relation(fields: [roleId], references: [id], map: "fk_role_user", onDelete: Restrict)
+    roleId String @map(name: "role_id")
+    role   Role   @relation(fields: [roleId], references: [id], map: "fk_role_user", onDelete: Restrict)
 
-  @@id(fields: [userId, roleId])
-  @@map(name: "user_roles")
+    @@id(fields: [userId, roleId])
+    @@map(name: "user_roles")
 }
 
 model Permission {
-  id   String @id @default(nanoid())
-  name String @unique(map: "uq_permission_name")
+    id   String @id @default(nanoid())
+    name String @unique(map: "uq_permission_name")
 
-  createdAt DateTime @default(now()) @map(name: "created_at")
-  updatedAt DateTime @updatedAt @map(name: "updated_at")
+    createdAt DateTime @default(now()) @map(name: "created_at")
+    updatedAt DateTime @updatedAt @map(name: "updated_at")
 
-  roles RolePermission[]
+    roles RolePermission[]
 
-  @@map(name: "permissions")
+    @@map(name: "permissions")
 }
 
 model RolePermission {
-  roleId String @map(name: "role_id")
-  role   Role   @relation(fields: [roleId], references: [id], map: "fk_role_permission", onDelete: Cascade)
+    roleId String @map(name: "role_id")
+    role   Role   @relation(fields: [roleId], references: [id], map: "fk_role_permission", onDelete: Cascade)
 
-  permissionId String     @map(name: "permission_id")
-  permission   Permission @relation(fields: [permissionId], references: [id], map: "fk_permission_role", onDelete: Restrict)
+    permissionId String     @map(name: "permission_id")
+    permission   Permission @relation(fields: [permissionId], references: [id], map: "fk_permission_role", onDelete: Restrict)
 
-  @@id(fields: [roleId, permissionId])
-  @@map(name: "role_permissions")
+    @@id(fields: [roleId, permissionId])
+    @@map(name: "role_permissions")
 }
 
 model Client {
-  id   String @id @default(nanoid())
-  name String @unique(map: "uq_client_name")
+    id           String  @id @default(nanoid())
+    name         String  @unique(map: "uq_client_name")
+    clientType   String  @default("public") @map(name: "client_type")
+    clientSecret String? @map(name: "client_secret")
 
-  createdAt DateTime @default(now()) @map(name: "created_at")
-  updatedAt DateTime @updatedAt @map(name: "updated_at")
+    createdAt DateTime @default(now()) @map(name: "created_at")
+    updatedAt DateTime @updatedAt @map(name: "updated_at")
 
-  allowedUris ClientAllowedUri[]
+    allowedUris ClientAllowedUri[]
 
-  @@map(name: "clients")
+    @@map(name: "clients")
 }
 
 model ClientAllowedUri {
-  id  String @id @default(nanoid())
-  uri String
+    id  String @id @default(nanoid())
+    uri String
 
-  clientId String @map(name: "client_id")
-  client   Client @relation(fields: [clientId], references: [id], map: "fk_client_allowed_uri", onDelete: Cascade)
+    clientId String @map(name: "client_id")
+    client   Client @relation(fields: [clientId], references: [id], map: "fk_client_allowed_uri", onDelete: Cascade)
 
-  @@map(name: "client_allowed_uris")
+    @@map(name: "client_allowed_uris")
 }
 
 model SigningKey {
-  kid        String    @id @default(nanoid())
-  privateKey String    @map(name: "private_key") @db.Text
-  publicKey  String    @map(name: "public_key") @db.Text
-  algorithm  String    @default("RS512")
-  createdAt  DateTime  @default(now()) @map(name: "created_at")
-  revokedAt  DateTime? @map(name: "revoked_at")
+    kid        String    @id @default(nanoid())
+    privateKey String    @map(name: "private_key") @db.Text
+    publicKey  String    @map(name: "public_key") @db.Text
+    algorithm  String    @default("RS512")
+    createdAt  DateTime  @default(now()) @map(name: "created_at")
+    revokedAt  DateTime? @map(name: "revoked_at")
 
-  @@map(name: "signing_keys")
+    @@map(name: "signing_keys")
 }

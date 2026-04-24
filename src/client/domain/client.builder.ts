@@ -1,5 +1,6 @@
+import { ClientTypes } from '@/client/domain/client-type.enum';
 import { nanoid } from 'nanoid';
-import { Client } from './domain/client.model';
+import { Client } from './client.model';
 
 export class ClientBuilder {
     private readonly client: Client;
@@ -11,6 +12,8 @@ export class ClientBuilder {
         this.client = {
             id: id,
             name: `client-${id}`,
+            clientType: ClientTypes.PUBLIC,
+            clientSecret: null,
             allowedUris: [],
             createdAt: timestamp,
             updatedAt: timestamp,
@@ -28,6 +31,18 @@ export class ClientBuilder {
 
     public withName(name: string) {
         this.client.name = name;
+        return this;
+    }
+
+    public public(secret: string) {
+        this.client.clientType = ClientTypes.PUBLIC;
+        this.client.clientSecret = secret;
+        return this;
+    }
+
+    public confidential() {
+        this.client.clientSecret = null;
+        this.client.clientType = ClientTypes.CONFIDENTIAL;
         return this;
     }
 

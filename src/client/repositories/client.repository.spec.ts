@@ -1,3 +1,4 @@
+import { ClientTypes } from '@/client/domain';
 import { nanoid } from 'nanoid';
 import { ClientDto } from '../dtos';
 import { seedClient, setupClientTest } from '../test';
@@ -61,7 +62,12 @@ describe('ClientRepository', () => {
     describe('create', () => {
         it('should return the created ClientDto without URIs', async () => {
             const { repository } = await setupClientTest();
-            const result = await repository.create({ name: 'new-client', allowedUris: [] });
+            const result = await repository.create({
+                name: 'new-client',
+                allowedUris: [],
+                clientType: ClientTypes.PUBLIC,
+                clientSecret: null,
+            });
             expect(result).toBeInstanceOf(ClientDto);
             expect(result.name).toBe('new-client');
             expect(result.allowedUris).toHaveLength(0);
@@ -72,6 +78,8 @@ describe('ClientRepository', () => {
             const result = await repository.create({
                 name: 'new-client',
                 allowedUris: ['https://example.com'],
+                clientType: ClientTypes.PUBLIC,
+                clientSecret: null,
             });
             expect(result).toBeInstanceOf(ClientDto);
             expect(result.allowedUris).toEqual(['https://example.com']);
@@ -82,7 +90,14 @@ describe('ClientRepository', () => {
             vi.spyOn(databaseService.prisma.client, 'create').mockImplementationOnce(() =>
                 Promise.reject(new Error('not connected'))
             );
-            await expect(repository.create({ name: 'new-client', allowedUris: [] })).rejects.toThrow();
+            await expect(
+                repository.create({
+                    name: 'new-client',
+                    allowedUris: [],
+                    clientType: ClientTypes.PUBLIC,
+                    clientSecret: null,
+                })
+            ).rejects.toThrow();
         });
     });
 
@@ -92,6 +107,8 @@ describe('ClientRepository', () => {
             const result = await repository.update(seedClient.id, {
                 name: 'updated-client',
                 allowedUris: ['https://new.example.com'],
+                clientType: ClientTypes.PUBLIC,
+                clientSecret: null,
             });
             expect(result).toBeInstanceOf(ClientDto);
             expect(result.name).toBe('updated-client');
@@ -104,7 +121,12 @@ describe('ClientRepository', () => {
                 Promise.reject(new Error('not connected'))
             );
             await expect(
-                repository.update(seedClient.id, { name: 'updated-client', allowedUris: [] })
+                repository.update(seedClient.id, {
+                    name: 'updated-client',
+                    allowedUris: [],
+                    clientType: ClientTypes.PUBLIC,
+                    clientSecret: null,
+                })
             ).rejects.toThrow();
         });
     });
