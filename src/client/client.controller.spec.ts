@@ -1,3 +1,4 @@
+import { ClientTypes } from '@/client/domain';
 import { ConflictException, NotFoundException } from '@nestjs/common';
 import { type FastifyReply } from 'fastify';
 import { nanoid } from 'nanoid';
@@ -30,7 +31,12 @@ describe('ClientController', () => {
         it('should return the created ClientDto', async () => {
             const { controller } = await setupClientTest();
             const result = await controller.create(
-                { name: 'new-client', allowedUris: ['https://example.com'] },
+                {
+                    name: 'new-client',
+                    allowedUris: ['https://example.com'],
+                    clientType: ClientTypes.PUBLIC,
+                    clientSecret: null,
+                },
                 mockResponse
             );
             expect(result).toBeInstanceOf(ClientDto);
@@ -44,6 +50,8 @@ describe('ClientController', () => {
             const result = await controller.updateById(seedClient.id, {
                 name: 'updated-client',
                 allowedUris: ['https://updated.example.com'],
+                clientType: ClientTypes.PUBLIC,
+                clientSecret: null,
             });
             expect(result).toBeInstanceOf(ClientDto);
             expect(result.name).toBe('updated-client');
@@ -52,7 +60,12 @@ describe('ClientController', () => {
         it('should throw a NotFoundException', async () => {
             const { controller } = await setupClientTest();
             await expect(
-                controller.updateById(nanoid(), { name: 'updated-client', allowedUris: [] })
+                controller.updateById(nanoid(), {
+                    name: 'updated-client',
+                    allowedUris: [],
+                    clientType: ClientTypes.PUBLIC,
+                    clientSecret: null,
+                })
             ).rejects.toBeInstanceOf(NotFoundException);
         });
 
@@ -60,7 +73,12 @@ describe('ClientController', () => {
             const { controller, clientDb } = await setupClientTest();
             clientDb.add('other-client');
             await expect(
-                controller.updateById(seedClient.id, { name: 'other-client', allowedUris: [] })
+                controller.updateById(seedClient.id, {
+                    name: 'other-client',
+                    allowedUris: [],
+                    clientType: ClientTypes.PUBLIC,
+                    clientSecret: null,
+                })
             ).rejects.toBeInstanceOf(ConflictException);
         });
     });

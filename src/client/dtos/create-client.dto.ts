@@ -3,5 +3,5 @@ import { PickType } from '@nestjs/swagger';
 import { ClientDto } from './client.dto';
 
 export class CreateClientDto
-    extends PickType(ClientDto, ['name', 'allowedUris'] as const)
+    extends PickType(ClientDto, ['name', 'allowedUris', 'clientType', 'clientSecret'] as const)
     implements CreateClientData {}
