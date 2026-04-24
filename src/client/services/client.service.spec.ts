@@ -30,6 +30,7 @@ describe('ClientService', () => {
                 name: 'new-client',
                 allowedUris: ['https://example.com'],
                 clientType: 'public',
+                clientSecret: null,
             });
             expect(result).toBeInstanceOf(ClientDto);
             expect(result.name).toBe('new-client');
@@ -38,14 +39,14 @@ describe('ClientService', () => {
         it('should throw a ConflictException when name is taken', async () => {
             const { service } = await setupClientTest();
             await expect(
-                service.create({ name: seedClient.name, allowedUris: [], clientType: 'public' })
+                service.create({ name: seedClient.name, allowedUris: [], clientType: 'public', clientSecret: null })
             ).rejects.toBeInstanceOf(ConflictException);
         });
 
         it('should throw a BadRequestException when creating a confidential client without a secret', async () => {
             const { service } = await setupClientTest();
             await expect(
-                service.create({ name: 'conf-client', allowedUris: [], clientType: 'confidential' })
+                service.create({ name: 'conf-client', allowedUris: [], clientType: 'confidential', clientSecret: null })
             ).rejects.toBeInstanceOf(BadRequestException);
         });
 
@@ -76,6 +77,7 @@ describe('ClientService', () => {
                 name: 'updated-client',
                 allowedUris: ['https://updated.example.com'],
                 clientType: 'public',
+                clientSecret: null,
             });
             expect(result).toBeInstanceOf(ClientDto);
             expect(result.name).toBe('updated-client');
@@ -84,7 +86,12 @@ describe('ClientService', () => {
         it('should throw a NotFoundException when not found', async () => {
             const { service } = await setupClientTest();
             await expect(
-                service.update(nanoid(), { name: 'updated-client', allowedUris: [], clientType: 'public' })
+                service.update(nanoid(), {
+                    name: 'updated-client',
+                    allowedUris: [],
+                    clientType: 'public',
+                    clientSecret: null,
+                })
             ).rejects.toBeInstanceOf(NotFoundException);
         });
 
@@ -92,7 +99,12 @@ describe('ClientService', () => {
             const { service, clientDb } = await setupClientTest();
             clientDb.add('other-client');
             await expect(
-                service.update(seedClient.id, { name: 'other-client', allowedUris: [], clientType: 'public' })
+                service.update(seedClient.id, {
+                    name: 'other-client',
+                    allowedUris: [],
+                    clientType: 'public',
+                    clientSecret: null,
+                })
             ).rejects.toBeInstanceOf(ConflictException);
         });
     });
@@ -112,7 +124,7 @@ describe('ClientService', () => {
 
     describe('verifyClientSecret', () => {
         it('should return true for a correct secret', async () => {
-            const { service, clientDb } = await setupClientTest();
+            const { service } = await setupClientTest();
             const client = await service.create({
                 name: 'conf-client',
                 allowedUris: [],
