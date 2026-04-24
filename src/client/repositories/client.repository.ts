@@ -71,8 +71,25 @@ export class ClientRepository {
         return recordToClientDto(queryResult);
     }
 
-    public async update(id: string, data: UpdateClientDto) {
-        const { name, allowedUris } = data;
+    public async findRawById(id: string): Promise<{ clientSecret: string | null } | null> {
+        const { data: queryResult, error } = await tryCatch(
+            this.databaseService.prisma.client.findUnique({
+                select: { clientSecret: true },
+                where: { id: id },
+            })
+        );
+
+        if (error) {
+            this.logger.error(`Failed to fetch client secret for ID "${id}"`, error.stack);
+            throw new InternalServerErrorException('An unexpected error occurred while retrieving the client record', {
+                cause: error,
+            });
+        }
+        return queryResult;
+    }
+
+    public async update(id: string, data: UpdateClientDto & { clientSecret?: string | null }) {
+        const { name, allowedUris, clientType, clientSecret } = data;
 
         const { data: updated, error } = await tryCatch(
             this.databaseService.prisma.client.update({
@@ -80,6 +97,8 @@ export class ClientRepository {
                 where: { id: id },
                 data: {
                     name: name,
+                    clientType: clientType,
+                    clientSecret: clientSecret,
                     allowedUris: { deleteMany: {}, create: allowedUris.map((uri) => ({ uri })) },
                 },
             })
@@ -94,14 +113,16 @@ export class ClientRepository {
         return recordToClientDto(updated);
     }
 
-    public async create(data: CreateClientDto) {
-        const { name, allowedUris } = data;
+    public async create(data: CreateClientDto & { clientSecret?: string | null }) {
+        const { name, allowedUris, clientType, clientSecret } = data;
 
         const { data: created, error } = await tryCatch(
             this.databaseService.prisma.client.create({
                 select: { ...selectedClientAttributes },
                 data: {
                     name: name,
+                    clientType: clientType,
+                    clientSecret: clientSecret,
                     allowedUris: { create: allowedUris.map((uri) => ({ uri })) },
                 },
             })
