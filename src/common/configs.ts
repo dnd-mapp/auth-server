@@ -7,6 +7,8 @@ export const AppConfigurationNamespaces = {
 
 export interface SecurityConfig {
     passwordPepper: string;
+    issuer: string;
+    keyEncryptionSecret: string;
 }
 
 export interface AppConfig extends SharedBackendConfig {

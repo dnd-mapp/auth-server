@@ -4,4 +4,6 @@ import { EnvironmentVariableNames } from '../validation/environment-variables.sc
 
 export const securityConfig = registerAs<SecurityConfig>(AppConfigurationNamespaces.SECURITY, () => ({
     passwordPepper: process.env[EnvironmentVariableNames.PASSWORD_PEPPER]!,
+    issuer: process.env[EnvironmentVariableNames.ISSUER]!,
+    keyEncryptionSecret: process.env[EnvironmentVariableNames.KEY_ENCRYPTION_SECRET]!,
 }));

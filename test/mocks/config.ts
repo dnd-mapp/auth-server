@@ -18,6 +18,8 @@ export const defaultMockConfig: AppConfig = {
     },
     security: {
         passwordPepper: 'test-pepper',
+        issuer: 'https://localhost.auth.dndmapp.dev:4350',
+        keyEncryptionSecret: 'test-key-encryption-secret-32chars!!',
     },
 };
 
