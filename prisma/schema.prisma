@@ -98,3 +98,14 @@ model ClientAllowedUri {
 
     @@map(name: "client_allowed_uris")
 }
+
+model SigningKey {
+    kid        String    @id @default(nanoid())
+    privateKey String    @map(name: "private_key") @db.Text
+    publicKey  String    @map(name: "public_key") @db.Text
+    algorithm  String    @default("RS512")
+    createdAt  DateTime  @default(now()) @map(name: "created_at")
+    revokedAt  DateTime? @map(name: "revoked_at")
+
+    @@map(name: "signing_keys")
+}

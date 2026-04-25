@@ -5,11 +5,11 @@ import { PrismaClient } from './client/client';
 config({ path: '.env', quiet: true, ignore: ['MISSING_ENV_FILE'] });
 
 const adapter = new PrismaMariaDb({
-    host: process.env['AUTH_SERVER_DB_HOST'],
+    host: process.env['PRISMA_DB_HOST'],
     port: Number.parseInt(process.env['AUTH_SERVER_DB_PORT']!),
     database: process.env['AUTH_SERVER_DB_SCHEMA'],
-    user: process.env['AUTH_SERVER_DB_USER'],
-    password: process.env['AUTH_SERVER_DB_PASSWORD'],
+    user: process.env['PRISMA_DB_USER'],
+    password: process.env['PRISMA_DB_PASSWORD'],
 });
 
 const prisma = new PrismaClient({ adapter: adapter });
@@ -131,9 +131,9 @@ export async function main() {
 
     for (const username of Object.keys(userRoles)) {
         const user = await prisma.user.upsert({
-            where: { username },
+            where: { username: username },
             update: {},
-            create: { username, password: 'CHANGE_ME' },
+            create: { username: username, password: 'CHANGE_ME', email: 'admin@domain.com' },
         });
 
         userIds[username] = user.id;
